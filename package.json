@@ -1,0 +1,26 @@
+{
+  "name": "Filecodetest",
+  "version": "1.0.0",
+  "main": "src/server.mjs",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.828.0",
+    "@google-cloud/storage": "^7.16.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "firebase": "^11.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "dev": "nodemon src/server.mjs"
+  }
+}

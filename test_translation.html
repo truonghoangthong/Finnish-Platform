@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Kiểm tra Tất cả Bản Dịch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .question-label {
+      font-weight: bold;
+      color: #34495e;
+    }
+    .input-group {
+      margin: 10px 0;
+    }
+    input {
+      padding: 8px;
+      width: 70%;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .correct {
+      color: #2ecc71;
+      background-color: #e8f5e9;
+    }
+    .incorrect {
+      color: #e74c3c;
+      background-color: #ffebee;
+    }
+    #loading {
+      text-align: center;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Kiểm tra Tất cả Bản Dịch</h1>
+  <div class="container" id="questions-container">
+    <div id="loading">Đang tải câu hỏi, chờ chút nghen...</div>
+  </div>
+
+  <script>
+    async function loadQuestions() {
+      const loading = document.getElementById('loading');
+      loading.style.display = 'block';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/studying/A1/the_break_room/module4/part4a');
+        const data = await response.json();
+        const questions = data.result.part4a;
+        const container = document.getElementById('questions-container');
+        container.innerHTML = ''; // Xóa loading
+
+        for (const [questionId, details] of Object.entries(questions)) {
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'question';
+          questionDiv.innerHTML = `
+            <div class="question-label">Câu ${questionId}: ${details.script}</div>
+            <div class="input-group">
+              <input type="text" class="translation-input" data-question-id="${questionId}" placeholder="Nhập bản dịch nha mầy!">
+              <button onclick="checkTranslation('${questionId}')">Kiểm tra</button>
+            </div>
+            <div class="result" id="result-${questionId}"></div>
+          `;
+          container.appendChild(questionDiv);
+        }
+      } catch (error) {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '<p class="incorrect">Lỗi tải câu hỏi, thử lại nha mầy! ' + error.message + '</p>';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    async function checkTranslation(questionId) {
+      const input = document.querySelector(`.translation-input[data-question-id="${questionId}"]`);
+      const studentTranslation = input.value.trim();
+      const resultDiv = document.getElementById(`result-${questionId}`);
+
+      if (!studentTranslation) {
+        resultDiv.innerHTML = '<p class="incorrect">Cần nhập bản dịch, mầy ơi!</p>';
+        resultDiv.style.display = 'block';
+        return;
+      }
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<p>Đang check, chờ chút nghen...</p>';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/check-translation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questionId, studentTranslation })
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<p class="incorrect">${data.error}</p>`;
+        } else {
+          const { accuracy, correct, feedback, standardTranslation, sourceText } = data;
+          resultDiv.innerHTML = `
+            <p><strong>Nguồn:</strong> ${sourceText}</p>
+            <p><strong>Bản dịch chuẩn:</strong> ${standardTranslation}</p>
+            <p><strong>Độ chính xác:</strong> ${accuracy}%</p>
+            <p class="${correct ? 'correct' : 'incorrect'}"><strong>Kết quả:</strong> ${feedback}</p>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = '<p class="incorrect">Lỗi rồi, thử lại nha mầy! ' + error.message + '</p>';
+      }
+    }
+
+    // Load questions khi trang mở
+    window.onload = loadQuestions;
+  </script>
+</body>
+</html>

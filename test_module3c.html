@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Điền Từ Tiếng Phần Lan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            padding: 40px;
+        }
+
+        .vocabulary-section {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .vocabulary-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .vocab-item {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-item::before {
+            content: '🔊';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .vocab-item.playing {
+            animation: pulse 1s infinite;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .vocab-word {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .vocab-meaning {
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        .vocab-meaning.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .questions-section {
+            margin-top: 30px;
+        }
+
+        .question-container {
+            background: white;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .question-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .blank-space {
+            display: inline-block;
+            min-width: 120px;
+            height: 40px;
+            border: 3px dashed #dee2e6;
+            border-radius: 8px;
+            margin: 0 5px;
+            position: relative;
+            vertical-align: middle;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blank-space:hover {
+            border-color: #667eea;
+            background: #e7f1ff;
+        }
+
+        .blank-space.correct {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb) !important;
+            border-color: #28a745 !important;
+            border-style: solid !important;
+        }
+
+        .blank-space.incorrect {
+            background: linear-gradient(45deg, #f8d7da, #f1aeb5) !important;
+            border-color: #dc3545 !important;
+            border-style: solid !important;
+        }
+
+        .bounce-animation {
+            animation: bounce 0.6s ease !important;
+        }
+
+        .shake-animation {
+            animation: shake 0.5s ease !important;
+        }
+
+        .question-audio {
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+
+        .question-audio.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .question-audio-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .question-audio-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .question-audio-btn.playing {
+            animation: pulse 1s infinite;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .word-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .word-option {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: none;
+            font-size: 1em;
+        }
+
+        .word-option:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .word-option.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .control-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .check-button, .reset-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 0 10px;
+        }
+
+        .reset-button {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .check-button:hover, .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #495057;
+            margin: 15px 0;
+        }
+
+        .result-message {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-message.success {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 3px solid #28a745;
+        }
+
+        .result-message.error {
+            background: linear-gradient(45deg, #f8d7da, #f1aeb5);
+            color: #721c24;
+            border: 3px solid #dc3545;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Trò Chơi Điền Từ Tiếng Phần Lan</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div class="score" id="scoreDisplay">
+            Hoàn thành: 0 / 0
+        </div>
+        
+        <div id="gameContent" class="loading">
+            Đang tải dữ liệu...
+        </div>
+        
+        <div class="result-message" id="resultMessage">
+        </div>
+    </div>
+
+    <script>
+        let gameData = {};
+        let vocabularyWords = [];
+        let questions = [];
+        let userAnswers = {};
+        let correctAnswers = {};
+        let currentAudio = null;
+
+        // Fetch data from API
+        async function loadGameData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/studying/A1/the_break_room/module3/part3c');
+                const data = await response.json();
+                gameData = data.result.part3c;
+                processData();
+                renderGame();
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+                document.getElementById('gameContent').innerHTML = 
+                    '<div class="loading">❌ Không thể tải dữ liệu. Vui lòng kiểm tra API server.</div>';
+            }
+        }
+
+        function processData() {
+            vocabularyWords = [];
+            questions = [];
+            let questionWords = []; // Lưu tất cả từ trong [...]
+            
+            Object.keys(gameData).forEach(key => {
+                const item = gameData[key];
+                
+                if (key.startsWith('vocabulary')) {
+                    vocabularyWords.push({
+                        id: key,
+                        word: item.script,
+                        meaning: item.meaning || '',
+                        audioBase64: item.audioBase64
+                    });
+                } else if (key.startsWith('question')) {
+                    const script = item.script;
+                    const match = script.match(/\[([^\]]+)\]/);
+                    
+                    if (match) {
+                        const correctWord = match[1];
+                        const questionText = script.replace(/\[([^\]]+)\]/, '___');
+                        
+                        // Thêm từ đúng vào danh sách các từ có thể chọn
+                        if (!questionWords.includes(correctWord)) {
+                            questionWords.push(correctWord);
+                        }
+                        
+                        questions.push({
+                            id: key,
+                            text: questionText,
+                            fullScript: script,
+                            correctWord: correctWord,
+                            audioBase64: item.audioBase64
+                        });
+                        
+                        correctAnswers[key] = correctWord;
+                    }
+                }
+            });
+            
+            // Shuffle vocabulary for random display
+            vocabularyWords = shuffleArray(vocabularyWords);
+            
+            // Shuffle question words for random display in options
+            questionWords = shuffleArray(questionWords);
+            
+            // Lưu questionWords để dùng trong renderGame
+            window.questionWords = questionWords;
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function renderGame() {
+            const gameContent = document.getElementById('gameContent');
+            
+            let html = `
+                <div class="vocabulary-section">
+                    <div class="vocabulary-title">📚 Từ Vựng - Bấm để nghe và xem nghĩa</div>
+                    <div class="vocabulary-grid">
+                        ${vocabularyWords.map(vocab => `
+                            <div class="vocab-item" onclick="playVocabAudio('${vocab.id}')">
+                                <div class="vocab-word">${vocab.word}</div>
+                                <div class="vocab-meaning" id="meaning-${vocab.id}">
+                                    ${vocab.meaning}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="questions-section">
+                    ${questions.map((question, index) => `
+                        <div class="question-container">
+                            <div class="question-number">Câu ${index + 1}:</div>
+                            <div class="question-text">
+                                ${renderQuestionText(question)}
+                            </div>
+                            <div class="word-options">
+                                ${window.questionWords.map(word => `
+                                    <button class="word-option" onclick="selectWord('${question.id}', '${word}')">
+                                        ${word}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="control-section">
+                    <button class="check-button" onclick="checkAllAnswers()">
+                        🔍 Kiểm tra kết quả
+                    </button>
+                    <button class="reset-button" onclick="resetGame()">
+                        🔄 Làm lại
+                    </button>
+                </div>
+            `;
+
+            gameContent.innerHTML = html;
+            updateScore();
+        }
+
+        function renderQuestionText(question) {
+            const parts = question.text.split('___');
+            if (parts.length === 2) {
+                return `
+                    ${parts[0]}
+                    <span class="blank-space" id="blank-${question.id}" onclick="clearAnswer('${question.id}')">Chọn từ</span>
+                    ${parts[1]}
+                    <span class="question-audio" id="audio-${question.id}">
+                        <button class="question-audio-btn" onclick="playQuestionAudio('${question.id}')">🔊 Nghe</button>
+                    </span>
+                `;
+            }
+            return question.text;
+        }
+
+        function selectWord(questionId, word) {
+            console.log('Selecting word:', word, 'for question:', questionId);
+            
+            const blank = document.getElementById(`blank-${questionId}`);
+            const audioBtn = document.getElementById(`audio-${questionId}`);
+            const wordOptions = document.querySelectorAll(`[onclick*="${questionId}"]`);
+            
+            // Clear previous selection
+            if (userAnswers[questionId]) {
+                wordOptions.forEach(option => {
+                    if (option.textContent.trim() === userAnswers[questionId]) {
+                        option.classList.remove('used');
+                    }
+                });
+            }
+            
+            // Set new answer
+            userAnswers[questionId] = word;
+            blank.textContent = word;
+            blank.classList.add('filled');
+            
+            // Mark word as used
+            wordOptions.forEach(option => {
+                if (option.textContent.trim() === word) {
+                    option.classList.add('used');
+                }
+            });
+            
+            // Check if answer is correct
+            const correctAnswer = correctAnswers[questionId];
+            const isCorrect = word === correctAnswer;
+            
+            console.log('Correct answer:', correctAnswer, 'User answer:', word, 'Is correct:', isCorrect);
+            
+            // Reset classes
+            blank.classList.remove('correct', 'incorrect');
+            audioBtn.classList.remove('show');
+            
+            if (isCorrect) {
+                // Correct answer
+                blank.classList.add('correct');
+                blank.classList.add('filled');
+                
+                // Show audio button immediately
+                console.log('Showing audio button for', questionId);
+                audioBtn.classList.add('show');
+                
+                // Add bounce animation
+                setTimeout(() => {
+                    blank.classList.add('bounce-animation');
+                    setTimeout(() => {
+                        blank.classList.remove('bounce-animation');
+                    }, 600);
+                }, 100);
+                
+            } else {
+                // Wrong answer
+                blank.classList.add('incorrect');
+                audioBtn.classList.remove('show');
+                
+                // Add shake animation
+                setTimeout(() => {
+                    blank.classList.add('shake-animation');
+                    setTimeout(() => {
+                        blank.classList.remove('shake-animation');
+                    }, 500);
+                }, 100);
+            }
+            
+            updateScore();
+        }
+
+        function clearAnswer(questionId) {
+            if (userAnswers[questionId]) {
+                const word = userAnswers[questionId];
+                const blank = document.getElementById(`blank-${questionId}`);
+                const wordOptions = document.querySelectorAll(`[onclick*="${questionId}"]`);
+                const audioBtn = document.getElementById(`audio-${questionId}`);
+                
+                // Clear answer
+                delete userAnswers[questionId];
+                blank.textContent = 'Chọn từ';
+                blank.classList.remove('filled', 'correct', 'incorrect');
+                
+                // Remove used class from word option
+                wordOptions.forEach(option => {
+                    if (option.textContent.trim() === word) {
+                        option.classList.remove('used');
+                    }
+                });
+                
+                // Hide audio button
+                audioBtn.classList.remove('show');
+                
+                updateScore();
+            }
+        }
+
+        function playVocabAudio(vocabId) {
+            // Stop current audio
+            if (currentAudio) {
+                currentAudio.pause();
+                document.querySelectorAll('.vocab-item, .question-audio-btn').forEach(btn => {
+                    btn.classList.remove('playing');
+                });
+                // Hide all meanings
+                document.querySelectorAll('.vocab-meaning').forEach(meaning => {
+                    meaning.classList.remove('show');
+                });
+            }
+
+            const vocab = vocabularyWords.find(v => v.id === vocabId);
+            const vocabElement = event.target.closest('.vocab-item');
+            const meaningElement = document.getElementById(`meaning-${vocabId}`);
+            
+            if (vocab && vocab.audioBase64) {
+                // Show meaning with animation
+                meaningElement.classList.add('show');
+                
+                // Play audio
+                playAudioFromBase64(vocab.audioBase64, vocabElement);
+            }
+        }
+
+        function playQuestionAudio(questionId) {
+            // Stop current audio
+            if (currentAudio) {
+                currentAudio.pause();
+                document.querySelectorAll('.vocab-item, .question-audio-btn').forEach(btn => {
+                    btn.classList.remove('playing');
+                });
+            }
+
+            const question = questions.find(q => q.id === questionId);
+            const audioButton = document.querySelector(`#audio-${questionId} .question-audio-btn`);
+            
+            if (question && question.audioBase64) {
+                playAudioFromBase64(question.audioBase64, audioButton);
+            }
+        }
+
+        function playAudioFromBase64(audioBase64, element) {
+            try {
+                element.classList.add('playing');
+                
+                const audioBlob = new Blob([Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))], {type: 'audio/mpeg'});
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                currentAudio = new Audio(audioUrl);
+                currentAudio.play().catch(error => {
+                    console.error('Lỗi khi phát audio:', error);
+                    element.classList.remove('playing');
+                });
+
+                currentAudio.addEventListener('ended', () => {
+                    URL.revokeObjectURL(audioUrl);
+                    element.classList.remove('playing');
+                    
+                    // Hide vocab meanings after audio ends
+                    if (element.classList.contains('vocab-item')) {
+                        setTimeout(() => {
+                            document.querySelectorAll('.vocab-meaning').forEach(meaning => {
+                                meaning.classList.remove('show');
+                            });
+                        }, 2000);
+                    }
+                });
+            } catch (error) {
+                console.error('Lỗi khi xử lý audio:', error);
+                element.classList.remove('playing');
+            }
+        }
+
+        function checkAllAnswers() {
+            const totalQuestions = questions.length;
+            const answeredQuestions = Object.keys(userAnswers).length;
+            
+            if (answeredQuestions < totalQuestions) {
+                showResult(false, `Bạn mới trả lời ${answeredQuestions}/${totalQuestions} câu. Hãy hoàn thành tất cả!`);
+                return;
+            }
+            
+            let correctCount = 0;
+            
+            Object.keys(userAnswers).forEach(questionId => {
+                const userAnswer = userAnswers[questionId];
+                const correctAnswer = correctAnswers[questionId];
+                const blank = document.getElementById(`blank-${questionId}`);
+                const audioBtn = document.getElementById(`audio-${questionId}`);
+                
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    blank.classList.add('correct');
+                    blank.classList.remove('incorrect');
+                    audioBtn.classList.add('show');
+                } else {
+                    blank.classList.add('incorrect');
+                    blank.classList.remove('correct');
+                    audioBtn.classList.remove('show');
+                }
+            });
+            
+            const isAllCorrect = correctCount === totalQuestions;
+            const message = isAllCorrect 
+                ? `🎉 Xuất sắc! Bạn đã trả lời đúng tất cả ${correctCount}/${totalQuestions} câu!`
+                : `😊 Bạn trả lời đúng ${correctCount}/${totalQuestions} câu. Hãy thử lại những câu sai!`;
+            
+            showResult(isAllCorrect, message);
+        }
+
+        function showResult(isSuccess, message) {
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.textContent = message;
+            resultMessage.className = `result-message ${isSuccess ? 'success' : 'error'} show`;
+            
+            setTimeout(() => {
+                resultMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        function resetGame() {
+            userAnswers = {};
+            
+            // Stop any playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            
+            // Clear all answers
+            document.querySelectorAll('.blank-space').forEach(blank => {
+                blank.textContent = 'Chọn từ';
+                blank.className = 'blank-space';
+            });
+            
+            // Remove used class from all options
+            document.querySelectorAll('.word-option').forEach(option => {
+                option.classList.remove('used');
+            });
+            
+            // Hide all audio controls and meanings
+            document.querySelectorAll('.question-audio, .vocab-meaning').forEach(element => {
+                element.classList.remove('show');
+            });
+            
+            // Remove playing class
+            document.querySelectorAll('.vocab-item, .question-audio-btn').forEach(btn => {
+                btn.classList.remove('playing');
+            });
+            
+            // Hide result message
+            document.getElementById('resultMessage').classList.remove('show');
+            
+            updateScore();
+        }
+
+        function updateScore() {
+            const totalQuestions = questions.length;
+            const answeredQuestions = Object.keys(userAnswers).length;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('scoreDisplay').textContent = `Hoàn thành: ${answeredQuestions} / ${totalQuestions}`;
+        }
+
+        // Load game data when page loads
+        window.addEventListener('load', loadGameData);
+    </script>
+</body>
+</html>
