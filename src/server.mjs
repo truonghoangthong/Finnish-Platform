@@ -46,6 +46,44 @@ app.post('/api/email', async (req, res) => { // login with email
   }
 });
 
+app.get('/api/learning/:level', async (req, res) => {
+  const { level } = req.params;
+  if ( !level ) {
+    return res.status(400).send('level is required');
+  }
+  try {
+    const q = query(collection(db, 'lessons'), where('level', '==', level));
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs[0].data();
+    
+    if (!querySnapshot.empty) {
+      const result = {
+        lessonName: data.lessonName,
+        description: data.description,
+        creator: data.creator,
+        createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
+            timeZone: 'Europe/Helsinki',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+      };
+      return res.status(200).json({result});
+    } else {
+      return res.status(404).send({
+        Title: 'Success',
+        Message: 'Lesson not found',
+        Status: 'success',
+      });
+    }
+  } catch (error) {
+    console.error('Error querying Firestore:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
 app.get('/api/learning/:level/:lesson', async (req, res) => {
   const { level, lesson } = req.params;
   if (!lesson || !level ) {
