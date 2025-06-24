@@ -179,6 +179,123 @@ Success Response (200 OK)
 - The response structure mirrors the database structure for the requested part
 - Audio generation happens in real-time, so response time may vary based on content length
 
+---
+## Complete Data Structure Mapping
+
+### 1. **Module 1**
+### Part 1a
+```json
+{
+  "result": {
+    "part1a": {
+      "question1": { imageLink, script, audioBase64 },
+      "question2": { imageLink, script, audioBase64 },
+      "question3": { imageLink, script, audioBase64 },
+      "question5": { imageLink, script, audioBase64 },
+      "question6": { imageLink, script, audioBase64 },
+      ........
+    }
+  }
+}
+```
+
+### Part 1b
+```json
+{
+  "result": {
+    "part1b": {
+      "question1": { imageLink, script, audioBase64 },
+      "question2": { imageLink, script, audioBase64 },
+      "question3": { imageLink, script, audioBase64 },
+      "question5": { imageLink, script, audioBase64 },
+      "question6": { imageLink, script, audioBase64 },
+      ........
+    }
+  }
+}
+```
+### 2. **Module 2**
+### In Progress ###
+
+### 3. **Module 3**
+### Part 3a
+```json
+{
+  "result": {
+    "part3a": {
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+      "question5": { script, audioBase64 },
+      "question6": { script, audioBase64 },
+      ........
+    }
+  }
+}
+```
+
+### Part 3b
+```json
+{
+  "result": {
+    "part3b": {
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+      "question5": { script, audioBase64 },
+      "question6": { script, audioBase64 },
+      ........
+    }
+  }
+}
+```
+
+### Part 3c
+```json
+{
+  "result": {
+    "part3c": {
+      "vocabulary1": { meaning, script, audioBase64 },
+      "vocabulary2": { meaning, script, audioBase64 },
+      "vocabulary3": { meaning, script, audioBase64 },
+      "vocabulary4": { meaning, script, audioBase64 },
+      "vocabulary5": { meaning, script, audioBase64 },
+      "vocabulary6": { meaning, script, audioBase64 },
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+      "question4": { script, audioBase64 },
+      "question5": { script, audioBase64 },
+      "question6": { script, audioBase64 }
+    }
+  }
+}
+```
+
+### 4. **Module 4**
+### Part 4a
+```json
+{
+  "result": {
+    "part4a": {
+      "description": { script, audioBase64 },
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+      "question4": { script, audioBase64 },
+      "question5": { script, audioBase64 },
+      "question6": { script, audioBase64 }
+    }
+  }
+}
+```
+### Part 4b
+-In progress
+
+### Part 4c
+-In progress
+
+
 
 
 
