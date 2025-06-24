@@ -54,22 +54,24 @@ app.get('/api/learning/:level', async (req, res) => {
   try {
     const q = query(collection(db, 'lessons'), where('level', '==', level));
     const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs[0].data();
     
     if (!querySnapshot.empty) {
-      const result = {
-        lessonName: data.lessonName,
-        description: data.description,
-        creator: data.creator,
-        createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
-            timeZone: 'Europe/Helsinki',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
-      };
+      const result = querySnapshot.docs.map (doc => {
+        const data = doc.data();
+        return {
+          lessonName: data.lessonName,
+          description: data.description,
+          creator: data.creator,
+          createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
+              timeZone: 'Europe/Helsinki',
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+          })
+        };
+      });
       return res.status(200).json({result});
     } else {
       return res.status(404).send({
