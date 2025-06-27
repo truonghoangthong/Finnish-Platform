@@ -179,6 +179,43 @@ Success Response (200 OK)
 - The response structure mirrors the database structure for the requested part
 - Audio generation happens in real-time, so response time may vary based on content length
 
+### 4. **Evaluate Translation (ONLY USE FOR PART 4B MODULE 4)**
+- **Description:**  Evaluates the quality and accuracy of a user's Finnish translation by comparing it against a reference Finnish sentence using AI-powered assessment.
+- **Method:** `POST`
+-  **URL:** `/api/evaluate`
+
+#### Parameters
+
+| Parameter | Type | Location | Required | Description |
+|-----------|------|----------|----------|-------------|
+| `finnishSentence` | string | Request body | Yes | The reference Finnish sentence to compare against |
+| `userTranslation` | string | Request body | Yes | The user's translation attempt to be evaluated |
+
+#### Request Example
+```bash
+curl -X GET "http://localhost:3000/api/evaluate"
+```
+
+```body request
+{
+  "finnishSentence": "Minä syön herkullista ruokaa illalla",
+  "userTranslation": "I like watching football with my family"
+}
+```
+
+#### Response Format
+Success Response (200 OK)
+```bash
+{
+    "finnishSentence": "Minä syön herkullista ruokaa illalla",
+    "userTranslation": "I like watching football with my family",
+    "feedback": "```json\n{\n  \"grammar_feedback\": \"The provided English sentence does not align grammatically with the Finnish sentence. The Finnish sentence 'Minä syön herkullista ruokaa illalla' translates to 'I eat delicious food in the evening.' The learner's translation 'I like watching football with my family' is completely unrelated in terms of grammar and structure, failing to convey the original meaning.\",\n  \"vocabulary_feedback\": \"The vocabulary in the learner's translation does not match the Finnish sentence at all. The Finnish words 'syön' (eat), 'herkullista' (delicious), 'ruokaa' (food), and 'illalla' (in the evening) are not reflected in the translation. Instead, the learner used words like 'watching,' 'football,' 'family,' etc., which are unrelated to the original Finnish vocabulary.\",\n  \"overall_feedback\": \"The translation provided does not correspond to the Finnish sentence in any way, both in grammar and vocabulary, leading to a complete miscommunication of the original meaning.\",\n  \"encouragement\": \"Focus on understanding the original sentence thoroughly before attempting a translation.\"\n}\n```"
+}
+```
+
+#### Notes
+- Only use for part 4b module 4
+
 ---
 ## Complete Data Structure Mapping
 
@@ -289,9 +326,19 @@ Success Response (200 OK)
   }
 }
 ```
-### Part 4b
--In progress
-
+### Part 4b ( Use /api/evaluate API)
+```json
+{
+    "finnishSentence": "...",
+    "userTranslation": "...",
+    "feedback": {
+        "grammarFeedback": "...",
+        "vocabularyFeedback": "...",
+        "overallFeedback": "...",
+        "encouragement": "..."
+    }
+}
+```
 ### Part 4c
 -In progress
 
