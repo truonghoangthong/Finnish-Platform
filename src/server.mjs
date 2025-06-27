@@ -9,6 +9,7 @@ import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
 import {googleStorage,bucketName } from './middleware/googleCloud.mjs';
 import dotenv from 'dotenv';
+import {evaluateTranslation} from './middleware/open_router.mjs';
 dotenv.config();
 
 const app = express();
@@ -21,6 +22,31 @@ const actionCodeSettings = {
 };
 
 
+app.post('/api/evaluate', async (req, res) => {
+  const { finnishSentence, userTranslation } = req.body;
+  if (!finnishSentence || !userTranslation) {
+    return res.status(400).send('no finnish Sentence provided or user transaction');
+  }
+  try {
+    const result = await evaluateTranslation(finnishSentence , userTranslation);
+    if (!result) {
+      return res.status(404).send({
+        Title: 'Error',
+        Message: 'Evaluation not found',
+        Status: 'error',
+      });
+    } 
+    const response = {
+      finnishSentence: finnishSentence,
+      userTranslation: userTranslation,
+      feedback: result,
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error get feedback through OpenAI:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
 
 app.post('/api/email', async (req, res) => { // login with email
   const { inputEmail } = req.body;
