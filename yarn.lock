@@ -2361,6 +2361,11 @@ once@^1.4.0:
   dependencies:
     wrappy "1"
 
+openai@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-5.6.0.tgz#2fefc93d2862da8ea1a3c311fca2d07fe48adf5f"
+  integrity sha512-jNH5z+hYAdOMZXyEt0yZ7246s+UZjg2AwFQqkAhZIPPjxNtHHO5mykOefau6FkOqj16aC94MOdJl/rZBcKj/cQ==
+
 p-limit@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-3.1.0.tgz#e1daccbe78d0d1388ca18c64fea38e3e57e3706b"
