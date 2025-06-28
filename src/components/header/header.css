@@ -29,12 +29,10 @@ html {
   font-weight: 500;
   padding: 8px 12px;
   border-radius: 10px;
-  transition: all 0.3s ease; 
   display: inline-block; 
 }
 
 .nav-links a.active {
   background-color: #f0f0f0;
   transform: scale(1.05); 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
 }
