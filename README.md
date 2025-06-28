@@ -215,6 +215,7 @@ Success Response (200 OK)
 
 #### Notes
 - Only use for part 4b module 4
+- You can use /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate.
 
 ---
 ## Complete Data Structure Mapping
@@ -326,7 +327,7 @@ Success Response (200 OK)
   }
 }
 ```
-### Part 4b ( Use /api/evaluate API)
+### Part 4b ( Using /api/evaluate API in order to evaluate user translation and Using /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate)
 ```json
 {
     "finnishSentence": "...",
