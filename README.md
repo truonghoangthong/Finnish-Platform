@@ -340,9 +340,20 @@ Success Response (200 OK)
 }
 ```
 ### Part 4c
--In progress
-
-
+```json
+{
+  "result": {
+    "part4c": {
+      "question1": { answer, script, audioBase64 },
+      "question2": { answer, script, audioBase64 },
+      "question3": { answer, script, audioBase64 },
+      "question4": { answer, script, audioBase64 },
+      "question5": { answer, script, audioBase64 },
+      "question6": { answer, script, audioBase64 }
+    }
+  }
+}
+```
 
 
 
