@@ -1,5 +1,6 @@
-import Footer from './components/footer/footer'
 import Header from './components/header/header'
+import Module3 from './pages/module3/module3'
+import Main from './pages/main/main'
 import './App.css'
 
 function App() {
@@ -7,7 +8,8 @@ function App() {
   return (
     <>
       <Header/>
-      <Footer/>
+      <Main/>
+      <Module3/>
     </>
   )
 }
