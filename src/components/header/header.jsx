@@ -7,25 +7,42 @@ function Header() {
   useEffect(() => {
     const sections = ['#home', '#courses', '#contact'];
     const sectionElements = sections.map(id => document.querySelector(id));
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
-      let found = false;
-      sectionElements.forEach((element, idx) => {
-        if (element && !found) {
-          const top = element.offsetTop;
-          const bottom = top + element.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < bottom) {
-            setActiveLink(sections[idx]);
-            found = true;
-          }
-        }
-      });
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.3
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveLink(`#${entry.target.id}`);
+        }
+      });
+    }, options);
+
+    sectionElements.forEach(element => {
+      if (element) observer.observe(element);
+    });
+
+    return () => {
+      sectionElements.forEach(element => {
+        if (element) observer.unobserve(element);
+      });
+    };
   }, []);
+
+  const handleClick = (e, id) => {
+    e.preventDefault();
+    setActiveLink(id);
+    const element = document.querySelector(id);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   return (
     <header className="header">
@@ -35,7 +52,7 @@ function Header() {
             <a
               href="#home"
               className={activeLink === '#home' ? 'active' : ''}
-              onClick={() => setActiveLink('#home')}
+              onClick={(e) => handleClick(e, '#home')}
             >
               Home
             </a>
@@ -44,18 +61,9 @@ function Header() {
             <a
               href="#courses"
               className={activeLink === '#courses' ? 'active' : ''}
-              onClick={() => setActiveLink('#courses')}
+              onClick={(e) => handleClick(e, '#courses')}
             >
               Courses
-            </a>
-          </li>
-          <li>
-            <a
-              href="#contact"
-              className={activeLink === '#contact' ? 'active' : ''}
-              onClick={() => setActiveLink('#contact')}
-            >
-              Contact
             </a>
           </li>
         </ul>
