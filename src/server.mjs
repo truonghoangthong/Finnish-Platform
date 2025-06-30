@@ -87,7 +87,7 @@ app.get('/api/learning/:level', async (req, res) => {
         return {
           lessonName: data.lessonName,
           description: data.description,
-          creator: data.creator,
+          lessonNumber: data.lessonNumber, 
           createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
               timeZone: 'Europe/Helsinki',
               day: '2-digit',
@@ -143,7 +143,6 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
         description: data.description,
         descriptionAudio: audioBase64, // convert description to base64 audio
         level: data.level,
-        creator: data.creator,
         createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
             timeZone: 'Europe/Helsinki',
             day: '2-digit',
@@ -215,8 +214,8 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
 });
 
 app.post('/api/new_lesson', async (req, res) => {
-  const { lessonName, description, creator,level,challenge } = req.body; 
-  if (!lessonName || !description || !creator || !level || !challenge) {
+  const { lessonName, description, level, lessonNumber } = req.body;
+  if (!lessonName || !description || !level || !lessonNumber) {
     return res.status(400).send('All fields are required');
   }
   try {
@@ -232,10 +231,9 @@ app.post('/api/new_lesson', async (req, res) => {
       const docRef = await addDoc(collection(db, 'lessons'), {
         lessonName: lessonName.toLowerCase(),
         description: description,
-        creator: creator,
         level: level,
-        challenge: challenge,
         createdAt: new Date(),
+        lessonNumber: lessonNumber
       });
 
       res.status(201).json({
