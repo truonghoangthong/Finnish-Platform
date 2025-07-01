@@ -1,6 +1,6 @@
 import express from 'express';
 import { db,auth } from './config/firebase-config.js';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, updateDoc  } from 'firebase/firestore';
 import cors from 'cors';
 import { sendSignInLinkToEmail } from "firebase/auth";
 import { pollyClient } from './config/aws-config.js';
@@ -53,8 +53,8 @@ app.post('/api/email', async (req, res) => { // login with email
   if (!inputEmail) {
     return res.status(400).send('no email provided');
   }
-  const q = query(collection(db, 'users'), where('email', '==', inputEmail));
-  const querySnapshot = await getDocs(q);
+  const queryUser = query(collection(db, 'users'), where('email', '==', inputEmail));
+  const querySnapshot = await getDocs(queryUser);
   try {
     if (!querySnapshot.empty) {
       await sendSignInLinkToEmail(auth, inputEmail, actionCodeSettings);
@@ -78,8 +78,8 @@ app.get('/api/learning/:level', async (req, res) => {
     return res.status(400).send('level is required');
   }
   try {
-    const q = query(collection(db, 'lessons'), where('level', '==', level));
-    const querySnapshot = await getDocs(q);
+    const queryLesson = query(collection(db, 'lessons'), where('level', '==', level));
+    const querySnapshot = await getDocs(queryLesson);
     
     if (!querySnapshot.empty) {
       const result = querySnapshot.docs.map (doc => {
@@ -118,8 +118,8 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
     return res.status(400).send('lesson and level are required');
   }
   try {
-    const q = query(collection(db, 'lessons'), where('lessonName', '==', lesson), where('level', '==', level));
-    const querySnapshot = await getDocs(q);
+    const queryLesson = query(collection(db, 'lessons'), where('lessonName', '==', lesson), where('level', '==', level));
+    const querySnapshot = await getDocs(queryLesson);
     const data = querySnapshot.docs[0].data();
     
     if (!querySnapshot.empty) {
@@ -172,8 +172,8 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
     return res.status(400).send('lesson level, module, and part are required');
   }
   try {
-    const q = query(collection(db, 'lessons'), where('lessonName', '==', lesson), where('level', '==', level));
-    const querySnapshot = await getDocs(q);
+    const queryLesson = query(collection(db, 'lessons'), where('lessonName', '==', lesson), where('level', '==', level));
+    const querySnapshot = await getDocs(queryLesson);
     const data = querySnapshot.docs[0].data();
     const selectedPart = data?.[module]?.[part];  // access data (in data has module Object and Part Object)                                                                              
     if (!querySnapshot.empty) {                   // but we only want to get a whole part Object
@@ -213,14 +213,75 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
   }
 });
 
+  app.post('/api/progress', async (req, res) => { // update progress of a specific lesson
+    const { userId, level, lesson, module, progress } = req.body;
+    if (!userId || !level || !lesson || !module || !progress) {
+      return res.status(400).send('userId, level, lesson, module and progress are required');
+    }
+    try {
+      const queryLearner = query(collection(db, 'learners'), where('userId', '==', userId));
+      const queryLesson = query(collection(db, 'lessons'), where('lessonName', '==', lesson));
+      const querySnapshotLesson = await getDocs(queryLesson);
+      const querySnapshotUser = await getDocs(queryLearner);
+      if (querySnapshotLesson.empty) {
+        return res.status(404).json({
+          Title: 'Error',
+          Message: 'Lesson not found',
+          Status: 'error',
+        });
+    } else if (!querySnapshotLesson.empty && !querySnapshotUser.empty) {
+      const docRef = querySnapshotUser.docs[0].ref;
+      const data = querySnapshotUser.docs[0].data();
+      await updateDoc(docRef, { [`progress.${level}.${lesson}.${module}`]: progress });
+      return res.status(200).json({
+        Title: 'Success',
+        Message: 'Progress updated successfully',
+        Status: 'success',
+      });
+    }
+  } catch (error) {
+    console.error('Error adding document:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
+
+app.get('/api/progress/:userId/:level/:lesson', async (req, res) => { // fetch progress of a specific lesson
+  const { userId, level, lesson } = req.params;
+  if (!userId || !level || !lesson) {
+    return res.status(400).send('userId, level, and lesson are required');
+  }
+  try {
+    const queryLearner = query(collection(db, 'learners'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(queryLearner);
+    if (!querySnapshot.empty) {
+      const data = querySnapshot.docs[0].data();
+      const selectedProgress = data?.['progress']?.[level]?.[lesson];
+      const result = {
+        [lesson]: selectedProgress // show lesson object
+      };
+      return res.status(200).json({ result });
+    } else {
+      return res.status(404).json({
+        Title: 'Success',
+        Message: 'Learner not found',
+        Status: 'success',
+      });
+    }
+  } catch (error) {
+    console.error('Error querying Firestore:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
 app.post('/api/new_lesson', async (req, res) => {
   const { lessonName, description, level, lessonNumber } = req.body;
   if (!lessonName || !description || !level || !lessonNumber) {
     return res.status(400).send('All fields are required');
   }
   try {
-    const q = query(collection(db, 'lessons'), where('lessonName', '==', lessonName.toLowerCase()), where('level', '==', level));
-    const querySnapshot = await getDocs(q);
+    const queryLesson = query(collection(db, 'lessons'), where('lessonName', '==', lessonName.toLowerCase()), where('level', '==', level));
+    const querySnapshot = await getDocs(queryLesson);
     if (!querySnapshot.empty) {
       return res.status(400).json({
         Title: 'Error',
