@@ -217,6 +217,89 @@ Success Response (200 OK)
 - Only use for part 4b module 4
 - You can use /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate.
 
+
+### 5. **Fetch progress status for specific lesson, module and learner**
+- **Description: **  Retrieves the current progress status of a specific learner for a given lesson within a module
+- **Method:** `GET`
+-  **URL:** `/api/progress/:userId/:level/:lesson`
+
+#### Parameters
+
+| Parameter | Type | Location | Required | Description |
+|-----------|------|----------|----------|-------------|
+| `userId` | string | URL path | Yes | Unique identifier of the learner |
+| `level` | string | URL path | Yes | The level identifier to filter lessons. Only uppercase format are accepted (example: A1, A2, B1, B2 )|
+| `lesson` | string | URL path | Yes | The lesson name identifier in lowercase with underscores (e.g., the_break_room) |
+
+
+#### Request Example
+```bash
+curl -X GET "http://localhost:3000/api/progress/yugioh123/A1/the_break_room"
+```
+
+#### Response Format
+Success Response (200 OK)
+```bash
+{
+  "result": {
+    "the_break_room": {
+      "module4": "75",
+      "module1": 2,
+      "module3": "50",
+      "module2": "50"
+    }
+  }
+}
+```
+
+#### Notes
+- If the specific level or lesson doesn't exist in the learner's progress, the response will contain the lesson key with undefined/null value.
+
+### 6. **Update Lesson Progress**
+- **Description: **  Updates the progress status for a specific lesson module for a particular learner. This endpoint validates that both the learner and lesson exist before updating the progress data.
+- **Method:** `POST`
+-  **URL:** `/api/progress`
+
+#### Parameters
+
+| Parameter | Type | Location | Required | Description |
+|-----------|------|----------|----------|-------------|
+| `userId` | string | Request body | Yes | Unique identifier of the learner |
+| `level` | string | Request body | Yes | The level identifier to filter lessons. Only uppercase format are accepted (example: A1, A2, B1, B2 )|
+| `lesson` | string | Request body | Yes | The lesson name identifier in lowercase with underscores (e.g., the_break_room) |
+| `module` | string | Request body | Yes | The module identifier (e.g., module1, module3, module4) |
+| `progress` | string | Request body | Yes | Progress data to be stored (25,75 OR 100) |
+
+
+#### Request Example
+```bash
+curl -X GET "http://localhost:3000/api/progress"
+```
+
+```body request
+{
+  "userId": "",
+  "level": "A1",
+  "lesson": "the_break_room",
+  "module": "module1",
+  "progress": "25",
+}
+```
+
+#### Response Format
+Success Response (200 OK)
+```bash
+{
+  "Title": "Success",
+  "Message": "Progress updated successfully",
+  "Status": "success"
+}
+```
+
+#### Notes
+- The endpoint performs validation on both learner and lesson existence before updating
+- If the learner exists but the lesson doesn't, a 404 error is returned
+
 ---
 ## Complete Data Structure Mapping
 
@@ -355,6 +438,18 @@ Success Response (200 OK)
   }
 }
 ```
+
+### 5. **Progress function**
+```json
+{
+  "result": {
+    "[lesson_name]": {
+      "[module_name]": "[progress_value]"
+    }
+  }
+}
+```
+
 
 
 
