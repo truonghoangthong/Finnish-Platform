@@ -52,13 +52,15 @@ Success Response (200 OK)
     {
       "lessonName": "the_break_room",
       "description": "Hei! Ja tervetuloa työpaikan kahvihuoneeseen! Kello on 14. Nyt juomme kahvia! Kahvitauko on aina tärkeä osa työpäivää. Silloin tapaamme ja juttelemme yhdessä.",
-      "creator": "Bi",
+      "lessonNumber": "1",
+      "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
       "createdAt": "11.06.2025 06.02"
     },
     {
       "lessonName": "The_class_room",
       "description": "Hello, this is example",
-      "creator": "Thong",
+      "lessonNumber": "2",
+      "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
       "createdAt": "19.06.2025 23.44"
     }
   ]
@@ -96,7 +98,7 @@ Success Response (200 OK)
     "description": "Hei! Ja tervetuloa työpaikan kahvihuoneeseen! Kello on 14. Nyt juomme kahvia! Kahvitauko on aina tärkeä osa työpäivää. Silloin tapaamme ja juttelemme yhdessä.",
     "descriptionAudio": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAAaArHkAMGGNBbhjKv6TSuN14Jg4DC02IQ+Hk0/emIfXdzRBf14Rx3P68T9z4nv7/oe+lfQWm76fvv+X//6Gn14iZU4Tmjn/P94XxCiV/4mn0+Jmn+8F/PygAWfEELOWBAyyHwQfKJn/ygAc2QZrEYgIkZ0DCoI9SORGAQgQZA9cJp+NmykTd3/hGcN//NkxBsZYKYcKtGGMPoRYfSo4c8goEEqqco4yKUKMw/B95cDYJvxAET7ClkH9zSkhtJkhRxcvlKymQJue0cccUWcAZQumUKHL1vEgDi0ggPiigi+KMnJxVmmfQYBmiEguw7zaYPAHCeb3N3In1lnljrGhLMfYvbjV/zFGuNu3t8y3iGUl3t8bVHlyHB42GcY...",
     "level": "A1",
-    "creator": "Bi",
+    "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
     "createdAt": "11.06.2025 06.02"
   }
 }
