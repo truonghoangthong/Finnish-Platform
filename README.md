@@ -29,7 +29,7 @@ The backend API will be accessible at http://localhost:3000 when running in deve
 
 ## **API Endpoints**
 ### 1. **Get Lessons Information related Level**
-- **Description:** Retrieves basic lesson information including name, description, creator, and creation date for lessons belonging to the specified level.
+- **Description:** Retrieves basic lesson information including name, description, lesson Number, image link, and creation date for lessons belonging to the specified level.
 - **Method:** `GET`
 -  **URL:** `/api/learning/:level`
 
@@ -153,7 +153,11 @@ Success Response (200 OK)
       "question2": {
         "script": "Käytätkö / maitoa tai sokeria?",
         "audioBase64": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAASSBYAVnjEAAYSZuRkMIOtCKH4PnyZCXD5TE+XfLz+fGv2DXwwifqCwD/deNRLyGJyg0u/v5xaMT8v++6uIMmIMLHK..."
-      }
+      },
+      "title": {
+        "script": "Tehtävä 3a. Harjoittele sanoja lisää. Yhdistä lauseet oikein.",
+        "audioBase64": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAASSBYAVnjEAAYSZuRkMIOtCKH4PnyZCXD5TE+XfLz+fGv2DXwwifqCwD/deNRLyGJyg0u/v5xaMT8v++6uIMmIMLHK..."
+      }.
     }
   }
 }
@@ -306,11 +310,12 @@ Success Response (200 OK)
 ## Complete Data Structure Mapping
 
 ### 1. **Module 1**
-### Part 1a
+### Part 1a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part1a": {
+      "title": { script, audioBase64 },
       "question1": { imageLink, script, audioBase64 },
       "question2": { imageLink, script, audioBase64 },
       "question3": { imageLink, script, audioBase64 },
@@ -322,11 +327,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 1b
+### Part 1b ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part1b": {
+      "title": { script, audioBase64 },
       "question1": { imageLink, script, audioBase64 },
       "question2": { imageLink, script, audioBase64 },
       "question3": { imageLink, script, audioBase64 },
@@ -341,11 +347,12 @@ Success Response (200 OK)
 ### In Progress ###
 
 ### 3. **Module 3**
-### Part 3a
+### Part 3a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3a": {
+      "title": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
       "question3": { script, audioBase64 },
@@ -357,11 +364,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 3b
+### Part 3b ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3b": {
+      "title": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
       "question3": { script, audioBase64 },
@@ -373,11 +381,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 3c
+### Part 3c ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3c": {
+      "title": { script, audioBase64 },
       "vocabulary1": { meaning, script, audioBase64 },
       "vocabulary2": { meaning, script, audioBase64 },
       "vocabulary3": { meaning, script, audioBase64 },
@@ -396,11 +405,12 @@ Success Response (200 OK)
 ```
 
 ### 4. **Module 4**
-### Part 4a
+### Part 4a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part4a": {
+      "title": { script, audioBase64 },
       "description": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
@@ -412,7 +422,7 @@ Success Response (200 OK)
   }
 }
 ```
-### Part 4b ( Using /api/evaluate API in order to evaluate user translation and Using /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate)
+### Part 4b ( Using /api/evaluate API in order to evaluate user translation )
 ```json
 {
     "finnishSentence": "...",
@@ -425,11 +435,26 @@ Success Response (200 OK)
     }
 }
 ```
-### Part 4c
+ ### Part 4b ( Using /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate )
+ ```json
+{
+  "result": {
+    "part4b": {
+      "title": { script, audioBase64 },
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+    }
+  }
+}
+```
+
+### Part 4c ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part4c": {
+      "title": { script, audioBase64 },
       "question1": { answer, script, audioBase64 },
       "question2": { answer, script, audioBase64 },
       "question3": { answer, script, audioBase64 },
@@ -441,7 +466,7 @@ Success Response (200 OK)
 }
 ```
 
-### 5. **Progress function**
+### 5. **Progress function** ( /api/progress/:userId/:level/:lesson )
 ```json
 {
   "result": {
