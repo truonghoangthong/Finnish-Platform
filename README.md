@@ -29,7 +29,7 @@ The backend API will be accessible at http://localhost:3000 when running in deve
 
 ## **API Endpoints**
 ### 1. **Get Lessons Information related Level**
-- **Description:** Retrieves basic lesson information including name, description, creator, and creation date for lessons belonging to the specified level.
+- **Description:** Retrieves basic lesson information including name, description, lesson Number, image link, and creation date for lessons belonging to the specified level.
 - **Method:** `GET`
 -  **URL:** `/api/learning/:level`
 
@@ -52,13 +52,15 @@ Success Response (200 OK)
     {
       "lessonName": "the_break_room",
       "description": "Hei! Ja tervetuloa työpaikan kahvihuoneeseen! Kello on 14. Nyt juomme kahvia! Kahvitauko on aina tärkeä osa työpäivää. Silloin tapaamme ja juttelemme yhdessä.",
-      "creator": "Bi",
+      "lessonNumber": "1",
+      "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
       "createdAt": "11.06.2025 06.02"
     },
     {
       "lessonName": "The_class_room",
       "description": "Hello, this is example",
-      "creator": "Thong",
+      "lessonNumber": "2",
+      "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
       "createdAt": "19.06.2025 23.44"
     }
   ]
@@ -96,7 +98,7 @@ Success Response (200 OK)
     "description": "Hei! Ja tervetuloa työpaikan kahvihuoneeseen! Kello on 14. Nyt juomme kahvia! Kahvitauko on aina tärkeä osa työpäivää. Silloin tapaamme ja juttelemme yhdessä.",
     "descriptionAudio": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAAaArHkAMGGNBbhjKv6TSuN14Jg4DC02IQ+Hk0/emIfXdzRBf14Rx3P68T9z4nv7/oe+lfQWm76fvv+X//6Gn14iZU4Tmjn/P94XxCiV/4mn0+Jmn+8F/PygAWfEELOWBAyyHwQfKJn/ygAc2QZrEYgIkZ0DCoI9SORGAQgQZA9cJp+NmykTd3/hGcN//NkxBsZYKYcKtGGMPoRYfSo4c8goEEqqco4yKUKMw/B95cDYJvxAET7ClkH9zSkhtJkhRxcvlKymQJue0cccUWcAZQumUKHL1vEgDi0ggPiigi+KMnJxVmmfQYBmiEguw7zaYPAHCeb3N3In1lnljrGhLMfYvbjV/zFGuNu3t8y3iGUl3t8bVHlyHB42GcY...",
     "level": "A1",
-    "creator": "Bi",
+    "imageLink": "https://storage.googleapis.com/finnishproject/A1/the_break_room/the_break_room.png",
     "createdAt": "11.06.2025 06.02"
   }
 }
@@ -151,7 +153,11 @@ Success Response (200 OK)
       "question2": {
         "script": "Käytätkö / maitoa tai sokeria?",
         "audioBase64": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAASSBYAVnjEAAYSZuRkMIOtCKH4PnyZCXD5TE+XfLz+fGv2DXwwifqCwD/deNRLyGJyg0u/v5xaMT8v++6uIMmIMLHK..."
-      }
+      },
+      "title": {
+        "script": "Tehtävä 3a. Harjoittele sanoja lisää. Yhdistä lauseet oikein.",
+        "audioBase64": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//NkxAASSBYAVnjEAAYSZuRkMIOtCKH4PnyZCXD5TE+XfLz+fGv2DXwwifqCwD/deNRLyGJyg0u/v5xaMT8v++6uIMmIMLHK..."
+      }.
     }
   }
 }
@@ -217,15 +223,99 @@ Success Response (200 OK)
 - Only use for part 4b module 4
 - You can use /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate.
 
+
+### 5. **Fetch progress status for specific lesson, module and learner**
+- **Description: **  Retrieves the current progress status of a specific learner for a given lesson within a module
+- **Method:** `GET`
+-  **URL:** `/api/progress/:userId/:level/:lesson`
+
+#### Parameters
+
+| Parameter | Type | Location | Required | Description |
+|-----------|------|----------|----------|-------------|
+| `userId` | string | URL path | Yes | Unique identifier of the learner |
+| `level` | string | URL path | Yes | The level identifier to filter lessons. Only uppercase format are accepted (example: A1, A2, B1, B2 )|
+| `lesson` | string | URL path | Yes | The lesson name identifier in lowercase with underscores (e.g., the_break_room) |
+
+
+#### Request Example
+```bash
+curl -X GET "http://localhost:3000/api/progress/yugioh123/A1/the_break_room"
+```
+
+#### Response Format
+Success Response (200 OK)
+```bash
+{
+  "result": {
+    "the_break_room": {
+      "module4": "75",
+      "module1": 2,
+      "module3": "50",
+      "module2": "50"
+    }
+  }
+}
+```
+
+#### Notes
+- If the specific level or lesson doesn't exist in the learner's progress, the response will contain the lesson key with undefined/null value.
+
+### 6. **Update Lesson Progress**
+- **Description: **  Updates the progress status for a specific lesson module for a particular learner. This endpoint validates that both the learner and lesson exist before updating the progress data.
+- **Method:** `POST`
+-  **URL:** `/api/progress`
+
+#### Parameters
+
+| Parameter | Type | Location | Required | Description |
+|-----------|------|----------|----------|-------------|
+| `userId` | string | Request body | Yes | Unique identifier of the learner |
+| `level` | string | Request body | Yes | The level identifier to filter lessons. Only uppercase format are accepted (example: A1, A2, B1, B2 )|
+| `lesson` | string | Request body | Yes | The lesson name identifier in lowercase with underscores (e.g., the_break_room) |
+| `module` | string | Request body | Yes | The module identifier (e.g., module1, module3, module4) |
+| `progress` | string | Request body | Yes | Progress data to be stored (25,75 OR 100) |
+
+
+#### Request Example
+```bash
+curl -X GET "http://localhost:3000/api/progress"
+```
+
+```body request
+{
+  "userId": "",
+  "level": "A1",
+  "lesson": "the_break_room",
+  "module": "module1",
+  "progress": "25",
+}
+```
+
+#### Response Format
+Success Response (200 OK)
+```bash
+{
+  "Title": "Success",
+  "Message": "Progress updated successfully",
+  "Status": "success"
+}
+```
+
+#### Notes
+- The endpoint performs validation on both learner and lesson existence before updating
+- If the learner exists but the lesson doesn't, a 404 error is returned
+
 ---
 ## Complete Data Structure Mapping
 
 ### 1. **Module 1**
-### Part 1a
+### Part 1a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part1a": {
+      "title": { script, audioBase64 },
       "question1": { imageLink, script, audioBase64 },
       "question2": { imageLink, script, audioBase64 },
       "question3": { imageLink, script, audioBase64 },
@@ -237,11 +327,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 1b
+### Part 1b ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part1b": {
+      "title": { script, audioBase64 },
       "question1": { imageLink, script, audioBase64 },
       "question2": { imageLink, script, audioBase64 },
       "question3": { imageLink, script, audioBase64 },
@@ -256,11 +347,12 @@ Success Response (200 OK)
 ### In Progress ###
 
 ### 3. **Module 3**
-### Part 3a
+### Part 3a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3a": {
+      "title": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
       "question3": { script, audioBase64 },
@@ -272,11 +364,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 3b
+### Part 3b ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3b": {
+      "title": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
       "question3": { script, audioBase64 },
@@ -288,11 +381,12 @@ Success Response (200 OK)
 }
 ```
 
-### Part 3c
+### Part 3c ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part3c": {
+      "title": { script, audioBase64 },
       "vocabulary1": { meaning, script, audioBase64 },
       "vocabulary2": { meaning, script, audioBase64 },
       "vocabulary3": { meaning, script, audioBase64 },
@@ -311,11 +405,12 @@ Success Response (200 OK)
 ```
 
 ### 4. **Module 4**
-### Part 4a
+### Part 4a ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part4a": {
+      "title": { script, audioBase64 },
       "description": { script, audioBase64 },
       "question1": { script, audioBase64 },
       "question2": { script, audioBase64 },
@@ -327,7 +422,7 @@ Success Response (200 OK)
   }
 }
 ```
-### Part 4b ( Using /api/evaluate API in order to evaluate user translation and Using /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate)
+### Part 4b ( Using /api/evaluate API in order to evaluate user translation )
 ```json
 {
     "finnishSentence": "...",
@@ -340,11 +435,26 @@ Success Response (200 OK)
     }
 }
 ```
-### Part 4c
+ ### Part 4b ( Using /api/studying/:level/:lesson/:module/:part in order to fetch Finnish Sentences for users translate )
+ ```json
+{
+  "result": {
+    "part4b": {
+      "title": { script, audioBase64 },
+      "question1": { script, audioBase64 },
+      "question2": { script, audioBase64 },
+      "question3": { script, audioBase64 },
+    }
+  }
+}
+```
+
+### Part 4c ( /api/studying/:level/:lesson/:module/:part )
 ```json
 {
   "result": {
     "part4c": {
+      "title": { script, audioBase64 },
       "question1": { answer, script, audioBase64 },
       "question2": { answer, script, audioBase64 },
       "question3": { answer, script, audioBase64 },
@@ -355,6 +465,18 @@ Success Response (200 OK)
   }
 }
 ```
+
+### 5. **Progress function** ( /api/progress/:userId/:level/:lesson )
+```json
+{
+  "result": {
+    "[lesson_name]": {
+      "[module_name]": "[progress_value]"
+    }
+  }
+}
+```
+
 
 
 
