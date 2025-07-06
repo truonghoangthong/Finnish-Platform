@@ -417,7 +417,8 @@ Success Response (200 OK)
       "question3": { script, audioBase64 },
       "question4": { script, audioBase64 },
       "question5": { script, audioBase64 },
-      "question6": { script, audioBase64 }
+      "question6": { script, audioBase64 },
+      "imagelink": "https://...",
     }
   }
 }
