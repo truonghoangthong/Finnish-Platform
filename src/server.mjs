@@ -87,7 +87,8 @@ app.get('/api/learning/:level', async (req, res) => {
         return {
           lessonName: data.lessonName,
           description: data.description,
-          lessonNumber: data.lessonNumber, 
+          lessonNumber: data.lessonNumber,
+          imageLink: data.imageLink, 
           createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
               timeZone: 'Europe/Helsinki',
               day: '2-digit',
@@ -143,6 +144,7 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
         description: data.description,
         descriptionAudio: audioBase64, // convert description to base64 audio
         level: data.level,
+        imageLink: data.imageLink,
         createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
             timeZone: 'Europe/Helsinki',
             day: '2-digit',
@@ -213,7 +215,7 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
   }
 });
 
-  app.post('/api/progress', async (req, res) => { // update progress of a specific lesson
+app.post('/api/progress', async (req, res) => { // update progress of a specific lesson
     const { userId, level, lesson, module, progress } = req.body;
     if (!userId || !level || !lesson || !module || !progress) {
       return res.status(400).send('userId, level, lesson, module and progress are required');
