@@ -182,7 +182,7 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
       const result = {
         [part]: selectedPart // show part object
       };
-      for (const questionKey of Object.keys(result[part])) { // chỉnh part object phần script qua mp3 bằng AWS Polly
+      for (const questionKey of Object.keys(result[part]).filter(key => key !== 'imageLink')) { // chỉnh part object phần script qua mp3 bằng AWS Polly
         const script = result[part][questionKey].script;
         const command = new SynthesizeSpeechCommand({        
           Text: `<speak><prosody rate="80%">${script}</prosody></speak>`,
