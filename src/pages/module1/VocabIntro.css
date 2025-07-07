@@ -110,6 +110,7 @@
   font-size: 20px;
   font-weight: 600;
   color: #005599;
+  text-transform: capitalize; 
 }
 
 /* Lesson Box */
