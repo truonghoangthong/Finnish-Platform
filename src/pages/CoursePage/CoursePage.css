@@ -139,3 +139,9 @@
   color: #333;
   margin-bottom: 12px;
 }
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}

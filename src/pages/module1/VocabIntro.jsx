@@ -6,8 +6,12 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "./VocabIntro.css";
 
+// ✅ Thêm Loader
+import Loader from "../../components/loader/loader";
+
 const VocabIntro = ({ onTabClick }) => {
   const [lesson, setLesson] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Thêm loading
   const [showScript, setShowScript] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBubbleOpen, setIsBubbleOpen] = useState(false);
@@ -20,6 +24,7 @@ const VocabIntro = ({ onTabClick }) => {
     const loadLesson = async () => {
       const data = await fetchLessonIntro("A1", "the_break_room");
       setLesson(data);
+      setLoading(false); // ✅ Ngừng loading khi xong
     };
     loadLesson();
   }, []);
@@ -73,7 +78,16 @@ const VocabIntro = ({ onTabClick }) => {
     navigate("/course/a1/the_break_room/module1/part1a");
   };
 
-  if (!lesson) return <p className="loading">Loading...</p>;
+  // ✅ Loader thay cho chữ Loading
+  if (loading) {
+    return (
+      <div className="vocab-intro loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!lesson) return null;
 
   return (
     <div className="vocab-intro">
