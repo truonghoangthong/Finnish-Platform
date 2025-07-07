@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchLessonIntro } from "../utils/api";
-import Mascot from "../components/shared/Mascot";
+import { fetchLessonIntro } from "../../utils/api";
+import Mascot from "../../components/mascot/Mascot";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./VocabIntro.css";

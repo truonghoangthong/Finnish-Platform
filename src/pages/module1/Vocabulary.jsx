@@ -1,4 +1,3 @@
-// src/module1/Vocabulary.jsx
 import { useState } from "react";
 import VocabIntro from "./VocabIntro";
 

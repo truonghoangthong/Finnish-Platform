@@ -1,233 +1,123 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import update from 'immutability-helper';
 import './module3.css';
 
-const ItemTypes = {
-  CARD: 'card',
-};
+const ItemTypes = { CARD: 'card' };
 
-const matches3a = [
-  { id: '1a', left: 'Joutko', right: 'kahvia vai teetä' },
-  { id: '2a', left: 'Käytätkö', right: 'maitoa tai sokeria' },
-  { id: '3a', left: 'Laita maito', right: 'jääkaappiin' },
+const pairs3a = [
+  { pairId: '1a', left: 'Joutko', right: 'kahvia vai teetä' },
+  { pairId: '2a', left: 'Käytätkö', right: 'maitoa tai sokeria' },
+  { pairId: '3a', left: 'Laita maito', right: 'jääkaappiin' },
 ];
 
-const matches3b = [
-  { id: '1b', left: 'Laita likaiset kupit', right: 'tiskikoneeseen' },
-  { id: '2b', left: 'Lusikka on', right: 'laatikossa' },
-  { id: '3b', left: 'Tiskiaine on', right: 'loppu. Täytyy ostaa sitä lisää' },
+const pairs3b = [
+  { pairId: '1b', left: 'Laita likaiset kupit', right: 'tiskikoneeseen' },
+  { pairId: '2b', left: 'Lusikka on', right: 'laatikossa' },
+  { pairId: '3b', left: 'Tiskiaine on', right: 'loppu. Täytyy ostaa sitä lisää' },
 ];
 
-const verbs = ['tyhjentää', 'pestä', 'ostaa', 'keittää', 'ottaa', 'laittaa'];
-const variations = [
-  ['tyhjennä', 'tyhjensi', 'on tyhjentänyt'],
-  ['pese', 'pesi', 'on pessyt'],
-  ['osta', 'osti', 'on ostanut'],
-  ['keitä', 'keittoi', 'on keittänyt'],
-  ['ota', 'otti', 'on ottanut'],
-  ['laita', 'laittoi', 'on laittanut'],
-];
-
-const Card = memo(function Card({ id, text, type, findCard, moveCard, isMatched }) {
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDropPair }) => {
   const originalIndex = findCard(id, type).index;
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: ItemTypes.CARD,
-      item: { id, originalIndex, type },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      end: (item, monitor) => {
-        const { id: droppedId, originalIndex, type: itemType } = item;
-        const didDrop = monitor.didDrop();
-        if (!didDrop) {
-          moveCard(droppedId, originalIndex, itemType);
-        }
-      },
-    }),
-    [id, originalIndex, moveCard, type]
-  );
+  const ref = useRef(null);
 
-  const [, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CARD,
-      hover({ id: draggedId, type: draggedType }) {
-        if (draggedId !== id && draggedType === type) {
-          const { index: overIndex } = findCard(id, type);
-          moveCard(draggedId, overIndex, type);
-        }
-      },
-    }),
-    [findCard, moveCard, type]
-  );
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.CARD,
+    item: { id, originalIndex, type, pairId },
+    collect: monitor => ({ isDragging: monitor.isDragging() }),
+    end: (item, monitor) => {
+      if (!monitor.didDrop()) {
+        moveCard(item.id, item.originalIndex, item.type);
+      }
+    },
+  }), [id, originalIndex, moveCard, type, pairId]);
 
-  const opacity = isDragging ? 0.4 : 1;
+  const [, drop] = useDrop(() => ({
+    accept: ItemTypes.CARD,
+    canDrop: draggedItem => draggedItem.type !== type, // chỉ cho drop từ cột khác
+    drop: (draggedItem) => {
+      if (draggedItem.pairId === pairId) {
+        onDropPair(pairId); // báo matched
+      } else {
+        console.log('Sai cặp');
+      }
+    },
+  }), [pairId, type, onDropPair]);
+
+  drag(drop(ref));
+
   return (
-    <div
-      ref={(node) => drag(drop(node))}
-      className={`module3-card ${isMatched ? 'matched' : ''}`}
-      style={{ opacity }}
-    >
+    <div ref={ref} className={`module3-card ${isMatched ? 'matched' : ''}`} style={{ opacity: isDragging ? 0 : 1 }}>
       {text}
     </div>
   );
 });
 
-const Column = memo(function Column({ items, type, findCard, moveCard, isMatched }) {
-  const [, drop] = useDrop(() => ({
-    accept: ItemTypes.CARD,
-    drop: () => ({ type }),
-  }));
-
-  return (
-    <div ref={drop} className="module3-column">
-      {items.map((item) =>
-        !isMatched(item, type) ? (
-          <Card
-            key={`${type}-${item.id}`}
-            id={item.id}
-            text={type === 'left' ? item.left : item.right}
-            type={type}
-            findCard={findCard}
-            moveCard={moveCard}
-            isMatched={isMatched(item, type)}
-          />
-        ) : (
-          <div key={`matched-${type}-${item.id}`} className="module3-card matched">
-            {type === 'left' ? item.left : item.right}
-          </div>
-        )
-      )}
-    </div>
-  );
-});
+const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair }) => (
+  <div className={`module3-column ${type}`}>
+    {items.map(item => (
+      <Card
+        key={item.id}
+        id={item.id}
+        text={item.text}
+        type={type}
+        pairId={item.pairId}
+        findCard={findCard}
+        moveCard={moveCard}
+        isMatched={isMatched(item)}
+        onDropPair={onDropPair}
+      />
+    ))}
+  </div>
+));
 
 const MatchingGame = ({ pairs }) => {
-  const [matchedPairs, setMatchedPairs] = useState([]);
-  const [leftItems, setLeftItems] = useState([...pairs]);
-  const [rightItems, setRightItems] = useState([...pairs]);
+  const [matchedPairs, setMatchedPairs] = useState([]); // array of pairId
+  const [leftItems, setLeftItems] = useState(pairs.map(p => ({ id: 'left-' + p.pairId, text: p.left, pairId: p.pairId })));
+  const [rightItems, setRightItems] = useState(pairs.map(p => ({ id: 'right-' + p.pairId, text: p.right, pairId: p.pairId })));
 
-  const findCard = useCallback(
-    (id, type) => {
-      const items = type === 'left' ? leftItems : rightItems;
-      const card = items.find((c) => c.id === id);
-      return {
-        card,
-        index: items.indexOf(card),
-      };
-    },
-    [leftItems, rightItems]
-  );
+  const findCard = useCallback((id, type) => {
+    const items = type === 'left' ? leftItems : rightItems;
+    const card = items.find(c => c.id === id);
+    return { card, index: items.indexOf(card) };
+  }, [leftItems, rightItems]);
 
-  const moveCard = useCallback(
-    (id, atIndex, type) => {
-      if (type === 'left') {
-        setLeftItems((prevItems) => {
-          const { card, index } = findCard(id, 'left');
-          return update(prevItems, {
-            $splice: [
-              [index, 1],
-              [atIndex, 0, card],
-            ],
-          });
-        });
-      } else {
-        setRightItems((prevItems) => {
-          const { card, index } = findCard(id, 'right');
-          return update(prevItems, {
-            $splice: [
-              [index, 1],
-              [atIndex, 0, card],
-            ],
-          });
-        });
-      }
-    },
-    [findCard]
-  );
+  const moveCard = useCallback((id, atIndex, type) => {
+    const items = type === 'left' ? leftItems : rightItems;
+    const { card, index } = findCard(id, type);
+    if (!card) return;
+    const newItems = [...items];
+    newItems.splice(index, 1);
+    newItems.splice(atIndex, 0, card);
+    if (type === 'left') setLeftItems(newItems);
+    else setRightItems(newItems);
+  }, [findCard, leftItems, rightItems]);
 
-  const isMatched = (item, type) => {
-    return matchedPairs.some((pair) => pair.id === item.id);
-  };
+  const isMatched = (item) => matchedPairs.includes(item.pairId);
 
-  const handleDrop = (draggedItem, dropResult) => {
-    if (!dropResult || draggedItem.type === dropResult.type) return;
-
-    const correctPair = pairs.find(
-      (p) => p.id === draggedItem.id && p.id === dropResult.id
-    );
-    if (correctPair && !matchedPairs.some((p) => p.id === correctPair.id)) {
-      setMatchedPairs([...matchedPairs, correctPair]);
+  const handleMatch = (pairId) => {
+    if (!matchedPairs.includes(pairId)) {
+      setMatchedPairs(prev => [...prev, pairId]);
     }
   };
 
   return (
     <div className="module3-matching-section">
-      <Column
-        items={leftItems}
-        type="left"
-        findCard={findCard}
-        moveCard={moveCard}
-        isMatched={isMatched}
-        onDrop={handleDrop}
-      />
-      <Column
-        items={rightItems}
-        type="right"
-        findCard={findCard}
-        moveCard={moveCard}
-        isMatched={isMatched}
-        onDrop={handleDrop}
-      />
+      <Column items={leftItems} type="left" findCard={findCard} moveCard={moveCard} isMatched={isMatched} onDropPair={handleMatch} />
+      <Column items={rightItems} type="right" findCard={findCard} moveCard={moveCard} isMatched={isMatched} onDropPair={handleMatch} />
     </div>
   );
 };
 
-const VerbsExercise = () => {
-  return (
-    <div className="module3-verbs-section">
-      <div className="module3-verbs">
-        {verbs.map((v) => (
-          <span key={v} className="module3-verb-root">
-            {v}
-          </span>
-        ))}
-      </div>
-      <div className="module3-variations">
-        {variations.map((forms, i) => (
-          <div key={i} className="module3-variation-row">
-            {forms.map((form, j) => (
-              <input
-                key={j}
-                className="module3-input-box"
-                placeholder={`Muoto ${j + 1}`}
-                defaultValue={form}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+const Module3 = () => (
+  <DndProvider backend={HTML5Backend}>
+    <div className="module3-container">
+      <h2>Tehtävä 3a</h2>
+      <MatchingGame pairs={pairs3a} />
+      <h2>Tehtävä 3b</h2>
+      <MatchingGame pairs={pairs3b} />
     </div>
-  );
-};
-
-const Module3 = () => {
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="module3-container">
-        <h2>Tehtävä 3a</h2>
-        <MatchingGame pairs={matches3a} />
-
-        <h2>Tehtävä 3b</h2>
-        <MatchingGame pairs={matches3b} />
-
-        <h2>Tehtävä 3c</h2>
-        <VerbsExercise />
-      </div>
-    </DndProvider>
-  );
-};
+  </DndProvider>
+);
 
 export default Module3;
