@@ -1,36 +1,37 @@
 import './main.css';
+import { useNavigate } from 'react-router-dom';
 
 function Main() {
-    const coursesData = [
-      {
-        id: 1,
-        level: "LEVEL A1",
-        image: "course-a1.png",
-        description: "A1 Level – Start your Finnish journey with fun basics. Speak and understand the basics of Finnish – fast!",
-        buttonText: "Start Now"
-      },
-      {
-        id: 2,
-        level: "LEVEL A2",
-        image: "course-a2.png",
-        description: "A2 Level – Learn to speak confidently in daily life. Build fluency for real-life situations and simple conversations.",
-        buttonText: "Start Now"
-      },
-      {
-        id: 3,
-        level: "LEVEL B1",
-        image: "course-b1.png",
-        description: "B1 Level – Share your ideas, tell stories, connect naturally. Master conversations in daily life, work, and social settings.",
-        buttonText: "Start Now"
-      },
-      {
-        id: 4,
-        level: "LEVEL B2",
-        image: "course-b2.png",
-        description: "B2 Level – Communicate fluently in real conversations. Communicate fluently in most situations — from work meetings to friendships.",
-        buttonText: "Start Now"
-      }
-];
+  const navigate = useNavigate();
+  
+  const coursesData = [
+    {
+      id: 1,
+      level: "LEVEL A1",
+      image: "course-a1.png",
+      description: "A1 Level – Start your Finnish journey with fun basics. Speak and understand the basics of Finnish – fast!",
+      path: "/course/a1"
+    },
+    {
+      id: 2,
+      level: "LEVEL A2",
+      image: "course-a2.png",
+      description: "A2 Level – Learn to speak confidently in daily life. Build fluency for real-life situations and simple conversations.",
+    },
+    {
+      id: 3,
+      level: "LEVEL B1",
+      image: "course-b1.png",
+      description: "B1 Level – Share your ideas, tell stories, connect naturally. Master conversations in daily life, work, and social settings.",
+    },
+    {
+      id: 4,
+      level: "LEVEL B2",
+      image: "course-b2.png",
+      description: "B2 Level – Communicate fluently in real conversations. Communicate fluently in most situations — from work meetings to friendships.",
+    }
+  ];
+
   return (
     <>
       <section id="home" className="home-section">
@@ -75,7 +76,7 @@ function Main() {
               <img src={course.image} alt={course.level} />
               <h3>{course.level}</h3>
               <p>{course.description}</p>
-              <button>{course.buttonText}</button>
+              <button onClick={() => navigate(course.path)}>Start Now</button>
             </div>
           ))}
         </div>
