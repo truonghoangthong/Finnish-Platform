@@ -4,6 +4,7 @@ import AOS from "aos";
 import axios from "axios";
 import "aos/dist/aos.css";
 import "./CoursePage.css";
+import Loader from "../../components/loader/loader";
 
 const userId = "yugioh123";
 
@@ -25,6 +26,7 @@ const CoursePage = () => {
   );
   const [readyToStartSkill, setReadyToStartSkill] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ loading state
 
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -48,7 +50,7 @@ const CoursePage = () => {
           fullTitle: `Lesson ${index + 1} – ${formatTitle(item.lessonName)}`,
           shortTitle: formatTitle(item.lessonName),
           description: item.description,
-          image: item.imageLink, // ✅ Load từ backend thay vì `/a1 (1).jpg`
+          image: item.imageLink,
           skills: {
             vocabulary: { status: 0 },
             listening: { status: 0 },
@@ -57,10 +59,12 @@ const CoursePage = () => {
           },
         }));
         setLessons(lessonsData);
+        setLoading(false); // ✅ done loading
       })
       .catch((err) => {
         console.error("❌ Failed to fetch lessons:", err.message);
         setError("Could not load lessons from backend.");
+        setLoading(false); // ✅ stop loading even on error
       });
   }, []);
 
@@ -138,6 +142,14 @@ const CoursePage = () => {
     setActiveLessonId(id);
   };
 
+  if (loading) {
+    return (
+      <div className="course-container loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="course-container">
@@ -147,12 +159,7 @@ const CoursePage = () => {
     );
   }
 
-  if (!activeLesson)
-    return (
-      <div className="course-container">
-        <p>Loading lessons...</p>
-      </div>
-    );
+  if (!activeLesson) return null;
 
   return (
     <div className="course-container">
