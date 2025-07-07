@@ -10,9 +10,10 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<><Main /><Module3 /></>} />
-        <Route path="/course" element={<CoursePage />} />
+        <Route path="/" element={<Main />} />
+        <Route path="/course/a1" element={<CoursePage />} />
         <Route path="/course/a1/lesson-1/vocabulary" element={<Vocabulary />} />
+        <Route path="/course/a1/lesson-1/writing" element={<Module3 />} />
       </Routes>
     </Router>
   );
