@@ -284,7 +284,7 @@ curl -X GET "http://localhost:3000/api/progress"
 
 ```body request
 {
-  "userId": "",
+  "userId": "yugioh123",
   "level": "A1",
   "lesson": "the_break_room",
   "module": "module1",
