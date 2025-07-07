@@ -1,6 +1,8 @@
 .module3-container {
   padding: 20px;
   font-family: sans-serif;
+  background-color: #fff;
+  color: #1A1A1A;
 }
 
 .module3-matching-section {
@@ -8,6 +10,7 @@
   justify-content: space-between;
   gap: 20px;
   margin-bottom: 40px;
+  padding: 20px;
 }
 
 .module3-column {
@@ -72,4 +75,22 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   width: 150px;
+}
+
+.module3-header-row {
+  display: flex;
+  align-items: baseline; 
+  gap: 12px;
+}
+
+.module3-header-row h2 {
+  margin: 0;
+}
+
+.module3-header-row p {
+  margin: 0;
+}
+
+.module3-header-row .cover {
+  align-self: center; /* Đảm bảo căn theo baseline */
 }

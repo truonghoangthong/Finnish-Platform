@@ -1,6 +1,7 @@
 import { useState, useCallback, memo, useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import AudioPlayer from '../../components/audioPlayer/audioPlayer';
 import './module3.css';
 
 const ItemTypes = { CARD: 'card' };
@@ -112,9 +113,17 @@ const MatchingGame = ({ pairs }) => {
 const Module3 = () => (
   <DndProvider backend={HTML5Backend}>
     <div className="module3-container">
-      <h2>Tehtävä 3a</h2>
+      <div className="module3-header-row">
+        <AudioPlayer src="/audio/sample.mp3" />
+        <h2>Tehtävä 3a</h2>
+        <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+      </div>
       <MatchingGame pairs={pairs3a} />
-      <h2>Tehtävä 3b</h2>
+      <div className="module3-header-row">
+        <AudioPlayer src="/audio/sample.mp3" />
+        <h2>Tehtävä 3b</h2>
+        <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+      </div>
       <MatchingGame pairs={pairs3b} />
     </div>
   </DndProvider>
