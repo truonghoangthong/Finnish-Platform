@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
@@ -67,7 +67,7 @@ const Card = memo(function Card({ id, text, type, findCard, moveCard, isMatched 
   return (
     <div
       ref={(node) => drag(drop(node))}
-      className={`card ${isMatched ? 'matched' : ''}`}
+      className={`module3-card ${isMatched ? 'matched' : ''}`}
       style={{ opacity }}
     >
       {text}
@@ -82,7 +82,7 @@ const Column = memo(function Column({ items, type, findCard, moveCard, isMatched
   }));
 
   return (
-    <div ref={drop} className="column">
+    <div ref={drop} className="module3-column">
       {items.map((item) =>
         !isMatched(item, type) ? (
           <Card
@@ -95,7 +95,7 @@ const Column = memo(function Column({ items, type, findCard, moveCard, isMatched
             isMatched={isMatched(item, type)}
           />
         ) : (
-          <div key={`matched-${type}-${item.id}`} className="card matched">
+          <div key={`matched-${type}-${item.id}`} className="module3-card matched">
             {type === 'left' ? item.left : item.right}
           </div>
         )
@@ -164,7 +164,7 @@ const MatchingGame = ({ pairs }) => {
   };
 
   return (
-    <div className="matching-section">
+    <div className="module3-matching-section">
       <Column
         items={leftItems}
         type="left"
@@ -187,21 +187,21 @@ const MatchingGame = ({ pairs }) => {
 
 const VerbsExercise = () => {
   return (
-    <div className="verbs-section">
-      <div className="verbs">
+    <div className="module3-verbs-section">
+      <div className="module3-verbs">
         {verbs.map((v) => (
-          <span key={v} className="verb-root">
+          <span key={v} className="module3-verb-root">
             {v}
           </span>
         ))}
       </div>
-      <div>
+      <div className="module3-variations">
         {variations.map((forms, i) => (
-          <div key={i} className="variation-row">
+          <div key={i} className="module3-variation-row">
             {forms.map((form, j) => (
               <input
                 key={j}
-                className="input-box"
+                className="module3-input-box"
                 placeholder={`Muoto ${j + 1}`}
                 defaultValue={form}
               />
