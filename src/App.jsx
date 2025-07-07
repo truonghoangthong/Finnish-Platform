@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/header/header";
 import Main from "./pages/main/main";
 import CoursePage from "./pages/CoursePage/CoursePage";
-import Vocabulary from "./pages/module1/Vocabulary"; // ✅ Phải viết hoa 'V'
+import Vocabulary from "./pages/module1/Vocabulary"; 
 
 import Module3 from "./pages/module3/module3";
 
