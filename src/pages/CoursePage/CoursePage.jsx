@@ -23,6 +23,7 @@ const CoursePage = () => {
   const [activeSkill, setActiveSkill] = useState(
     localStorage.getItem("activeSkillTab") || "vocabulary"
   );
+  const [readyToStartSkill, setReadyToStartSkill] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -41,13 +42,13 @@ const CoursePage = () => {
     axios
       .get("http://localhost:3000/api/learning/A1")
       .then((res) => {
-        const lessonsData = res.data.result.map((item) => ({
-          id: parseInt(item.lessonNumber),
+        const lessonsData = res.data.result.map((item, index) => ({
+          id: index + 1,
           lessonName: item.lessonName,
-          fullTitle: `Lesson ${item.lessonNumber} – ${formatTitle(item.lessonName)}`,
+          fullTitle: `Lesson ${index + 1} – ${formatTitle(item.lessonName)}`,
           shortTitle: formatTitle(item.lessonName),
           description: item.description,
-          image: `/a1 (${item.lessonNumber}).jpg`,
+          image: item.imageLink, // ✅ Load từ backend thay vì `/a1 (1).jpg`
           skills: {
             vocabulary: { status: 0 },
             listening: { status: 0 },
@@ -65,6 +66,16 @@ const CoursePage = () => {
 
   useEffect(() => {
     if (!lessons.length) return;
+
+    const isProgressFetched = lessons.every(
+      (lesson) =>
+        lesson.skills.vocabulary.status !== 0 ||
+        lesson.skills.listening.status !== 0 ||
+        lesson.skills.writing.status !== 0 ||
+        lesson.skills.reading.status !== 0
+    );
+
+    if (isProgressFetched) return;
 
     const fetchProgress = async () => {
       try {
@@ -92,7 +103,7 @@ const CoursePage = () => {
     };
 
     fetchProgress();
-  }, [lessons.length]);
+  }, [lessons]);
 
   const parseProgress = (val) => {
     if (!val) return 0;
@@ -106,13 +117,21 @@ const CoursePage = () => {
       .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
 
   const activeLesson = lessons.find((l) => l.id === activeLessonId);
-
   const progressPercent = activeLesson?.skills[activeSkill]?.status || 0;
 
   const handleSkillClick = (skill) => {
-    setActiveSkill(skill);
-    localStorage.setItem("activeSkillTab", skill);
-    navigate(`/course/a1/lesson-${activeLesson.id}/${skill}`);
+    if (readyToStartSkill === skill && activeSkill === skill) {
+      if (skill === "vocabulary" && activeLesson.id === 1) {
+        navigate("/course/a1/lesson-1/vocabulary");
+      } else {
+        navigate(`/course/a1/lesson-${activeLesson.id}/${skill}`);
+      }
+      setReadyToStartSkill(null);
+    } else {
+      setActiveSkill(skill);
+      setReadyToStartSkill(skill);
+      localStorage.setItem("activeSkillTab", skill);
+    }
   };
 
   const handleLessonClick = (id) => {
@@ -177,15 +196,21 @@ const CoursePage = () => {
           <p className="progress-text">{progressPercent}% completed</p>
 
           <div className="skill-buttons">
-            {["vocabulary", "listening", "writing", "reading"].map((skill) => (
-              <button
-                key={skill}
-                className={`skill-tab ${activeSkill === skill ? "active" : ""}`}
-                onClick={() => handleSkillClick(skill)}
-              >
-                {skillIcons[skill]} {skill.charAt(0).toUpperCase() + skill.slice(1)}
-              </button>
-            ))}
+            {["vocabulary", "listening", "writing", "reading"].map((skill) => {
+              const isActive = activeSkill === skill;
+              const isReady = readyToStartSkill === skill;
+
+              return (
+                <button
+                  key={skill}
+                  className={`skill-tab ${isActive ? "active" : ""}`}
+                  onClick={() => handleSkillClick(skill)}
+                >
+                  {skillIcons[skill]}{" "}
+                  {isActive && isReady ? "Start Now" : skill.charAt(0).toUpperCase() + skill.slice(1)}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -194,4 +219,3 @@ const CoursePage = () => {
 };
 
 export default CoursePage;
-  
