@@ -200,6 +200,40 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
         const audioBuffer = Buffer.concat(chunks);
         const audioBase64 = audioBuffer.toString('base64');            // sau đó mp3 sang string base64
         result[part][questionKey].audioBase64 = audioBase64;
+        if (result[part][questionKey].correctScript && result[part][questionKey].incorrectScript) { 
+          const correctScript = result[part][questionKey].correctScript;
+          const incorrectScript = result[part][questionKey].incorrectScript;
+          const correctCommand = new SynthesizeSpeechCommand({        
+            Text: `<speak><prosody rate="80%">${correctScript}</prosody></speak>`,
+            OutputFormat: 'mp3',
+            VoiceId: 'Suvi', 
+            LanguageCode: 'fi-FI',
+            Engine: 'neural',
+            TextType: 'ssml'
+          });
+          const incorrectCommand = new SynthesizeSpeechCommand({        
+            Text: `<speak><prosody rate="80%">${incorrectScript}</prosody></speak>`,
+            OutputFormat: 'mp3',
+            VoiceId: 'Suvi', 
+            LanguageCode: 'fi-FI',
+            Engine: 'neural',
+            TextType: 'ssml'
+          });
+          const { AudioStream: correctAudioStream } = await pollyClient.send(correctCommand); 
+          const { AudioStream: incorrectAudioStream } = await pollyClient.send(incorrectCommand); 
+          const correctChunks = [];
+          for await (const chunk of correctAudioStream) {
+            correctChunks.push(chunk);
+          }
+          const incorrectChunks = [];
+          for await (const chunk of incorrectAudioStream) {
+            incorrectChunks.push(chunk);
+          }
+          const correctAudioBuffer = Buffer.concat(correctChunks);
+          const incorrectAudioBuffer = Buffer.concat(incorrectChunks);
+          result[part][questionKey].correctAudioBase64 = correctAudioBuffer.toString('base64');
+          result[part][questionKey].incorrectAudioBase64 = incorrectAudioBuffer.toString('base64');
+        }
       }
       return res.status(200).json({result});
     } else {
