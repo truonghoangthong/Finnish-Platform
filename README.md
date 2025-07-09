@@ -377,6 +377,8 @@ Success Response (200 OK)
   }
 }
 ```
+### Notes
+- All values for x, y, width, and height in parts 2a and 2b are expressed as percentages (%). This ensures that all items are captured accurately, regardless of the image's pixel dimensions.
 ### 3. **Module 3**
 ### Part 3a ( /api/studying/:level/:lesson/:module/:part )
 ```json
