@@ -316,11 +316,11 @@ Success Response (200 OK)
   "result": {
     "part1a": {
       "title": { script, audioBase64 },
-      "question1": { imageLink, script, audioBase64 },
-      "question2": { imageLink, script, audioBase64 },
-      "question3": { imageLink, script, audioBase64 },
-      "question5": { imageLink, script, audioBase64 },
-      "question6": { imageLink, script, audioBase64 },
+      "question1": { imageLink, script, audioBase64, ipa },
+      "question2": { imageLink, script, audioBase64, ipa },
+      "question3": { imageLink, script, audioBase64, ipa },
+      "question5": { imageLink, script, audioBase64, ipa },
+      "question6": { imageLink, script, audioBase64, ipa },
       ........
     }
   }
@@ -333,19 +333,50 @@ Success Response (200 OK)
   "result": {
     "part1b": {
       "title": { script, audioBase64 },
-      "question1": { imageLink, script, audioBase64 },
-      "question2": { imageLink, script, audioBase64 },
-      "question3": { imageLink, script, audioBase64 },
-      "question5": { imageLink, script, audioBase64 },
-      "question6": { imageLink, script, audioBase64 },
+      "question1": { imageLink, script, audioBase64, ipa },
+      "question2": { imageLink, script, audioBase64, ipa },
+      "question3": { imageLink, script, audioBase64, ipa },
+      "question5": { imageLink, script, audioBase64, ipa },
+      "question6": { imageLink, script, audioBase64, ipa },
       ........
     }
   }
 }
 ```
 ### 2. **Module 2**
-### In Progress ###
+### Part 2a ( /api/studying/:level/:lesson/:module/:part )
+```json
+{
+  "result": {
+    "part2a": {
+      "title": { script, audioBase64 },
+      "question1": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question2": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question3": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question5": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question6": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      ........
+    }
+  }
+}
+```
 
+### Part 2b ( /api/studying/:level/:lesson/:module/:part )
+```json
+{
+  "result": {
+    "part2b": {
+      "title": { script, audioBase64 },
+      "question1": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question2": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question3": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question5": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      "question6": { script, audioBase64, correctScript, incorrectScript, x, y, width, height },
+      ........
+    }
+  }
+}
+```
 ### 3. **Module 3**
 ### Part 3a ( /api/studying/:level/:lesson/:module/:part )
 ```json
