@@ -3,6 +3,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import AudioPlayer from '../../components/audioPlayer/audioPlayer';
 import './module3.css';
+import '../../components/loader/loader.css';
 
 const ItemTypes = { CARD: 'card' };
 
@@ -26,7 +27,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
     canDrop: draggedItem => draggedItem.type !== type,
     drop: (draggedItem) => {
       if (draggedItem.pairId === pairId) {
-        onDropPair(pairId);
+        onDropPair(pairId, draggedItem.id);
       }
     },
   }), [pairId, type, onDropPair]);
@@ -43,7 +44,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
   return (
     <div 
       ref={ref} 
-      className={`module3-card ${isMatched ? 'matched' : ''}`} 
+      className={`module3-card ${type} ${isMatched ? 'matched' : ''}`} 
       style={{ opacity: isDragging ? 0 : 1 }}
       onClick={playAudio}
     >
@@ -75,6 +76,7 @@ const MatchingGame = ({ pairs }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (pairs.length > 0) {
@@ -84,7 +86,7 @@ const MatchingGame = ({ pairs }) => {
         pairId: p.pairId,
         audioBase64: p.audioBase64
       }));
-      
+
       const rightItemsData = pairs.map(p => ({
         id: 'right-' + p.pairId,
         text: p.right,
@@ -94,6 +96,7 @@ const MatchingGame = ({ pairs }) => {
 
       setLeftItems(leftItemsData.sort(() => Math.random() - 0.5));
       setRightItems(rightItemsData.sort(() => Math.random() - 0.5));
+      setLoading(false);
     }
   }, [pairs]);
 
@@ -116,11 +119,44 @@ const MatchingGame = ({ pairs }) => {
 
   const isMatched = (item) => matchedPairs.includes(item.pairId);
 
-  const handleMatch = (pairId) => {
+  const handleMatch = (pairId, draggedItemId) => {
     if (!matchedPairs.includes(pairId)) {
       setMatchedPairs(prev => [...prev, pairId]);
+
+      const leftIndex = leftItems.findIndex(item => item.pairId === pairId);
+      const rightIndex = rightItems.findIndex(item => item.pairId === pairId);
+
+      if (leftIndex !== -1 && rightIndex !== -1) {
+        const newLeftItems = [...leftItems];
+        const newRightItems = [...rightItems];
+
+        const leftCard = newLeftItems[leftIndex];
+        const rightCard = newRightItems[rightIndex];
+
+        const isDraggedLeft = leftCard.id === draggedItemId;
+        const targetIndex = isDraggedLeft ? rightIndex : leftIndex;
+
+        if (isDraggedLeft) {
+          newLeftItems.splice(leftIndex, 1);
+          newLeftItems.splice(targetIndex, 0, leftCard);
+        } else {
+          newRightItems.splice(rightIndex, 1);
+          newRightItems.splice(targetIndex, 0, rightCard);
+        }
+
+        setLeftItems(newLeftItems);
+        setRightItems(newRightItems);
+      }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="module3-matching-section">
@@ -155,26 +191,20 @@ const Module3 = () => {
       try {
         const fetchPartData = async (part) => {
           const response = await fetch(`http://localhost:3000/api/studying/A1/the_break_room/module3/${part}`);
-          
-          const text = await response.text();
-          if (text.startsWith('<!DOCTYPE html') || text.startsWith('<!doctype html')) {
-            throw new Error('Server returned HTML instead of JSON');
-          }
-          
-          const data = JSON.parse(text);
-          
+          const data = await response.json();
+
           if (!data || !data.result) {
             throw new Error('Invalid API response format');
           }
-          
+
           const partData = data.result[part];
-          
+
           return Object.entries(partData)
             .filter(([key]) => key.startsWith('question'))
-            .map(([key, question], index) => {
+            .map(([key, question]) => {
               const [left, right] = question.script.split('/').map(s => s.trim());
               return {
-                pairId: key, // Sử dụng question1, question2... làm pairId
+                pairId: key,
                 left,
                 right,
                 audioBase64: question.audioBase64
@@ -192,15 +222,12 @@ const Module3 = () => {
       } catch (err) {
         setError(`Failed to load data: ${err.message}`);
         console.error('API Error:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (loading) return <div className="module3-loading">Loading exercise data...</div>;
   if (error) return <div className="module3-error">{error}</div>;
 
   return (
@@ -214,9 +241,9 @@ const Module3 = () => {
         {pairs3a.length > 0 ? (
           <MatchingGame pairs={pairs3a} />
         ) : (
-          <p>No matching pairs available for this exercise.</p>
+          !error && <div className="loader-container"><div className="loader"></div></div>
         )}
-        
+
         <div className="module3-header-row">
           <AudioPlayer src="/audio/sample.mp3" />
           <h2>Tehtävä 3b</h2>
@@ -225,7 +252,7 @@ const Module3 = () => {
         {pairs3b.length > 0 ? (
           <MatchingGame pairs={pairs3b} />
         ) : (
-          <p>No matching pairs available for this exercise.</p>
+          !error && <div className="loader-container"><div className="loader"></div></div>
         )}
       </div>
     </DndProvider>
