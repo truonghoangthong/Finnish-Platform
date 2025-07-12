@@ -78,21 +78,22 @@ const MatchingGame = ({ pairs }) => {
 
   useEffect(() => {
     if (pairs.length > 0) {
-      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
-      
-      setLeftItems(shuffledPairs.map(p => ({
+      const leftItemsData = pairs.map(p => ({
         id: 'left-' + p.pairId,
         text: p.left,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      })));
+      }));
       
-      setRightItems(shuffledPairs.map(p => ({
+      const rightItemsData = pairs.map(p => ({
         id: 'right-' + p.pairId,
         text: p.right,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      })).sort(() => Math.random() - 0.5));
+      }));
+
+      setLeftItems(leftItemsData.sort(() => Math.random() - 0.5));
+      setRightItems(rightItemsData.sort(() => Math.random() - 0.5));
     }
   }, [pairs]);
 
@@ -166,15 +167,14 @@ const Module3 = () => {
             throw new Error('Invalid API response format');
           }
           
-          const partKey = Object.keys(data.result)[0];
-          const partData = data.result[partKey];
+          const partData = data.result[part];
           
           return Object.entries(partData)
             .filter(([key]) => key.startsWith('question'))
-            .map(([_, question], index) => {
+            .map(([key, question], index) => {
               const [left, right] = question.script.split('/').map(s => s.trim());
               return {
-                pairId: `${index + 1}`,
+                pairId: key, // Sử dụng question1, question2... làm pairId
                 left,
                 right,
                 audioBase64: question.audioBase64
