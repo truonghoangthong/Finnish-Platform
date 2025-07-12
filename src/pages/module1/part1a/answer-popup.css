@@ -1,0 +1,227 @@
+/* =================== POPUP =================== */
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap'); */
+
+.popup-ipa {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1.1rem;
+  font-style: normal;
+  letter-spacing: 0.3px;
+  color: #333;
+}
+
+.answer-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-card {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+}
+
+.popup-card.correct {
+  border-top: 6px solid #22C55E;
+}
+
+.popup-card.wrong {
+  border-top: 6px solid #EF4444;
+  animation: shake 0.4s ease-in-out;
+}
+
+.popup-icon {
+  font-size: 3.2rem;
+  margin-bottom: 0.6rem;
+  display: block;
+  animation: popIn 0.3s ease-out;
+}
+
+.popup-celebrate {
+  font-size: 1.8rem;
+  margin-left: 0.4rem;
+}
+
+.popup-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin: 0.8rem auto;
+  border-radius: 8px;
+}
+
+.popup-word {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #111;
+}
+
+.popup-ipa {
+  font-family: 'Source Serif 4', 'Noto Sans', serif;
+  font-size: 1.2rem;
+  font-style: normal;
+  font-weight: 500;
+  color: #444;
+  margin: 0.8rem auto 1.4rem;
+  letter-spacing: 0.4px;
+  line-height: 1.5;
+  text-align: center;
+  position: relative;
+}
+
+/* Tự thêm dấu gạch chéo / trước và sau */
+.popup-ipa::before,
+.popup-ipa::after {
+
+  color: #888;
+  margin: 0 2px;
+  font-weight: 400;
+}
+
+
+.popup-message {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.popup-message.success {
+  color: #22C55E;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.popup-message.fail {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.popup-button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #00C2E5;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.popup-button:hover {
+  background: #08afd0;
+}
+
+/* =================== TABS =================== */
+
+.question-tabs {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin: 0 4px 8px;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  background-color: #e0f7fa;
+  border-bottom: 3px solid #00C2E5;
+  font-weight: 700;
+}
+
+.tab.correct {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.tab.wrong {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.tab:hover {
+  filter: brightness(1.05);
+}
+
+/* =================== RESET PRACTICE =================== */
+
+.practice-again-wrapper {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.practice-again-wrapper .popup-button {
+  font-size: 1rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  background-color: #00C2E5;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.practice-again-wrapper .popup-button:hover {
+  background-color: #08afd0;
+}
+
+/* =================== ANIMATIONS =================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
