@@ -26,7 +26,7 @@ const CoursePage = () => {
   );
   const [readyToStartSkill, setReadyToStartSkill] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -59,12 +59,12 @@ const CoursePage = () => {
           },
         }));
         setLessons(lessonsData);
-        setLoading(false); // ✅ done loading
+        setLoading(false);
       })
       .catch((err) => {
         console.error("❌ Failed to fetch lessons:", err.message);
         setError("Could not load lessons from backend.");
-        setLoading(false); // ✅ stop loading even on error
+        setLoading(false);
       });
   }, []);
 
@@ -125,11 +125,17 @@ const CoursePage = () => {
 
   const handleSkillClick = (skill) => {
     if (readyToStartSkill === skill && activeSkill === skill) {
+      let path = "";
+
       if (skill === "vocabulary" && activeLesson.id === 1) {
-        navigate("/course/a1/lesson-1/vocabulary");
+        path = "/course/a1/lesson-1/vocabulary";
+      } else if (skill === "writing" && activeLesson.id === 1) {
+        path = "/course/a1/lesson-1/writing";
       } else {
-        navigate(`/course/a1/lesson-${activeLesson.id}/${skill}`);
+        path = `/course/a1/lesson-${activeLesson.id}/${skill}`;
       }
+
+      navigate(path);
       setReadyToStartSkill(null);
     } else {
       setActiveSkill(skill);
