@@ -7,30 +7,31 @@ import '../../components/loader/loader.css';
 
 const ItemTypes = { CARD: 'card' };
 
-const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDropPair, audioBase64 }) => {
-  const originalIndex = findCard(id, type).index;
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMerged, onDropPair, audioBase64 }) => {
+  const originalIndex = findCard(id, type)?.index || 0;
   const ref = useRef(null);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.CARD,
     item: { id, originalIndex, type, pairId },
     collect: monitor => ({ isDragging: monitor.isDragging() }),
+    canDrag: () => !isMatched && !isMerged,
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
         moveCard(item.id, item.originalIndex, item.type);
       }
     },
-  }), [id, originalIndex, moveCard, type, pairId]);
+  }), [id, originalIndex, moveCard, type, pairId, isMatched, isMerged]);
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    canDrop: draggedItem => draggedItem.type !== type,
+    canDrop: draggedItem => draggedItem.type !== type && !isMatched && !isMerged,
     drop: (draggedItem) => {
       if (draggedItem.pairId === pairId) {
         onDropPair(pairId, draggedItem.id);
       }
     },
-  }), [pairId, type, onDropPair]);
+  }), [pairId, type, onDropPair, isMatched, isMerged]);
 
   drag(drop(ref));
 
@@ -40,6 +41,16 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
       audio.play();
     }
   };
+
+  if (isMerged) {
+    const [leftText, rightText] = text.split(' / ');
+    return (
+      <div className="module3-merged-card">
+        <span className="left-part">{leftText}</span>
+        <span className="right-part">{rightText}</span>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -53,7 +64,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
   );
 });
 
-const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair }) => (
+const Column = memo(({ items, type, findCard, moveCard, isMatched, isMerged, onDropPair }) => (
   <div className={`module3-column ${type}`}>
     {items.map(item => (
       <Card
@@ -65,6 +76,7 @@ const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair })
         findCard={findCard}
         moveCard={moveCard}
         isMatched={isMatched(item)}
+        isMerged={isMerged(item)}
         onDropPair={onDropPair}
         audioBase64={item.audioBase64}
       />
@@ -74,6 +86,7 @@ const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair })
 
 const MatchingGame = ({ pairs }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
+  const [mergedCards, setMergedCards] = useState([]);
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,38 +130,30 @@ const MatchingGame = ({ pairs }) => {
     else setRightItems(newItems);
   }, [findCard, leftItems, rightItems]);
 
-  const isMatched = (item) => matchedPairs.includes(item.pairId);
+  const isMatched = useCallback((item) => matchedPairs.includes(item.pairId), [matchedPairs]);
+  const isMerged = useCallback((item) => mergedCards.includes(item.pairId), [mergedCards]);
 
-  const handleMatch = (pairId, draggedItemId) => {
+  const handleMatch = useCallback((pairId, draggedItemId) => {
     if (!matchedPairs.includes(pairId)) {
       setMatchedPairs(prev => [...prev, pairId]);
+      setMergedCards(prev => [...prev, pairId]);
 
-      const leftIndex = leftItems.findIndex(item => item.pairId === pairId);
-      const rightIndex = rightItems.findIndex(item => item.pairId === pairId);
-
-      if (leftIndex !== -1 && rightIndex !== -1) {
-        const newLeftItems = [...leftItems];
-        const newRightItems = [...rightItems];
-
-        const leftCard = newLeftItems[leftIndex];
-        const rightCard = newRightItems[rightIndex];
-
-        const isDraggedLeft = leftCard.id === draggedItemId;
-        const targetIndex = isDraggedLeft ? rightIndex : leftIndex;
-
-        if (isDraggedLeft) {
-          newLeftItems.splice(leftIndex, 1);
-          newLeftItems.splice(targetIndex, 0, leftCard);
-        } else {
-          newRightItems.splice(rightIndex, 1);
-          newRightItems.splice(targetIndex, 0, rightCard);
-        }
-
-        setLeftItems(newLeftItems);
-        setRightItems(newRightItems);
-      }
+      setLeftItems(prev => prev.filter(item => item.pairId !== pairId));
+      setRightItems(prev => prev.filter(item => item.pairId !== pairId));
     }
-  };
+  }, [matchedPairs]);
+
+  const getMergedCardsData = useCallback(() => {
+    return mergedCards.map(pairId => {
+      const pair = pairs.find(p => p.pairId === pairId);
+      return {
+        id: `merged-${pairId}`,
+        text: `${pair.left} / ${pair.right}`,
+        pairId,
+        audioBase64: pair.audioBase64
+      };
+    });
+  }, [mergedCards, pairs]);
 
   if (loading) {
     return (
@@ -160,22 +165,43 @@ const MatchingGame = ({ pairs }) => {
 
   return (
     <div className="module3-matching-section">
-      <Column 
-        items={leftItems} 
-        type="left" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        isMatched={isMatched} 
-        onDropPair={handleMatch} 
-      />
-      <Column 
-        items={rightItems} 
-        type="right" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        isMatched={isMatched} 
-        onDropPair={handleMatch} 
-      />
+      <div style={{ width: '45%' }}>
+        <Column 
+          items={leftItems} 
+          type="left" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          isMatched={isMatched} 
+          isMerged={isMerged}
+          onDropPair={handleMatch} 
+        />
+        {getMergedCardsData().map(card => (
+          <Card
+            key={card.id}
+            id={card.id}
+            text={card.text}
+            type="merged"
+            pairId={card.pairId}
+            isMatched={true}
+            isMerged={true}
+            audioBase64={card.audioBase64}
+            findCard={findCard}
+            moveCard={moveCard}
+            onDropPair={handleMatch}
+          />
+        ))}
+      </div>
+      <div style={{ width: '45%' }}>
+        <Column 
+          items={rightItems} 
+          type="right" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          isMatched={isMatched} 
+          isMerged={isMerged}
+          onDropPair={handleMatch} 
+        />
+      </div>
     </div>
   );
 };
@@ -219,6 +245,7 @@ const Module3 = () => {
 
         setPairs3a(data3a);
         setPairs3b(data3b);
+        setLoading(false);
       } catch (err) {
         setError(`Failed to load data: ${err.message}`);
         console.error('API Error:', err);
