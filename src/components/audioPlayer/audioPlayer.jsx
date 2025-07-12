@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import './audioPlayer.css';
 
-const AudioPlayer = ({ src }) => {
+const AudioPlayer = ({ src, size = 'small' }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -19,8 +19,8 @@ const AudioPlayer = ({ src }) => {
   };
 
   return (
-    <div className="cover" onClick={togglePlay}>
-      <div className="icon">
+    <div className={`cover ${size}`} onClick={togglePlay}>
+      <div className={`icon ${size}`}>
         <div className="speaker">
           <div className={`wave wave1 ${isPlaying ? '' : 'paused'}`}></div>
           <div className={`wave wave2 ${isPlaying ? '' : 'paused'}`}></div>
