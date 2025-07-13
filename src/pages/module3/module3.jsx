@@ -43,11 +43,24 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMe
   };
 
   if (isMerged) {
-    const [leftText, rightText] = text.split(' / ');
+    const pairCard = type === 'left' ? 
+      { id: 'left-' + pairId, text } : 
+      { id: 'right-' + pairId, text };
+    
     return (
-      <div className="module3-merged-card">
-        <span className="left-part">{leftText}</span>
-        <span className="right-part">{rightText}</span>
+      <div className="module3-merged-pair">
+        <div 
+          className="module3-card left matched"
+          onClick={playAudio}
+        >
+          {type === 'left' ? text : ''}
+        </div>
+        <div 
+          className="module3-card right matched"
+          onClick={playAudio}
+        >
+          {type === 'right' ? text : ''}
+        </div>
       </div>
     );
   }
@@ -137,23 +150,8 @@ const MatchingGame = ({ pairs }) => {
     if (!matchedPairs.includes(pairId)) {
       setMatchedPairs(prev => [...prev, pairId]);
       setMergedCards(prev => [...prev, pairId]);
-
-      setLeftItems(prev => prev.filter(item => item.pairId !== pairId));
-      setRightItems(prev => prev.filter(item => item.pairId !== pairId));
     }
   }, [matchedPairs]);
-
-  const getMergedCardsData = useCallback(() => {
-    return mergedCards.map(pairId => {
-      const pair = pairs.find(p => p.pairId === pairId);
-      return {
-        id: `merged-${pairId}`,
-        text: `${pair.left} / ${pair.right}`,
-        pairId,
-        audioBase64: pair.audioBase64
-      };
-    });
-  }, [mergedCards, pairs]);
 
   if (loading) {
     return (
@@ -165,43 +163,24 @@ const MatchingGame = ({ pairs }) => {
 
   return (
     <div className="module3-matching-section">
-      <div style={{ width: '45%' }}>
-        <Column 
-          items={leftItems} 
-          type="left" 
-          findCard={findCard} 
-          moveCard={moveCard} 
-          isMatched={isMatched} 
-          isMerged={isMerged}
-          onDropPair={handleMatch} 
-        />
-        {getMergedCardsData().map(card => (
-          <Card
-            key={card.id}
-            id={card.id}
-            text={card.text}
-            type="merged"
-            pairId={card.pairId}
-            isMatched={true}
-            isMerged={true}
-            audioBase64={card.audioBase64}
-            findCard={findCard}
-            moveCard={moveCard}
-            onDropPair={handleMatch}
-          />
-        ))}
-      </div>
-      <div style={{ width: '45%' }}>
-        <Column 
-          items={rightItems} 
-          type="right" 
-          findCard={findCard} 
-          moveCard={moveCard} 
-          isMatched={isMatched} 
-          isMerged={isMerged}
-          onDropPair={handleMatch} 
-        />
-      </div>
+      <Column 
+        items={leftItems.filter(item => !isMerged(item))} 
+        type="left" 
+        findCard={findCard} 
+        moveCard={moveCard} 
+        isMatched={isMatched} 
+        isMerged={isMerged}
+        onDropPair={handleMatch} 
+      />
+      <Column 
+        items={rightItems.filter(item => !isMerged(item))} 
+        type="right" 
+        findCard={findCard} 
+        moveCard={moveCard} 
+        isMatched={isMatched} 
+        isMerged={isMerged}
+        onDropPair={handleMatch} 
+      />
     </div>
   );
 };
