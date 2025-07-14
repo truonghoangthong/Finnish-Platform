@@ -107,7 +107,7 @@ const VocabPart1A = ({ data }) => {
     if (showPopup && isCorrect === false) {
       const timer = setTimeout(() => {
         handleNext();
-      }, 300);
+      }, 1200);
       return () => clearTimeout(timer);
     }
   }, [showPopup, isCorrect]);
@@ -148,7 +148,7 @@ const VocabPart1A = ({ data }) => {
       setCurrentIndex(0);
       setQuestionChangeKey((prev) => prev + 1);
       setIsLoading(false);
-    }, 600);
+    }, 300);
   };
 
   useEffect(() => {
