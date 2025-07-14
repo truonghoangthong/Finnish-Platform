@@ -1,6 +1,6 @@
-// ✅ PopupScore.jsx – phiên bản đơn giản chỉ hiển thị điểm và 1 nút 'Näytä vastaukset'
-import React from 'react';
+import React, { useEffect } from 'react';
 import './popup-score.css';
+import confetti from 'canvas-confetti';
 
 const PopupScore = ({ score, total, onAnswersReviewed }) => {
   const getEmoji = () => {
@@ -10,14 +10,33 @@ const PopupScore = ({ score, total, onAnswersReviewed }) => {
     return '💪';
   };
 
+  useEffect(() => {
+    if (score >= total * 0.7) {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
+
+      const sound = new Audio('/sounds/celebration.mp3');
+      sound.play();
+    }
+  }, []);
+
   return (
     <div className="popup-score-overlay">
       <div className="popup-score-box">
         <h2>{getEmoji()} Pisteesi: {score} / {total}</h2>
-        <p>{score === total ? 'Täydellistä työtä!' : 'Katso oikeat vastaukset ja opi virheistäsi.'}</p>
+        <p>
+          {score === total
+            ? 'Täydellistä työtä!'
+            : 'Katso oikeat vastaukset ja opi virheistäsi.'}
+        </p>
 
         <div className="popup-score-actions">
-          <button className="next-btn" onClick={onAnswersReviewed}>Näytä vastaukset</button>
+          <button className="next-btn" onClick={onAnswersReviewed}>
+            Näytä vastaukset
+          </button>
         </div>
       </div>
     </div>
