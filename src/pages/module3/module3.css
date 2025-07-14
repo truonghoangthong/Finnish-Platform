@@ -14,20 +14,50 @@
 }
 
 .module3-column {
-  width: 45%;
+  width: 100%;
   background: #f5f5f5;
   border-radius: 8px;
   padding: 12px;
 }
 
 .module3-card {
+  position: relative;
   background: white;
   color: #000;
   border: 1px dashed gray;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 12px 16px;
   margin-bottom: 8px;
   cursor: move;
+  transition: transform 0.2s;
+  overflow: visible;
+}
+
+.module3-card.left {
+  clip-path: polygon(
+  0% 0%,
+  100% 0%,
+  calc(100% - 16px) 50%,
+  100% 100%,
+  0% 100%,
+  0% 0%
+  );
+  border-right: none;
+  margin-right: 8px;
+  border-radius: 8px 0 0 8px;
+}
+
+.module3-card.right {
+  clip-path: polygon(
+    16px 0%,
+    100% 0%,
+    100% 100%,
+    16px 100%,
+    0% 50%,
+    16px 0%
+  );
+  border-left: none;
+  margin-left: 8px;
 }
 
 .module3-card.matched {
@@ -79,7 +109,7 @@
 
 .module3-header-row {
   display: flex;
-  align-items: baseline; 
+  align-items: baseline;
   gap: 12px;
 }
 
@@ -92,5 +122,43 @@
 }
 
 .module3-header-row .cover {
-  align-self: center; /* Đảm bảo căn theo baseline */
+  align-self: center;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.module3-error {
+  text-align: center;
+  color: red;
+  margin-top: 50px;
+}
+
+.module3-merged-card {
+  display: flex;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 8px auto;
+  width: 80%;
+  justify-content: space-between;
+}
+
+.module3-merged-card .left-part,
+.module3-merged-card .right-part {
+  padding: 8px;
+}
+
+.module3-merged-card .left-part {
+  border-right: 1px dashed #a5d6a7;
+  margin-right: 8px;
+}
+
+.module3-merged-card .right-part {
+  margin-left: 8px;
 }

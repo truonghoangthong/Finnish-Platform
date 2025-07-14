@@ -3,33 +3,35 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import AudioPlayer from '../../components/audioPlayer/audioPlayer';
 import './module3.css';
+import '../../components/loader/loader.css';
 
 const ItemTypes = { CARD: 'card' };
 
-const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDropPair, audioBase64 }) => {
-  const originalIndex = findCard(id, type).index;
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMerged, onDropPair, audioBase64 }) => {
+  const originalIndex = findCard(id, type)?.index || 0;
   const ref = useRef(null);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.CARD,
     item: { id, originalIndex, type, pairId },
     collect: monitor => ({ isDragging: monitor.isDragging() }),
+    canDrag: () => !isMatched && !isMerged,
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
         moveCard(item.id, item.originalIndex, item.type);
       }
     },
-  }), [id, originalIndex, moveCard, type, pairId]);
+  }), [id, originalIndex, moveCard, type, pairId, isMatched, isMerged]);
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    canDrop: draggedItem => draggedItem.type !== type,
+    canDrop: draggedItem => draggedItem.type !== type && !isMatched && !isMerged,
     drop: (draggedItem) => {
       if (draggedItem.pairId === pairId) {
-        onDropPair(pairId);
+        onDropPair(pairId, draggedItem.id);
       }
     },
-  }), [pairId, type, onDropPair]);
+  }), [pairId, type, onDropPair, isMatched, isMerged]);
 
   drag(drop(ref));
 
@@ -40,10 +42,20 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
     }
   };
 
+  if (isMerged) {
+    const [leftText, rightText] = text.split(' / ');
+    return (
+      <div className="module3-merged-card">
+        <span className="left-part">{leftText}</span>
+        <span className="right-part">{rightText}</span>
+      </div>
+    );
+  }
+
   return (
     <div 
       ref={ref} 
-      className={`module3-card ${isMatched ? 'matched' : ''}`} 
+      className={`module3-card ${type} ${isMatched ? 'matched' : ''}`} 
       style={{ opacity: isDragging ? 0 : 1 }}
       onClick={playAudio}
     >
@@ -52,7 +64,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, onDr
   );
 });
 
-const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair }) => (
+const Column = memo(({ items, type, findCard, moveCard, isMatched, isMerged, onDropPair }) => (
   <div className={`module3-column ${type}`}>
     {items.map(item => (
       <Card
@@ -64,6 +76,7 @@ const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair })
         findCard={findCard}
         moveCard={moveCard}
         isMatched={isMatched(item)}
+        isMerged={isMerged(item)}
         onDropPair={onDropPair}
         audioBase64={item.audioBase64}
       />
@@ -73,26 +86,30 @@ const Column = memo(({ items, type, findCard, moveCard, isMatched, onDropPair })
 
 const MatchingGame = ({ pairs }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
+  const [mergedCards, setMergedCards] = useState([]);
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (pairs.length > 0) {
-      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
-      
-      setLeftItems(shuffledPairs.map(p => ({
+      const leftItemsData = pairs.map(p => ({
         id: 'left-' + p.pairId,
         text: p.left,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      })));
-      
-      setRightItems(shuffledPairs.map(p => ({
+      }));
+
+      const rightItemsData = pairs.map(p => ({
         id: 'right-' + p.pairId,
         text: p.right,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      })).sort(() => Math.random() - 0.5));
+      }));
+
+      setLeftItems(leftItemsData.sort(() => Math.random() - 0.5));
+      setRightItems(rightItemsData.sort(() => Math.random() - 0.5));
+      setLoading(false);
     }
   }, [pairs]);
 
@@ -113,32 +130,78 @@ const MatchingGame = ({ pairs }) => {
     else setRightItems(newItems);
   }, [findCard, leftItems, rightItems]);
 
-  const isMatched = (item) => matchedPairs.includes(item.pairId);
+  const isMatched = useCallback((item) => matchedPairs.includes(item.pairId), [matchedPairs]);
+  const isMerged = useCallback((item) => mergedCards.includes(item.pairId), [mergedCards]);
 
-  const handleMatch = (pairId) => {
+  const handleMatch = useCallback((pairId, draggedItemId) => {
     if (!matchedPairs.includes(pairId)) {
       setMatchedPairs(prev => [...prev, pairId]);
+      setMergedCards(prev => [...prev, pairId]);
+
+      setLeftItems(prev => prev.filter(item => item.pairId !== pairId));
+      setRightItems(prev => prev.filter(item => item.pairId !== pairId));
     }
-  };
+  }, [matchedPairs]);
+
+  const getMergedCardsData = useCallback(() => {
+    return mergedCards.map(pairId => {
+      const pair = pairs.find(p => p.pairId === pairId);
+      return {
+        id: `merged-${pairId}`,
+        text: `${pair.left} / ${pair.right}`,
+        pairId,
+        audioBase64: pair.audioBase64
+      };
+    });
+  }, [mergedCards, pairs]);
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="module3-matching-section">
-      <Column 
-        items={leftItems} 
-        type="left" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        isMatched={isMatched} 
-        onDropPair={handleMatch} 
-      />
-      <Column 
-        items={rightItems} 
-        type="right" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        isMatched={isMatched} 
-        onDropPair={handleMatch} 
-      />
+      <div style={{ width: '45%' }}>
+        <Column 
+          items={leftItems} 
+          type="left" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          isMatched={isMatched} 
+          isMerged={isMerged}
+          onDropPair={handleMatch} 
+        />
+        {getMergedCardsData().map(card => (
+          <Card
+            key={card.id}
+            id={card.id}
+            text={card.text}
+            type="merged"
+            pairId={card.pairId}
+            isMatched={true}
+            isMerged={true}
+            audioBase64={card.audioBase64}
+            findCard={findCard}
+            moveCard={moveCard}
+            onDropPair={handleMatch}
+          />
+        ))}
+      </div>
+      <div style={{ width: '45%' }}>
+        <Column 
+          items={rightItems} 
+          type="right" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          isMatched={isMatched} 
+          isMerged={isMerged}
+          onDropPair={handleMatch} 
+        />
+      </div>
     </div>
   );
 };
@@ -154,27 +217,20 @@ const Module3 = () => {
       try {
         const fetchPartData = async (part) => {
           const response = await fetch(`http://localhost:3000/api/studying/A1/the_break_room/module3/${part}`);
-          
-          const text = await response.text();
-          if (text.startsWith('<!DOCTYPE html') || text.startsWith('<!doctype html')) {
-            throw new Error('Server returned HTML instead of JSON');
-          }
-          
-          const data = JSON.parse(text);
-          
+          const data = await response.json();
+
           if (!data || !data.result) {
             throw new Error('Invalid API response format');
           }
-          
-          const partKey = Object.keys(data.result)[0];
-          const partData = data.result[partKey];
-          
+
+          const partData = data.result[part];
+
           return Object.entries(partData)
             .filter(([key]) => key.startsWith('question'))
-            .map(([_, question], index) => {
+            .map(([key, question]) => {
               const [left, right] = question.script.split('/').map(s => s.trim());
               return {
-                pairId: `${index + 1}`,
+                pairId: key,
                 left,
                 right,
                 audioBase64: question.audioBase64
@@ -189,18 +245,16 @@ const Module3 = () => {
 
         setPairs3a(data3a);
         setPairs3b(data3b);
+        setLoading(false);
       } catch (err) {
         setError(`Failed to load data: ${err.message}`);
         console.error('API Error:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (loading) return <div className="module3-loading">Loading exercise data...</div>;
   if (error) return <div className="module3-error">{error}</div>;
 
   return (
@@ -214,9 +268,9 @@ const Module3 = () => {
         {pairs3a.length > 0 ? (
           <MatchingGame pairs={pairs3a} />
         ) : (
-          <p>No matching pairs available for this exercise.</p>
+          !error && <div className="loader-container"><div className="loader"></div></div>
         )}
-        
+
         <div className="module3-header-row">
           <AudioPlayer src="/audio/sample.mp3" />
           <h2>Tehtävä 3b</h2>
@@ -225,7 +279,7 @@ const Module3 = () => {
         {pairs3b.length > 0 ? (
           <MatchingGame pairs={pairs3b} />
         ) : (
-          <p>No matching pairs available for this exercise.</p>
+          !error && <div className="loader-container"><div className="loader"></div></div>
         )}
       </div>
     </DndProvider>
