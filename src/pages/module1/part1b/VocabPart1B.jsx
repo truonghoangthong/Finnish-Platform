@@ -102,7 +102,6 @@ const VocabPart1B = ({ data }) => {
 
   return (
     <div className="vocab1b-wrapper">
-      {/* ✅ NEW: Uniform header like Part1A */}
       <div className="task-header oneline">
         <div className="audio-wrapper">
           <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
@@ -111,7 +110,6 @@ const VocabPart1B = ({ data }) => {
         <span className="task-description">{title?.script}</span>
       </div>
 
-      {/* Drop zone */}
       <div className="vocab1b-drop-area">
         <div className={`vocab1b-image-options ${questions.length < 7 ? 'center-flex' : 'grid-7'}`}>
           {questions.map((q, i) => {
@@ -129,35 +127,27 @@ const VocabPart1B = ({ data }) => {
                 onClick={() => handleCardClick(i, isCorrect)}
               >
                 <AudioPlayer src={`data:audio/mp3;base64,${q.audioBase64}`} />
+
                 <div className="vocab1b-drop-image">
-                  {hasReviewedAnswers && !isCorrect && isFlipped ? (
-                    <img src={q.imageLink} alt="correct-answer" />
-                  ) : hasAnswered ? (
-                    <img src={answers[i]} alt="selected" />
-                  ) : (
-                    <img src="/question-box.png" alt="?" />
-                  )}
+                  <img
+                    src={
+                      hasReviewedAnswers && !isCorrect && isFlipped
+                        ? q.imageLink
+                        : hasAnswered
+                        ? answers[i]
+                        : '/question-box.png'
+                    }
+                    alt="option"
+                  />
                 </div>
 
-                {hasReviewedAnswers && isCorrect && (
+                {hasReviewedAnswers && (
                   <div className="vocab1b-feedback">
-                    <span className="tick">✅</span>
-                    <p className="script">{q.script}</p>
-                    {q.ipa && <p className="ipa">[{q.ipa}]</p>}
-                  </div>
-                )}
-
-                {hasReviewedAnswers && !isCorrect && isFlipped && (
-                  <div className="vocab1b-feedback">
-                    <span className="tick">✅</span>
-                    <p className="script">{q.script}</p>
-                    {q.ipa && <p className="ipa">[{q.ipa}]</p>}
-                  </div>
-                )}
-
-                {hasReviewedAnswers && !isCorrect && !isFlipped && hasAnswered && (
-                  <div className="vocab1b-feedback">
-                    <span className="cross">❌</span>
+                    <span className={isCorrect ? 'tick' : isFlipped ? 'tick' : 'cross'}>
+                      {isCorrect || isFlipped ? '✅' : hasAnswered ? '❌' : ''}
+                    </span>
+                    <p className={`script ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>{q.script}</p>
+                    {q.ipa && <p className={`ipa ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>[{q.ipa}]</p>}
                   </div>
                 )}
               </div>
@@ -166,7 +156,6 @@ const VocabPart1B = ({ data }) => {
         </div>
       </div>
 
-      {/* Drag zone */}
       <div className="vocab1b-drag-wrapper">
         <div className="vocab1b-drag-zone">
           {dragImages.map((img, i) => (
@@ -182,20 +171,17 @@ const VocabPart1B = ({ data }) => {
         </div>
       </div>
 
-     <div className="vocab1b-buttons">
-  <button onClick={handleReset}>Yritä uudelleen</button>
+      <div className="vocab1b-buttons">
+        <button onClick={handleReset}>Yritä uudelleen</button>
 
-  {!hasReviewedAnswers && isCompleted && (
-    <button onClick={handleSubmit}>Lähetä</button>
-  )}
+        {!hasReviewedAnswers && isCompleted && (
+          <button onClick={handleSubmit}>Lähetä</button>
+        )}
 
-  {hasReviewedAnswers && (
-    <button onClick={() => navigate("/course/a1/lesson-1/vocabulary/1a/result")}>
-      Seuraava
-    </button>
-  )}
-</div>
-
+        {hasReviewedAnswers && (
+          <button onClick={() => navigate("/course/a1/lesson-1/vocabulary/1a/result")}>Seuraava</button>
+        )}
+      </div>
 
       {showResult && (
         <PopupScore

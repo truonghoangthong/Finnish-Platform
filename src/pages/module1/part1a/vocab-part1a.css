@@ -59,13 +59,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   cursor: default;
 }
 
 .tab.active {
   background-color: #00C2E5;
-  color: white;
+  color: white !important;
 }
 
 .tab.correct {
@@ -80,25 +80,16 @@
   border-color: #F87171;
 }
 
-.tab:hover {
+/* ✅ Fix hover bug: Tab chưa chọn bị mất chữ */
+.tab:not(.correct):not(.wrong):not(.active):hover {
   background-color: #e0faff;
+  color: #00C2E5;
 }
 
 /* ============ Audio Button ============ */
 .question-audio {
   margin-bottom: 1rem;
 }
-
-/* .big-speaker {
-  background-color: #00C2E5;
-  color: white;
-  font-size: 1.6rem;
-  padding: 0.8rem 1rem;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s ease;
-} */
 
 /* ============ Question Image ============ */
 .question-image {
@@ -208,17 +199,18 @@
     font-size: 1rem;
   }
 }
+
 .task-header.oneline {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex-wrap: nowrap;             /* ❗ không cho xuống hàng */
+  flex-wrap: nowrap;
   overflow: hidden;
   gap: 10px;
 }
 
 .audio-wrapper {
-  flex-shrink: 0;                /* ❗ loa không co lại */
+  flex-shrink: 0;
   transform: scale(0.85);
   transform-origin: left center;
 }
@@ -235,11 +227,12 @@
 .task-description {
   font-size: 0.95rem;
   color: #333;
-  white-space: nowrap;          /* ❗ không xuống dòng */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;      /* ❗ hiện “...” nếu quá dài */
+  text-overflow: ellipsis;
   flex: 1;
 }
+
 /* ============ Audio Player – Câu hỏi (nút to – căn giữa) ============ */
 .question-audio {
   margin-bottom: 2rem;
@@ -273,12 +266,13 @@
   font-size: 28px;
   transition: 0.2s ease;
 }
+
 .image-container {
-  background-color: rgba(0, 194, 229, 0.08); /* Nền xanh trong */
-  padding:2rem;
+  background-color: rgba(0, 194, 229, 0.08);
+  padding: 2rem;
   border-radius: 16px;
-  margin-bottom: 6rem; /* 👈 tạo khoảng cách với phần dưới (Part 1B) */
-  margin-top: 2rem;    /* 👈 tạo khoảng cách với phần trên (tabs/audio) */
+  margin-bottom: 6rem;
+  margin-top: 2rem;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
