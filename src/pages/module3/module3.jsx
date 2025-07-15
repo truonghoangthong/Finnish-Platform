@@ -1,37 +1,54 @@
 import { useState, useCallback, memo, useRef, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useLocation } from 'react-router-dom';
 import AudioPlayer from '../../components/audioPlayer/audioPlayer';
+import { fetchModuleData } from '../../utils/fetchContent';
 import './module3.css';
 import '../../components/loader/loader.css';
 
 const ItemTypes = { CARD: 'card' };
 
-const Card = memo(({ id, text, type, pairId, findCard, moveCard, moveMatchedCard, isMatched, isMerged, onDropPair, audioBase64 }) => {
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, audioBase64 }) => {
+  const [initialRender, setInitialRender] = useState(true);
   const originalIndex = findCard(id, type)?.index || 0;
   const ref = useRef(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialRender(false);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.CARD,
-    item: { id, originalIndex, type, pairId },
+    item: { id, originalIndex, type },
     collect: monitor => ({ isDragging: monitor.isDragging() }),
-    canDrag: () => !isMatched && !isMerged,
+    canDrag: () => !isMatched,
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
         moveCard(item.id, item.originalIndex, item.type);
       }
     },
-  }), [id, originalIndex, moveCard, type, pairId, isMatched, isMerged]);
+  }), [id, originalIndex, moveCard, type, isMatched]);
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    canDrop: draggedItem => draggedItem.type !== type && !isMatched && !isMerged,
+    canDrop: () => true,
     drop: (draggedItem) => {
-      if (draggedItem.pairId === pairId) {
-        onDropPair(pairId, draggedItem.id, type);
+      if (draggedItem.id !== id && draggedItem.type === type) {
+        const { index: overIndex } = findCard(id, type);
+        moveCard(draggedItem.id, overIndex, type);
       }
     },
-  }), [pairId, type, onDropPair, isMatched, isMerged]);
+    hover: ({ id: draggedId }) => {
+      if (draggedId !== id) {
+        const { index: overIndex } = findCard(id, type);
+        moveCard(draggedId, overIndex, type);
+      }
+    },
+  }), [findCard, moveCard, type]);
 
   drag(drop(ref));
 
@@ -43,9 +60,9 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, moveMatchedCard
   };
 
   return (
-    <div 
-      ref={ref} 
-      className={`module3-card ${type} ${isMatched ? 'matched' : ''} ${isMerged ? 'tight' : ''}`} 
+    <div
+      ref={ref}
+      className={`module3-card ${type} ${isMatched ? 'matched' : ''} ${initialRender ? 'initial-render' : ''}`}
       style={{ opacity: isDragging ? 0 : 1 }}
       onClick={playAudio}
     >
@@ -54,7 +71,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, moveMatchedCard
   );
 });
 
-const Column = memo(({ items, type, findCard, moveCard, moveMatchedCard, isMatched, isMerged, onDropPair }) => {
+const Column = memo(({ items, type, findCard, moveCard, isMatched }) => {
   return (
     <div className={`module3-column ${type}`}>
       {items.map(item => (
@@ -66,10 +83,7 @@ const Column = memo(({ items, type, findCard, moveCard, moveMatchedCard, isMatch
           pairId={item.pairId}
           findCard={findCard}
           moveCard={moveCard}
-          moveMatchedCard={moveMatchedCard}
           isMatched={isMatched(item)}
-          isMerged={isMerged(item)}
-          onDropPair={onDropPair}
           audioBase64={item.audioBase64}
         />
       ))}
@@ -77,33 +91,32 @@ const Column = memo(({ items, type, findCard, moveCard, moveMatchedCard, isMatch
   );
 });
 
-const MatchingGame = ({ pairs }) => {
-  const [matchedPairs, setMatchedPairs] = useState([]);
-  const [mergedCards, setMergedCards] = useState([]);
+const MatchingGame = ({ pairs, onCheckAnswers }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const shuffledPairs = useRef(null);
 
   useEffect(() => {
-    if (pairs.length > 0) {
-      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
-
-      const leftItemsData = shuffledPairs.map(p => ({
+    if (pairs.length > 0 && !shuffledPairs.current) {
+      shuffledPairs.current = [...pairs].sort(() => Math.random() - 0.5);
+      
+      const leftItemsData = shuffledPairs.current.map(p => ({
         id: 'left-' + p.pairId,
         text: p.left,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      }));
+      })).sort(() => Math.random() - 0.5);
 
-      const rightItemsData = shuffledPairs.map(p => ({
+      const rightItemsData = shuffledPairs.current.map(p => ({
         id: 'right-' + p.pairId,
         text: p.right,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      }));
+      })).sort(() => Math.random() - 0.5);
 
-      setLeftItems(leftItemsData.sort(() => Math.random() - 0.5));
-      setRightItems(rightItemsData.sort(() => Math.random() - 0.5));
+      setLeftItems(leftItemsData);
+      setRightItems(rightItemsData);
       setLoading(false);
     }
   }, [pairs]);
@@ -125,29 +138,7 @@ const MatchingGame = ({ pairs }) => {
     else setRightItems(newItems);
   }, [findCard, leftItems, rightItems]);
 
-  const moveMatchedCardToIndex = useCallback((pairId, indexToMove, sourceType) => {
-    const targetType = sourceType === 'left' ? 'right' : 'left';
-    const targetItems = targetType === 'left' ? [...leftItems] : [...rightItems];
-    const currentIndex = targetItems.findIndex(item => item.pairId === pairId);
-    if (currentIndex === -1) return;
-    const [matchedCard] = targetItems.splice(currentIndex, 1);
-    targetItems.splice(indexToMove, 0, matchedCard);
-    if (targetType === 'left') setLeftItems(targetItems);
-    else setRightItems(targetItems);
-  }, [leftItems, rightItems]);
-
-  const isMatched = useCallback((item) => matchedPairs.includes(item.pairId), [matchedPairs]);
-  const isMerged = useCallback((item) => mergedCards.includes(item.pairId), [mergedCards]);
-
-  const handleMatch = useCallback((pairId, draggedItemId, dropTargetType) => {
-    if (!matchedPairs.includes(pairId)) {
-      const { index: dropIndex } = findCard(draggedItemId, dropTargetType);
-      const otherType = dropTargetType === 'left' ? 'right' : 'left';
-      moveMatchedCardToIndex(pairId, dropIndex, dropTargetType);
-      setMatchedPairs(prev => [...prev, pairId]);
-      setMergedCards(prev => [...prev, pairId]);
-    }
-  }, [matchedPairs, moveMatchedCardToIndex, findCard]);
+  const isMatched = useCallback(() => false, []);
 
   if (loading) {
     return (
@@ -158,110 +149,102 @@ const MatchingGame = ({ pairs }) => {
   }
 
   return (
-    <div className="module3-matching-section">
-      <Column 
-        items={leftItems} 
-        type="left" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        moveMatchedCard={moveMatchedCardToIndex}
-        isMatched={isMatched} 
-        isMerged={isMerged}
-        onDropPair={handleMatch} 
-      />
-      <Column 
-        items={rightItems} 
-        type="right" 
-        findCard={findCard} 
-        moveCard={moveCard} 
-        moveMatchedCard={moveMatchedCardToIndex}
-        isMatched={isMatched} 
-        isMerged={isMerged}
-        onDropPair={handleMatch} 
-      />
+    <div>
+      <div className="module3-matching-section">
+        <Column items={leftItems} type="left" findCard={findCard} moveCard={moveCard} isMatched={isMatched} />
+        <Column items={rightItems} type="right" findCard={findCard} moveCard={moveCard} isMatched={isMatched} />
+      </div>
+      <button
+        className="module3-submit-btn"
+        onClick={() => onCheckAnswers(leftItems, rightItems)}
+      >
+        Tarkista vastaukset
+      </button>
     </div>
   );
 };
 
 const Module3 = () => {
+  const location = useLocation();
   const [pairs3a, setPairs3a] = useState([]);
   const [pairs3b, setPairs3b] = useState([]);
   const [pairs3c, setPairs3c] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [results, setResults] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const fetchPartData = async (part) => {
-          const response = await fetch(`http://localhost:3000/api/studying/A1/the_break_room/module3/${part}`);
-          const data = await response.json();
-
-          if (!data || !data.result) {
-            throw new Error('Invalid API response format');
-          }
-
-          const partData = data.result[part];
-
-          return Object.entries(partData)
-            .filter(([key]) => key.startsWith('question'))
-            .map(([key, question]) => {
-              const [left, right] = question.script.split('/').map(s => s.trim());
-              return {
-                pairId: key,
-                left,
-                right,
-                audioBase64: question.audioBase64
-              };
-            });
-        };
-
-        const [data3a, data3b, data3c] = await Promise.all([
-          fetchPartData('part3a'),
-          fetchPartData('part3b'),
-          fetchPartData('part3c')
-        ]);
-
-        setPairs3a(data3a);
-        setPairs3b(data3b);
-        setPairs3c(data3c);
+        setLoading(true);
+        const data = await fetchModuleData(location.pathname, 3);
+        setPairs3a(data.part3a);
+        setPairs3b(data.part3b);
+        setPairs3c(data.part3c);
         setLoading(false);
       } catch (err) {
         setError(`Failed to load data: ${err.message}`);
         console.error('API Error:', err);
+        setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    loadData();
+  }, [location.pathname]);
 
-  if (error) return <div className="module3-error">{error}</div>;
+  const checkAnswers = (leftItems, rightItems, part) => {
+    console.log('Checking answers for', part, leftItems, rightItems);
+  };
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="module3-error">{error}</div>;
+  }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="module3-container">
-        <div className="module3-header-row">
-          <AudioPlayer src="/audio/sample.mp3" />
-          <h2>Tehtävä 3a</h2>
-          <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+    <div className="module3-container">
+      <DndProvider backend={HTML5Backend}>
+        <div className="module3-verbs-section">
+          <div className="module3-header-row">
+            <h2>Tehtävä 3a</h2>
+            <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+          </div>
+          <MatchingGame 
+            pairs={pairs3a} 
+            onCheckAnswers={(left, right) => checkAnswers(left, right, 'part3a')} 
+          />
         </div>
-        {pairs3a.length > 0 && <MatchingGame pairs={pairs3a} />}
 
-        <div className="module3-header-row">
-          <AudioPlayer src="/audio/sample.mp3" />
-          <h2>Tehtävä 3b</h2>
-          <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+        <div className="module3-verbs-section">
+          <div className="module3-header-row">
+            <h2>Tehtävä 3b</h2>
+            <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+          </div>
+          <MatchingGame 
+            pairs={pairs3b} 
+            onCheckAnswers={(left, right) => checkAnswers(left, right, 'part3b')} 
+          />
         </div>
-        {pairs3b.length > 0 && <MatchingGame pairs={pairs3b} />}
 
-        <div className="module3-header-row">
-          <AudioPlayer src="/audio/sample.mp3" />
-          <h2>Tehtävä 3c</h2>
-          <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+        <div className="module3-verbs-section">
+          <div className="module3-header-row">
+            <h2>Tehtävä 3c</h2>
+            <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+          </div>
+          <MatchingGame 
+            pairs={pairs3c} 
+            onCheckAnswers={(left, right) => checkAnswers(left, right, 'part3c')} 
+          />
         </div>
-        {pairs3c.length > 0 && <MatchingGame pairs={pairs3c} />}
-      </div>
-    </DndProvider>
+      </DndProvider>
+    </div>
   );
 };
 

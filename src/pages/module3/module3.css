@@ -76,7 +76,7 @@
   clip-path: polygon(
     0% 0%,
     100% 0%,
-    calc(100% - 17px) 50%,
+    calc(100% - 18px) 50%,
     100% 100%,
     0% 100%,
     0% 0%
@@ -99,7 +99,7 @@
     16px 0%
   );
   margin-left: 0;
-  border-radius: 0 8px 8px 0;
+
 }
 
 .module3-card.right::before {
@@ -116,7 +116,7 @@
   right: 1px;
   bottom: 1px;
   background: white;
-  border-radius: 0 8px 8px 0;
+
 }
 
 .module3-card.matched {
@@ -211,7 +211,7 @@
 
 .module3-header-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 15px;
   margin-bottom: 20px;
 }
@@ -244,4 +244,28 @@
   padding: 15px;
   background: #ffeeee;
   border-radius: 8px;
+}
+
+.module3-submit-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 20px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.module3-submit-btn:hover {
+  background-color: #45a049;
+}
+
+.module3-submit-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
