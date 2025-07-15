@@ -3,13 +3,12 @@ import { db,auth } from './config/firebase-config.js';
 import { collection, addDoc, query, where, getDocs, updateDoc  } from 'firebase/firestore';
 import cors from 'cors';
 import { sendSignInLinkToEmail } from "firebase/auth";
-import { pollyClient } from './config/aws-config.js';
-import {SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
 import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
 import {googleStorage,bucketName } from './middleware/googleCloud.mjs';
 import dotenv from 'dotenv';
 import {evaluateTranslation} from './middleware/open_router.mjs';
+import { command } from './middleware/awsPolly.mjs';
 dotenv.config();
 
 const app = express();
@@ -61,9 +60,9 @@ app.post('/api/email', async (req, res) => { // login with email
       return res.status(200).send(querySnapshot.docs[0].data());
     } else {
       res.status(404).send({
-        Title: 'Success',
+        Title: 'Error',
         Message: 'User not found',
-        Status: 'success',
+        Status: 'Error',
       });
     }
   } catch (error) {
@@ -102,9 +101,9 @@ app.get('/api/learning/:level', async (req, res) => {
       return res.status(200).json({result});
     } else {
       return res.status(404).send({
-        Title: 'Success',
-        Message: 'Lesson not found',
-        Status: 'success',
+        Title: 'Error',
+        Message: 'Level not found',
+        Status: 'Error',
       });
     }
   } catch (error) {
@@ -124,21 +123,7 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
     const data = querySnapshot.docs[0].data();
     
     if (!querySnapshot.empty) {
-      const command = new SynthesizeSpeechCommand({        // 
-          Text: `<speak><prosody rate="80%">${data.description}</prosody></speak>`,
-          OutputFormat: 'mp3',
-          VoiceId: 'Suvi', 
-          LanguageCode: 'fi-FI',
-          Engine: 'neural',
-          TextType: 'ssml' 
-      });
-      const { AudioStream } = await pollyClient.send(command); 
-      const chunks = [];
-      for await (const chunk of AudioStream) {
-        chunks.push(chunk);
-      }
-      const audioBuffer = Buffer.concat(chunks);
-      const audioBase64 = audioBuffer.toString('base64');
+      const audioBase64 = await command(data.description);
       const result = {
         lessonName: data.lessonName,
         description: data.description,
@@ -157,9 +142,9 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
       return res.status(200).json({result});
     } else {
       return res.status(404).send({
-        Title: 'Success',
+        Title: 'Error',
         Message: 'Lesson not found',
-        Status: 'success',
+        Status: 'Error',
       });
     }
   } catch (error) {
@@ -184,63 +169,23 @@ app.get('/api/studying/:level/:lesson/:module/:part', async (req, res) => {
       };
       for (const questionKey of Object.keys(result[part]).filter(key => key !== 'imageLink')) { // chỉnh part object phần script qua mp3 bằng AWS Polly
         const script = result[part][questionKey].script;
-        const command = new SynthesizeSpeechCommand({        
-          Text: `<speak><prosody rate="80%">${script}</prosody></speak>`,
-          OutputFormat: 'mp3',
-          VoiceId: 'Suvi', 
-          LanguageCode: 'fi-FI',
-          Engine: 'neural',
-          TextType: 'ssml'
-        });
-        const { AudioStream } = await pollyClient.send(command); 
-        const chunks = [];
-        for await (const chunk of AudioStream) {
-          chunks.push(chunk);
-        }
-        const audioBuffer = Buffer.concat(chunks);
-        const audioBase64 = audioBuffer.toString('base64');            // sau đó mp3 sang string base64
+        const audioBase64 = await command(script);
         result[part][questionKey].audioBase64 = audioBase64;
         if (result[part][questionKey].correctScript && result[part][questionKey].incorrectScript) { 
           const correctScript = result[part][questionKey].correctScript;
           const incorrectScript = result[part][questionKey].incorrectScript;
-          const correctCommand = new SynthesizeSpeechCommand({        
-            Text: `<speak><prosody rate="80%">${correctScript}</prosody></speak>`,
-            OutputFormat: 'mp3',
-            VoiceId: 'Suvi', 
-            LanguageCode: 'fi-FI',
-            Engine: 'neural',
-            TextType: 'ssml'
-          });
-          const incorrectCommand = new SynthesizeSpeechCommand({        
-            Text: `<speak><prosody rate="80%">${incorrectScript}</prosody></speak>`,
-            OutputFormat: 'mp3',
-            VoiceId: 'Suvi', 
-            LanguageCode: 'fi-FI',
-            Engine: 'neural',
-            TextType: 'ssml'
-          });
-          const { AudioStream: correctAudioStream } = await pollyClient.send(correctCommand); 
-          const { AudioStream: incorrectAudioStream } = await pollyClient.send(incorrectCommand); 
-          const correctChunks = [];
-          for await (const chunk of correctAudioStream) {
-            correctChunks.push(chunk);
-          }
-          const incorrectChunks = [];
-          for await (const chunk of incorrectAudioStream) {
-            incorrectChunks.push(chunk);
-          }
-          const correctAudioBuffer = Buffer.concat(correctChunks);
-          const incorrectAudioBuffer = Buffer.concat(incorrectChunks);
-          result[part][questionKey].correctAudioBase64 = correctAudioBuffer.toString('base64');
-          result[part][questionKey].incorrectAudioBase64 = incorrectAudioBuffer.toString('base64');
+          const correctAudioBase64 = await command(correctScript);
+          const incorrectAudioBase64 = await command(incorrectScript);
+          result[part][questionKey].correctAudioBase64 = correctAudioBase64;
+          result[part][questionKey].incorrectAudioBase64 = incorrectAudioBase64;
         }
       }
       return res.status(200).json({result});
     } else {
       return res.status(404).send({
-        Title: 'Success',
+        Title: 'Error',
         Message: 'Lesson not found',
-        Status: 'success',
+        Status: 'Error',
       });
     }
   } catch (error) {
