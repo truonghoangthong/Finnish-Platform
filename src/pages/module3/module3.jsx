@@ -7,7 +7,7 @@ import '../../components/loader/loader.css';
 
 const ItemTypes = { CARD: 'card' };
 
-const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMerged, onDropPair, audioBase64 }) => {
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, moveMatchedCard, isMatched, isMerged, onDropPair, audioBase64 }) => {
   const originalIndex = findCard(id, type)?.index || 0;
   const ref = useRef(null);
 
@@ -28,7 +28,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMe
     canDrop: draggedItem => draggedItem.type !== type && !isMatched && !isMerged,
     drop: (draggedItem) => {
       if (draggedItem.pairId === pairId) {
-        onDropPair(pairId, draggedItem.id);
+        onDropPair(pairId, draggedItem.id, type);
       }
     },
   }), [pairId, type, onDropPair, isMatched, isMerged]);
@@ -42,33 +42,10 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMe
     }
   };
 
-  if (isMerged) {
-    const pairCard = type === 'left' ? 
-      { id: 'left-' + pairId, text } : 
-      { id: 'right-' + pairId, text };
-    
-    return (
-      <div className="module3-merged-pair">
-        <div 
-          className="module3-card left matched"
-          onClick={playAudio}
-        >
-          {type === 'left' ? text : ''}
-        </div>
-        <div 
-          className="module3-card right matched"
-          onClick={playAudio}
-        >
-          {type === 'right' ? text : ''}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div 
       ref={ref} 
-      className={`module3-card ${type} ${isMatched ? 'matched' : ''}`} 
+      className={`module3-card ${type} ${isMatched ? 'matched' : ''} ${isMerged ? 'tight' : ''}`} 
       style={{ opacity: isDragging ? 0 : 1 }}
       onClick={playAudio}
     >
@@ -77,25 +54,28 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, isMatched, isMe
   );
 });
 
-const Column = memo(({ items, type, findCard, moveCard, isMatched, isMerged, onDropPair }) => (
-  <div className={`module3-column ${type}`}>
-    {items.map(item => (
-      <Card
-        key={item.id}
-        id={item.id}
-        text={item.text}
-        type={type}
-        pairId={item.pairId}
-        findCard={findCard}
-        moveCard={moveCard}
-        isMatched={isMatched(item)}
-        isMerged={isMerged(item)}
-        onDropPair={onDropPair}
-        audioBase64={item.audioBase64}
-      />
-    ))}
-  </div>
-));
+const Column = memo(({ items, type, findCard, moveCard, moveMatchedCard, isMatched, isMerged, onDropPair }) => {
+  return (
+    <div className={`module3-column ${type}`}>
+      {items.map(item => (
+        <Card
+          key={item.id}
+          id={item.id}
+          text={item.text}
+          type={type}
+          pairId={item.pairId}
+          findCard={findCard}
+          moveCard={moveCard}
+          moveMatchedCard={moveMatchedCard}
+          isMatched={isMatched(item)}
+          isMerged={isMerged(item)}
+          onDropPair={onDropPair}
+          audioBase64={item.audioBase64}
+        />
+      ))}
+    </div>
+  );
+});
 
 const MatchingGame = ({ pairs }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
@@ -106,14 +86,16 @@ const MatchingGame = ({ pairs }) => {
 
   useEffect(() => {
     if (pairs.length > 0) {
-      const leftItemsData = pairs.map(p => ({
+      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
+
+      const leftItemsData = shuffledPairs.map(p => ({
         id: 'left-' + p.pairId,
         text: p.left,
         pairId: p.pairId,
         audioBase64: p.audioBase64
       }));
 
-      const rightItemsData = pairs.map(p => ({
+      const rightItemsData = shuffledPairs.map(p => ({
         id: 'right-' + p.pairId,
         text: p.right,
         pairId: p.pairId,
@@ -143,15 +125,29 @@ const MatchingGame = ({ pairs }) => {
     else setRightItems(newItems);
   }, [findCard, leftItems, rightItems]);
 
+  const moveMatchedCardToIndex = useCallback((pairId, indexToMove, sourceType) => {
+    const targetType = sourceType === 'left' ? 'right' : 'left';
+    const targetItems = targetType === 'left' ? [...leftItems] : [...rightItems];
+    const currentIndex = targetItems.findIndex(item => item.pairId === pairId);
+    if (currentIndex === -1) return;
+    const [matchedCard] = targetItems.splice(currentIndex, 1);
+    targetItems.splice(indexToMove, 0, matchedCard);
+    if (targetType === 'left') setLeftItems(targetItems);
+    else setRightItems(targetItems);
+  }, [leftItems, rightItems]);
+
   const isMatched = useCallback((item) => matchedPairs.includes(item.pairId), [matchedPairs]);
   const isMerged = useCallback((item) => mergedCards.includes(item.pairId), [mergedCards]);
 
-  const handleMatch = useCallback((pairId, draggedItemId) => {
+  const handleMatch = useCallback((pairId, draggedItemId, dropTargetType) => {
     if (!matchedPairs.includes(pairId)) {
+      const { index: dropIndex } = findCard(draggedItemId, dropTargetType);
+      const otherType = dropTargetType === 'left' ? 'right' : 'left';
+      moveMatchedCardToIndex(pairId, dropIndex, dropTargetType);
       setMatchedPairs(prev => [...prev, pairId]);
       setMergedCards(prev => [...prev, pairId]);
     }
-  }, [matchedPairs]);
+  }, [matchedPairs, moveMatchedCardToIndex, findCard]);
 
   if (loading) {
     return (
@@ -164,19 +160,21 @@ const MatchingGame = ({ pairs }) => {
   return (
     <div className="module3-matching-section">
       <Column 
-        items={leftItems.filter(item => !isMerged(item))} 
+        items={leftItems} 
         type="left" 
         findCard={findCard} 
         moveCard={moveCard} 
+        moveMatchedCard={moveMatchedCardToIndex}
         isMatched={isMatched} 
         isMerged={isMerged}
         onDropPair={handleMatch} 
       />
       <Column 
-        items={rightItems.filter(item => !isMerged(item))} 
+        items={rightItems} 
         type="right" 
         findCard={findCard} 
         moveCard={moveCard} 
+        moveMatchedCard={moveMatchedCardToIndex}
         isMatched={isMatched} 
         isMerged={isMerged}
         onDropPair={handleMatch} 
@@ -188,6 +186,7 @@ const MatchingGame = ({ pairs }) => {
 const Module3 = () => {
   const [pairs3a, setPairs3a] = useState([]);
   const [pairs3b, setPairs3b] = useState([]);
+  const [pairs3c, setPairs3c] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -217,13 +216,15 @@ const Module3 = () => {
             });
         };
 
-        const [data3a, data3b] = await Promise.all([
+        const [data3a, data3b, data3c] = await Promise.all([
           fetchPartData('part3a'),
-          fetchPartData('part3b')
+          fetchPartData('part3b'),
+          fetchPartData('part3c')
         ]);
 
         setPairs3a(data3a);
         setPairs3b(data3b);
+        setPairs3c(data3c);
         setLoading(false);
       } catch (err) {
         setError(`Failed to load data: ${err.message}`);
@@ -244,22 +245,21 @@ const Module3 = () => {
           <h2>Tehtävä 3a</h2>
           <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
         </div>
-        {pairs3a.length > 0 ? (
-          <MatchingGame pairs={pairs3a} />
-        ) : (
-          !error && <div className="loader-container"><div className="loader"></div></div>
-        )}
+        {pairs3a.length > 0 && <MatchingGame pairs={pairs3a} />}
 
         <div className="module3-header-row">
           <AudioPlayer src="/audio/sample.mp3" />
           <h2>Tehtävä 3b</h2>
           <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
         </div>
-        {pairs3b.length > 0 ? (
-          <MatchingGame pairs={pairs3b} />
-        ) : (
-          !error && <div className="loader-container"><div className="loader"></div></div>
-        )}
+        {pairs3b.length > 0 && <MatchingGame pairs={pairs3b} />}
+
+        <div className="module3-header-row">
+          <AudioPlayer src="/audio/sample.mp3" />
+          <h2>Tehtävä 3c</h2>
+          <p>Yhdistä vasemman ja oikean sarakkeen kortit oikeisiin pareja vetämällä.</p>
+        </div>
+        {pairs3c.length > 0 && <MatchingGame pairs={pairs3c} />}
       </div>
     </DndProvider>
   );
