@@ -99,7 +99,6 @@
     16px 0%
   );
   margin-left: 0;
-
 }
 
 .module3-card.right::before {
@@ -116,19 +115,27 @@
   right: 1px;
   bottom: 1px;
   background: white;
-
 }
 
-.module3-card.matched {
+.module3-card.correct {
   background: #e8f5e9;
   cursor: default;
 }
 
-.module3-card.matched::before {
+.module3-card.correct::before {
   background: #a5d6a7;
 }
 
-.module3-card:hover:not(.matched) {
+.module3-card.incorrect {
+  background: #ffebee;
+  cursor: default;
+}
+
+.module3-card.incorrect::before {
+  background: #ef9a9a;
+}
+
+.module3-card:hover:not(.correct):not(.incorrect) {
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   transform: translateY(-2px);
 }
@@ -139,37 +146,6 @@
 
 .module3-card.tight.right {
   margin-left: -7.5px;
-}
-
-.module3-merged-pair {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  margin-bottom: 10px;
-}
-
-.module3-merged-pair .module3-card.left {
-  border-radius: 8px 0 0 8px;
-  margin-right: -2px;
-  z-index: 1;
-  padding-right: 16px;
-}
-
-.module3-merged-pair .module3-card.right {
-  border-radius: 0 8px 8px 0;
-  margin-left: -2px;
-  z-index: 1;
-  padding-left: 16px;
-}
-
-.module3-merged-pair .module3-card {
-  background: #e8f5e9;
-  cursor: default;
-  transform: none !important;
-}
-
-.module3-merged-pair .module3-card::before {
-  background: #a5d6a7;
 }
 
 .module3-verbs-section {

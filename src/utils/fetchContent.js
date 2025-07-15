@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const getApiPath = (currentPath) => {
   const pathParts = currentPath.split('/');
   const level = pathParts[pathParts.indexOf('course') + 1] || 'a1';
@@ -9,25 +11,35 @@ export const fetchModuleData = async (currentPath, moduleNumber) => {
   try {
     const { level, moduleName } = getApiPath(currentPath);
     const parts = [`part${moduleNumber}a`, `part${moduleNumber}b`, `part${moduleNumber}c`];
-    const urls = parts.map(part => 
-      `http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`
-    );
-
-    const responses = await Promise.all(urls.map(url => fetch(url)));
-    const responseData = await Promise.all(responses.map(async (res) => {
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      return res.json();
-    }));
-
-    return parts.reduce((acc, part, index) => {
-      acc[part] = Object.entries(responseData[index].result[part])
+    
+    const result = {};
+    
+    for (const part of parts) {
+      const url = `http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`;
+      console.log(`Fetching data from: ${url}`); // Log URL
+      
+      const response = await axios.get(url);
+      
+      if (response.status !== 200) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      console.log(`API response for ${part}:`, response.data); // Log response data
+      
+      result[part] = Object.entries(response.data.result[part])
         .filter(([key]) => key.startsWith('question'))
         .map(([key, question]) => {
           const [left, right] = question.script.split('/').map(s => s.trim());
-          return { pairId: key, left, right, audioBase64: question.audioBase64 };
+          return { 
+            pairId: key, 
+            left, 
+            right, 
+            audioBase64: question.audioBase64 
+          };
         });
-      return acc;
-    }, {});
+    }
+    
+    return result;
   } catch (err) {
     console.error('Failed to load data:', err);
     throw err;
