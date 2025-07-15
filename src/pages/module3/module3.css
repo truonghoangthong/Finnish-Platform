@@ -252,11 +252,12 @@
 }
 
 .module3-verb-input {
-  margin-top: 8px;
   padding: 6px;
   border-radius: 4px;
-  border: 1px solid #ccc;
   width: 100%;
+  background-color: #fff;
+  border: none;
+  color: #000;
 }
 
 .module3-verbs-list {

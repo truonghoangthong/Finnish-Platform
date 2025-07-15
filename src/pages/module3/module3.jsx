@@ -192,6 +192,7 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
         baseVerb: q.baseVerb,
         audioBase64: q.audioBase64
       })));
+
       setRightItems(verbs.map(v => ({
         id: 'right-' + v.id,
         text: v.text,
@@ -199,6 +200,7 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
         meaning: v.meaning,
         audioBase64: v.audioBase64
       })));
+
       setLoading(false);
     } else if (questions.length === 0 || verbs.length === 0) {
       setLoading(false);
@@ -239,19 +241,23 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
   const checkAnswers = () => {
     const results = {};
     const newStatusMap = {};
+    
     matches.forEach(match => {
       const question = leftItems.find(q => q.pairId === match.questionId);
       const selectedVerb = rightItems.find(v => v.id === match.verbId);
       const userInput = userInputs[match.questionId];
+      
       if (question && selectedVerb && userInput) {
         const isInputCorrect = normalizeVerb(userInput) === normalizeVerb(question.conjugatedVerb);
         const isVerbMatchCorrect = normalizeVerb(selectedVerb.text) === normalizeVerb(question.baseVerb);
         const isCorrect = isInputCorrect && isVerbMatchCorrect;
+        
         results[match.questionId] = isCorrect;
         newStatusMap[`left-${match.questionId}`] = isCorrect ? 'correct' : 'incorrect';
         newStatusMap[`right-${match.verbId}`] = isCorrect ? 'correct' : 'incorrect';
       }
     });
+    
     leftItems.forEach(item => {
       if (!matches.some(m => m.questionId === item.pairId) && userInputs[item.pairId]) {
         const isInputCorrect = normalizeVerb(userInputs[item.pairId]) === normalizeVerb(item.conjugatedVerb);
@@ -259,6 +265,7 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
         results[item.pairId] = isInputCorrect;
       }
     });
+    
     setStatusMap(newStatusMap);
     onCheckAnswers(results);
   };
@@ -292,14 +299,16 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
           ))}
         </div>
       </div>
+
       <div className="module3-matching-section">
-        <div className="module3-column left">
-          {leftItems.map(item => (
-            <div key={item.id} className={`module3-card left ${statusMap[item.id] || ''}`}>
-              {item.text}
-            </div>
-          ))}
-        </div>
+        <Column 
+          items={leftItems} 
+          type="left" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          statusMap={statusMap} 
+        />
+        
         <div className="module3-column right">
           {leftItems.map(item => (
             <div key={`input-${item.id}`} className={`module3-card right ${statusMap[item.id] || ''}`}>
@@ -307,7 +316,7 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
                 type="text"
                 value={userInputs[item.pairId] || ''}
                 onChange={(e) => handleInputChange(item.pairId, e.target.value)}
-                placeholder="Enter conjugated verb"
+                placeholder="Enter verb"
                 className="module3-verb-input"
                 disabled={statusMap[item.id] === 'correct'}
               />
@@ -315,6 +324,7 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
           ))}
         </div>
       </div>
+      
       <button
         className="module3-submit-btn"
         onClick={checkAnswers}
