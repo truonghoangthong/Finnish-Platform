@@ -355,7 +355,7 @@ Success Response (200 OK)
       "question3": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question5": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question6": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
-      ........
+      "imagelink": "https://...",
     }
   }
 }
@@ -372,7 +372,7 @@ Success Response (200 OK)
       "question3": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question5": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question6": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
-      ........
+      "imagelink": "https://...",
     }
   }
 }
