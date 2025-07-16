@@ -251,16 +251,6 @@
   margin: 5px 0;
 }
 
-.module3-verb-input {
-  border-radius: 4px;
-  width: 100%;
-  background-color: #fff;
-  border: none;
-  color: #000;
-  font-size: 16px;
-  padding: 2.75px;
-}
-
 .module3-verbs-list {
   margin-bottom: 20px;
 }
@@ -279,4 +269,23 @@
   padding: 8px 12px;
   border-radius: 15px;
   font-size: 0.9rem;
+}
+
+.module3-verb-input.correct {
+  background-color: #2e7d32;
+}
+
+.module3-verb-input.incorrect {
+  background-color: #ef9a9a;
+}
+
+.module3-verb-input {
+  border-radius: 4px;
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  padding: 2.75px;
+  transition: background-color 0.3s ease;
 }
