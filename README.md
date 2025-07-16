@@ -350,11 +350,13 @@ Success Response (200 OK)
   "result": {
     "part2a": {
       "title": { script, audioBase64 },
+      "introduction": { script, audioBase64 },
       "question1": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question2": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question3": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question5": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
       "question6": { script, audioBase64, correctScript, correctAudioBase64, incorrectScript, incorrectAudioBase64, x, y, width, height },
+      "conclusion": { script, audioBase64 },
       "imagelink": "https://...",
     }
   }
