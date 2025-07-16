@@ -301,17 +301,9 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
       </div>
 
       <div className="module3-matching-section">
-        <Column 
-          items={leftItems} 
-          type="left" 
-          findCard={findCard} 
-          moveCard={moveCard} 
-          statusMap={statusMap} 
-        />
-        
-        <div className="module3-column right">
+        <div className="module3-column left">
           {leftItems.map(item => (
-            <div key={`input-${item.id}`} className={`module3-card right ${statusMap[item.id] || ''}`}>
+            <div key={`input-${item.id}`} className={`module3-card left ${statusMap[item.id] || ''}`}>
               <input
                 type="text"
                 value={userInputs[item.pairId] || ''}
@@ -323,6 +315,13 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
             </div>
           ))}
         </div>
+        <Column 
+          items={leftItems} 
+          type="right" 
+          findCard={findCard} 
+          moveCard={moveCard} 
+          statusMap={statusMap} 
+        />
       </div>
       
       <button
