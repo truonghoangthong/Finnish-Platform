@@ -15,6 +15,12 @@ const Module3 = () => {
   const [pairs3c, setPairs3c] = useState({ questions: [], verbs: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [results, setResults] = useState({
+    part3a: {},
+    part3b: {},
+    part3c: {}
+  });
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -102,16 +108,31 @@ const Module3 = () => {
     loadData();
   }, [location.pathname]);
 
-  const checkRegularAnswers = (leftItems, rightItems, correctPairs) => {
-    const results = {};
+  const checkRegularAnswers = (leftItems, rightItems, correctPairs, part) => {
+    const partResults = {};
     leftItems.forEach((leftItem, index) => {
       const rightItem = rightItems[index];
-      results[leftItem.pairId] = correctPairs.some(p =>
+      partResults[leftItem.pairId] = correctPairs.some(p =>
         p.pairId === leftItem.pairId && p.right === rightItem.text
       );
     });
-    return results;
+    setResults(prev => ({ ...prev, [part]: partResults }));
+    return partResults;
   };
+
+  const handleCheckAllAnswers = () => {
+    setShowResults(true);
+  };
+
+  const getCorrectCount = (partResults) => {
+    return Object.values(partResults).filter(Boolean).length;
+  };
+
+  const totalQuestions = pairs3a.length + pairs3b.length + pairs3c.questions.length;
+
+  const correctAnswers = showResults ? 
+    getCorrectCount(results.part3a) + getCorrectCount(results.part3b) + getCorrectCount(results.part3c) : 
+    0;
 
   if (loading) {
     return (
@@ -135,7 +156,8 @@ const Module3 = () => {
           </div>
           <MatchingGame
             pairs={pairs3a}
-            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3a)}
+            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3a, 'part3a')}
+            showResults={showResults}
           />
         </div>
         <div className="module3-verbs-section">
@@ -145,7 +167,8 @@ const Module3 = () => {
           </div>
           <MatchingGame
             pairs={pairs3b}
-            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3b)}
+            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3b, 'part3b')}
+            showResults={showResults}
           />
         </div>
         <div className="module3-verbs-section">
@@ -156,13 +179,30 @@ const Module3 = () => {
           <VerbMatchingGame
             questions={pairs3c.questions}
             verbs={pairs3c.verbs}
-            onCheckAnswers={(results) => {
-              const correctCount = Object.values(results).filter(Boolean).length;
-              const total = Object.keys(results).length;
-              console.log(`Correct: ${correctCount}/${total}`);
-              return results;
+            onCheckAnswers={(partResults) => {
+              setResults(prev => ({ ...prev, part3c: partResults }));
+              return partResults;
             }}
+            showResults={showResults}
           />
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+          <button
+            className="module3-submit-btn"
+            onClick={handleCheckAllAnswers}
+            disabled={showResults && correctAnswers === totalQuestions}
+          >
+            {showResults ? 'Tarkista uudelleen' : 'Tarkista vastaukset'}
+          </button>
+
+          {showResults && (
+            <div className="module3-results-summary">
+              <p>
+                Oikein: {correctAnswers} / {totalQuestions}
+              </p>
+            </div>
+          )}
         </div>
       </DndProvider>
     </div>

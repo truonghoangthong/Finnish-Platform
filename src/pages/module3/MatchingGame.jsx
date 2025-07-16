@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import Column from './Column';
 
-const MatchingGame = ({ pairs, onCheckAnswers }) => {
+const MatchingGame = ({ pairs, onCheckAnswers, showResults }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +33,20 @@ const MatchingGame = ({ pairs, onCheckAnswers }) => {
     }
   }, [pairs]);
 
+  useEffect(() => {
+    if (showResults) {
+      const results = onCheckAnswers(leftItems, rightItems);
+      const newStatusMap = {};
+      leftItems.forEach(item => {
+        newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
+      });
+      rightItems.forEach(item => {
+        newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
+      });
+      setStatusMap(newStatusMap);
+    }
+  }, [showResults, leftItems, rightItems, onCheckAnswers]);
+
   const findCard = useCallback((id, type) => {
     const items = type === 'left' ? leftItems : rightItems;
     const card = items.find(c => c.id === id);
@@ -49,18 +63,6 @@ const MatchingGame = ({ pairs, onCheckAnswers }) => {
     if (type === 'left') setLeftItems(newItems);
     else setRightItems(newItems);
   }, [findCard, leftItems, rightItems]);
-
-  const checkAnswers = () => {
-    const results = onCheckAnswers(leftItems, rightItems);
-    const newStatusMap = {};
-    leftItems.forEach(item => {
-      newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
-    });
-    rightItems.forEach(item => {
-      newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
-    });
-    setStatusMap(newStatusMap);
-  };
 
   if (loading) {
     return (
@@ -80,13 +82,6 @@ const MatchingGame = ({ pairs, onCheckAnswers }) => {
         <Column items={leftItems} type="left" findCard={findCard} moveCard={moveCard} statusMap={statusMap} />
         <Column items={rightItems} type="right" findCard={findCard} moveCard={moveCard} statusMap={statusMap} />
       </div>
-      <button
-        className="module3-submit-btn"
-        onClick={checkAnswers}
-        disabled={Object.keys(statusMap).length > 0}
-      >
-        Tarkista vastaukset
-      </button>
     </div>
   );
 };

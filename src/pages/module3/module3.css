@@ -189,7 +189,6 @@
   display: flex;
   align-items: baseline;
   gap: 15px;
-  margin-bottom: 20px;
 }
 
 .module3-header-row h2 {
@@ -264,13 +263,6 @@
   justify-content: center;
 }
 
-.module3-verb-tag {
-  background: #e0f7fa;
-  padding: 8px 12px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-}
-
 .module3-verb-input.correct {
   background-color: #2e7d32;
 }
@@ -288,4 +280,28 @@
   font-size: 16px;
   padding: 2.75px;
   transition: background-color 0.3s ease;
+}
+
+.module3-results-summary {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.module3-container {
+  padding-bottom: 50px;
+}
+.module3-verb-tag {
+  background: #e0f7fa;
+  padding: 8px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.module3-verb-tag:hover {
+  background: #b2ebf2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

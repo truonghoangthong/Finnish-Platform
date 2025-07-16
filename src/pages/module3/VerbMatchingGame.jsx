@@ -3,18 +3,16 @@ import './module3.css';
 import '../../components/loader/loader.css';
 import Column from './Column';
 
-const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
+const VerbMatchingGame = ({ questions, verbs, onCheckAnswers, showResults }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [userInputs, setUserInputs] = useState({});
   const [statusMap, setStatusMap] = useState({});
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     if (questions.length > 0 && verbs.length > 0) {
-      // Create right items with consistent IDs
       setRightItems(questions.map(q => ({
         id: `right-${q.pairId}`,
         text: q.sentence,
@@ -23,11 +21,10 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
         audioBase64: q.audioBase64
       })));
 
-      // Create left items with matching pairIds
       setLeftItems(verbs.map(v => ({
         id: `left-${v.id}`,
         text: v.text,
-        pairId: v.id.replace('vocabulary', 'question'), // Match question pairIds
+        pairId: v.id.replace('vocabulary', 'question'),
         meaning: v.meaning,
         audioBase64: v.audioBase64
       })));
@@ -37,6 +34,43 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
       setLoading(false);
     }
   }, [questions, verbs]);
+
+  useEffect(() => {
+    if (showResults) {
+      const results = {};
+      const newStatusMap = {};
+      
+      const correctAnswers = {};
+      questions.forEach(q => {
+        const conjugatedVerb = q.conjugatedVerb.replace(/[\[\]]/g, '');
+        correctAnswers[q.pairId] = conjugatedVerb;
+      });
+
+      rightItems.forEach(question => {
+        const userInput = userInputs[question.pairId];
+        if (userInput) {
+          const isCorrect = normalizeText(userInput) === normalizeText(correctAnswers[question.pairId]);
+          results[question.pairId] = isCorrect;
+          
+          const leftCard = leftItems.find(card => card.pairId === question.pairId);
+          if (leftCard) {
+            newStatusMap[leftCard.id] = isCorrect ? 'correct' : 'incorrect';
+          }
+          newStatusMap[question.id] = isCorrect ? 'correct' : 'incorrect';
+        }
+      });
+
+      setStatusMap(newStatusMap);
+      onCheckAnswers(results);
+    }
+  }, [showResults, userInputs, rightItems, leftItems, questions, onCheckAnswers]);
+
+  const playAudio = (audioBase64) => {
+    if (audioBase64) {
+      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+      audio.play().catch(e => console.error("Audio playback failed:", e));
+    }
+  };
 
   const findCard = useCallback((id, type) => {
     const items = type === 'left' ? leftItems : rightItems;
@@ -66,7 +100,6 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
       delete newStatus[`right-${pairId}`];
       return newStatus;
     });
-    setShowResults(false);
   };
 
   const handleMatch = (questionId, verbId) => {
@@ -81,45 +114,10 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
     });
   };
 
-  const checkAnswers = () => {
-    const results = {};
-    const newStatusMap = {};
-    
-    // Create map of correct answers
-    const correctAnswers = {};
-    questions.forEach(q => {
-      const conjugatedVerb = q.conjugatedVerb.replace(/[\[\]]/g, '');
-      correctAnswers[q.pairId] = conjugatedVerb;
-    });
-
-    // Check each question
-    rightItems.forEach(question => {
-      const userInput = userInputs[question.pairId];
-      if (userInput) {
-        const isCorrect = normalizeText(userInput) === normalizeText(correctAnswers[question.pairId]);
-        results[question.pairId] = isCorrect;
-        
-        // Find matching left card
-        const leftCard = leftItems.find(card => card.pairId === question.pairId);
-        if (leftCard) {
-          newStatusMap[leftCard.id] = isCorrect ? 'correct' : 'incorrect';
-        }
-        newStatusMap[question.id] = isCorrect ? 'correct' : 'incorrect';
-      }
-    });
-
-    setStatusMap(newStatusMap);
-    setShowResults(true);
-    onCheckAnswers(results);
-  };
-
   const normalizeText = (text) => {
     if (!text) return '';
     return text.trim().toLowerCase();
   };
-
-  const allInputsFilled = Object.keys(userInputs).length === rightItems.length && 
-    Object.values(userInputs).every(v => v && v.trim());
 
   if (loading) {
     return (
@@ -138,7 +136,12 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
       <div className="module3-verbs-list">
         <div className="module3-verbs-container">
           {verbs.map(verb => (
-            <div key={verb.id} className="module3-verb-tag">
+            <div 
+              key={verb.id} 
+              className="module3-verb-tag"
+              onClick={() => playAudio(verb.audioBase64)}
+              style={{ cursor: verb.audioBase64 ? 'pointer' : 'default' }}
+            >
               {verb.text} - {verb.meaning}
             </div>
           ))}
@@ -164,24 +167,6 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers }) => {
           statusMap={statusMap}
           onMatch={handleMatch}
         />
-      </div>
-      
-      <div style={{ textAlign: 'center' }}>
-        <button
-          className="module3-submit-btn"
-          onClick={checkAnswers}
-          disabled={!allInputsFilled || (showResults && Object.values(statusMap).every(status => status === 'correct'))}
-        >
-          {showResults ? 'Tarkista uudelleen' : 'Tarkista vastaukset'}
-        </button>
-
-        {showResults && (
-          <div className="module3-results-summary">
-            <p>
-              Oikein: {Object.values(statusMap).filter(status => status === 'correct').length / 2} / {questions.length}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
