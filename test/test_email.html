@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email API Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        input[type="email"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .endpoint-info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .endpoint-info code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Email API Test</h1>
+        
+        <div class="endpoint-info">
+            <strong>Endpoint:</strong> <code>POST /api/email</code><br>
+            <strong>Purpose:</strong> Login with email and send sign-in link
+        </div>
+        
+        <form id="emailForm">
+            <div class="form-group">
+                <label for="apiUrl">API URL:</label>
+                <input type="text" id="apiUrl" value="http://localhost:3000/api/email" placeholder="Enter API URL">
+            </div>
+            
+            <div class="form-group">
+                <label for="inputEmail">Email:</label>
+                <input type="email" id="inputEmail" placeholder="Enter email address" required>
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                Send Request
+            </button>
+        </form>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('emailForm');
+        const responseDiv = document.getElementById('response');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const apiUrl = document.getElementById('apiUrl').value;
+            const inputEmail = document.getElementById('inputEmail').value;
+            
+            if (!inputEmail) {
+                showResponse('Please enter an email address', 'error');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Sending...';
+            showResponse('Sending request...', 'loading');
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        inputEmail: inputEmail
+                    })
+                });
+                
+                const data = await response.text();
+                let parsedData;
+                
+                try {
+                    parsedData = JSON.parse(data);
+                } catch {
+                    parsedData = data;
+                }
+                
+                const result = {
+                    status: response.status,
+                    statusText: response.statusText,
+                    data: parsedData
+                };
+                
+                if (response.ok) {
+                    showResponse(JSON.stringify(result, null, 2), 'success');
+                } else {
+                    showResponse(JSON.stringify(result, null, 2), 'error');
+                }
+                
+            } catch (error) {
+                showResponse(`Network Error: ${error.message}`, 'error');
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Send Request';
+            }
+        });
+        
+        function showResponse(message, type) {
+            responseDiv.style.display = 'block';
+            responseDiv.className = `response ${type}`;
+            responseDiv.textContent = message;
+        }
+        
+        // Test with sample emails
+        const sampleEmails = [
+            'test@example.com',
+            'user@gmail.com',
+            'admin@test.com'
+        ];
+        
+        // Add quick test buttons
+        const quickTestDiv = document.createElement('div');
+        quickTestDiv.innerHTML = '<p><strong>Quick Test:</strong></p>';
+        sampleEmails.forEach(email => {
+            const btn = document.createElement('button');
+            btn.textContent = email;
+            btn.style.width = 'auto';
+            btn.style.margin = '5px';
+            btn.style.padding = '8px 12px';
+            btn.style.fontSize = '14px';
+            btn.onclick = () => {
+                document.getElementById('inputEmail').value = email;
+            };
+            quickTestDiv.appendChild(btn);
+        });
+        
+        form.appendChild(quickTestDiv);
+    </script>
+</body>
+</html>

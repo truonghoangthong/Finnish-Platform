@@ -1,24 +1,22 @@
 import express from 'express';
+import { timeTransformed } from './utils/timeTransform.mjs';
 import { db,auth } from './config/firebase-config.js';
 import { collection, addDoc, query, where, getDocs, updateDoc  } from 'firebase/firestore';
-import cors from 'cors';
+import {actionCodeSettings} from './services/loginEmailAuth.mjs';
 import { sendSignInLinkToEmail } from "firebase/auth";
-import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
-import {googleStorage,bucketName } from './middleware/googleCloud.mjs';
+import {googleStorage,bucketName } from './services/googleCloud.mjs';
+import { Storage } from '@google-cloud/storage';
+import {evaluateTranslation} from './services/open_router.mjs';
+import { command } from './services/awsPolly.mjs';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import {evaluateTranslation} from './middleware/open_router.mjs';
-import { command } from './middleware/awsPolly.mjs';
+
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const actionCodeSettings = {
-  url: 'https://firebase.google.com/docs/firestore/query-data/get-data', // replace actual URL with my app's URL later
-  handleCodeInApp: true,
-};
 
 
 app.post('/api/evaluate', async (req, res) => {
@@ -88,14 +86,7 @@ app.get('/api/learning/:level', async (req, res) => {
           description: data.description,
           lessonNumber: data.lessonNumber,
           imageLink: data.imageLink, 
-          createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
-              timeZone: 'Europe/Helsinki',
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-          })
+          createdAt: timeTransformed(data.createAt?.seconds * 1000)
         };
       });
       return res.status(200).json({result});
@@ -130,14 +121,7 @@ app.get('/api/learning/:level/:lesson', async (req, res) => {
         descriptionAudio: audioBase64, // convert description to base64 audio
         level: data.level,
         imageLink: data.imageLink,
-        createdAt:  new Date(data.createAt?.seconds * 1000).toLocaleString('fi-FI', {
-            timeZone: 'Europe/Helsinki',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
+        createdAt: timeTransformed(data.createAt?.seconds * 1000)
       };
       return res.status(200).json({result});
     } else {
