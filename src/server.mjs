@@ -7,7 +7,7 @@ import { sendSignInLinkToEmail } from "firebase/auth";
 import multer from 'multer';
 import {googleStorage,bucketName } from './services/googleCloud.mjs';
 import { Storage } from '@google-cloud/storage';
-import {evaluateTranslation} from './services/open_router.mjs';
+import {evaluateTranslation} from './services/openRouter.mjs';
 import { command } from './services/awsPolly.mjs';
 import cors from 'cors';
 import dotenv from 'dotenv';
