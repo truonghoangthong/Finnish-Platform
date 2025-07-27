@@ -20,11 +20,10 @@ const Module4 = () => {
   const [translations, setTranslations] = useState({});
   const [answers, setAnswers] = useState({});
   const [currentAudio, setCurrentAudio] = useState(null);
-  const [showAudioMenu, setShowAudioMenu] = useState(false);
-  const [selectedPart, setSelectedPart] = useState(null);
   const [activeAudio, setActiveAudio] = useState(null);
   const [current4aIndex, setCurrent4aIndex] = useState(0);
   const [isPlayingSequence, setIsPlayingSequence] = useState(false);
+  const [showFinnishInstruction, setShowFinnishInstruction] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -96,6 +95,15 @@ const Module4 = () => {
     loadData();
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (showFinnishInstruction) {
+      const timer = setTimeout(() => {
+        setShowFinnishInstruction(false);
+      }, 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [showFinnishInstruction]);
+
   const playAudio = (audioBase64) => {
     if (currentAudio) {
       currentAudio.pause();
@@ -105,6 +113,7 @@ const Module4 = () => {
     const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
     setCurrentAudio(audio);
     audio.play();
+    return audio;
   };
 
   const playNext4aAudio = (index) => {
@@ -130,6 +139,14 @@ const Module4 = () => {
   };
 
   const playPartAudio = (part, index = null) => {
+    if (activeAudio?.part === part && activeAudio?.index === index && currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setActiveAudio(null);
+      setIsPlayingSequence(false);
+      return;
+    }
+
     let audioToPlay;
     
     switch (part) {
@@ -177,16 +194,8 @@ const Module4 = () => {
     }));
   };
 
-  const toggleAudioMenu = () => {
-    setShowAudioMenu(!showAudioMenu);
-    setSelectedPart(null);
-  };
-
-  const selectPart = (part) => {
-    setSelectedPart(part);
-    if (part === '4a') {
-      playPartAudio('4a');
-    }
+  const toggleFinnishInstruction = () => {
+    setShowFinnishInstruction(!showFinnishInstruction);
   };
 
   const checkAnswers = () => {
@@ -223,59 +232,21 @@ const Module4 = () => {
         <div className="module4-mascot-container">
           <div 
             className="module4-mascot"
-            onClick={toggleAudioMenu}
+            onClick={toggleFinnishInstruction}
           >
             <Mascot />
           </div>
-          {showAudioMenu && (
-            <div className="module4-audio-menu">
-              {!selectedPart ? (
-                <div className="module4-part-selection">
-                  <button onClick={() => selectPart('4a')}>Osa 4a</button>
-                  <button onClick={() => selectPart('4b')}>Osa 4b</button>
-                  <button onClick={() => selectPart('4c')}>Osa 4c</button>
-                </div>
-              ) : (
-                <div className="module4-sentence-selection">
-                  {selectedPart === '4a' && (
-                    <button 
-                      onClick={() => playPartAudio('4a')}
-                      disabled={isPlayingSequence}
-                    >
-                      {isPlayingSequence ? 'Toistetaan...' : 'Toista osa 4a'}
-                    </button>
-                  )}
-                  {selectedPart === '4b' && moduleData.part4b.map((item, index) => (
-                    <button 
-                      key={`4b-${index}`}
-                      onClick={() => playPartAudio('4b', index)}
-                    >
-                      Lause {index + 1}
-                    </button>
-                  ))}
-                  {selectedPart === '4c' && moduleData.part4c.map((item, index) => (
-                    <button 
-                      key={`4c-${index}`}
-                      onClick={() => playPartAudio('4c', index)}
-                    >
-                      Lause {index + 1}
-                    </button>
-                  ))}
-                  <button 
-                    className="module4-back-button"
-                    onClick={() => setSelectedPart(null)}
-                  >
-                    ← Takaisin
-                  </button>
-                </div>
-              )}
+          {showFinnishInstruction && (
+            <div className="module4-instruction-box">
+              <div className="module4-instruction-text">
+                Klikkaa tekstiä kuunnellaksesi
+              </div>
             </div>
           )}
         </div>
       </div>
       <div className="module4-content-section">
         <div className="module4-scroll-container">
-          {/* Part 4a - Listening */}
           <h2 className="module4-section-title">Tehtävä 4a. Tekstin ymmärtäminen.</h2>
           
           <div className="module4-audio-list">
@@ -284,8 +255,15 @@ const Module4 = () => {
                 key={item.id} 
                 className={`module4-audio-item ${activeAudio?.part === '4a' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
                 onClick={() => {
-                  playPartAudio('4a', index);
-                  setActiveAudio({ part: '4a', index });
+                  if (activeAudio?.part === '4a' && activeAudio?.index === index && currentAudio) {
+                    currentAudio.pause();
+                    setCurrentAudio(null);
+                    setActiveAudio(null);
+                    setIsPlayingSequence(false);
+                  } else {
+                    playPartAudio('4a', index);
+                    setActiveAudio({ part: '4a', index });
+                  }
                 }}
               >
                 <span>{item.text}</span>
@@ -293,7 +271,6 @@ const Module4 = () => {
             ))}
           </div>
 
-          {/* Part 4b - Translation */}
           <h2 className="module4-section-title">Tehtävä 4b. Lue teksti uudelleen.</h2>
           <p>Kirjoita jokaisen lauseen käännös alla olevaan kenttään:</p>
           
@@ -302,20 +279,30 @@ const Module4 = () => {
               <div 
                 key={item.id} 
                 className={`module4-translation-item ${activeAudio?.part === '4b' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
+                onClick={() => {
+                  if (activeAudio?.part === '4b' && activeAudio?.index === index && currentAudio) {
+                    currentAudio.pause();
+                    setCurrentAudio(null);
+                    setActiveAudio(null);
+                  } else {
+                    playPartAudio('4b', index);
+                    setActiveAudio({ part: '4b', index });
+                  }
+                }}
               >
-                <p>{item.text}</p>
+                <p className="module4-clickable-text">{item.text}</p>
                 <input
                   type="text"
                   value={translations[item.id] || ''}
                   onChange={(e) => handleTranslationChange(item.id, e.target.value)}
                   placeholder="Kirjoita käännös tähän..."
                   className="module4-translation-input"
+                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
             ))}
           </div>
 
-          {/* Part 4c - True/False */}
           <h2 className="module4-section-title">Tehtävä 4c. Tekstin ymmärtäminen.</h2>
           <p>Valitse onko väite oikein vai väärin:</p>
           
@@ -324,9 +311,19 @@ const Module4 = () => {
               <div 
                 key={item.id} 
                 className={`module4-question-item ${activeAudio?.part === '4c' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
+                onClick={() => {
+                  if (activeAudio?.part === '4c' && activeAudio?.index === index && currentAudio) {
+                    currentAudio.pause();
+                    setCurrentAudio(null);
+                    setActiveAudio(null);
+                  } else {
+                    playPartAudio('4c', index);
+                    setActiveAudio({ part: '4c', index });
+                  }
+                }}
               >
-                <p>{item.text}</p>
-                <div className="module4-answer-buttons">
+                <p className="module4-clickable-text">{item.text}</p>
+                <div className="module4-answer-buttons" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => handleAnswerSelect(item.id, true)}
                     className={`module4-answer-button module4-true-button ${answers[item.id] === true ? 'module4-selected-true' : ''}`}
@@ -355,5 +352,3 @@ const Module4 = () => {
     </div>
   );
 };
-
-export default Module4;

@@ -243,6 +243,42 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+.module4-instruction-box {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-left: 15px;
+  animation: fadeIn 0.3s ease-out;
+  position: relative;
+  max-width: 200px;
+}
+
+.module4-instruction-box:after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent; 
+  border-right: 10px solid white;
+}
+
+.module4-instruction-text {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
   .module4-wrapper {
     flex-direction: column;
