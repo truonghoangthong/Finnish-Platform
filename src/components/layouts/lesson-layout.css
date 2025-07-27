@@ -78,7 +78,7 @@
   word-break: keep-all;
 }
 
-/* Lesson container */
+/* Lesson container
 .lesson-preview {
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(10px);
@@ -86,7 +86,7 @@
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 28px;
-}
+} */
 
 /* .lesson-preview {
   background: rgba(255, 255, 255, 0.35);
