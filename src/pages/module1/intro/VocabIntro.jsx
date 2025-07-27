@@ -79,7 +79,7 @@ const VocabIntro = () => {
   };
 
   if (loading) {
-    return (
+      return (
       <div className="vocab-intro loader-wrapper">
         <Loader />
       </div>
