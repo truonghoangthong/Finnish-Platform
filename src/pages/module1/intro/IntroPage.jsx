@@ -16,7 +16,13 @@ const IntroPage = () => {
     load();
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading) {
+  return (
+    <div className="loader-wrapper">
+      <Loader />
+    </div>
+  );
+}
   if (!lesson) return null;
 
   return <VocabIntro lesson={lesson} />;
