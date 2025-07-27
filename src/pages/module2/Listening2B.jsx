@@ -161,7 +161,7 @@ const Listening2B = ({ data }) => {
               audio={data.introduction?.audioBase64}
               script={data.introduction?.script}
               onNext={() => setPhase("task")}
-              autoPlay={true}
+              
             />
           </div>
         </div>

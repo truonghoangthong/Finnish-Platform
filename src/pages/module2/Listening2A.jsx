@@ -180,7 +180,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
               audio={data.introduction?.audioBase64}
               script={data.introduction?.script}
               onNext={handleStartTask}
-              autoPlay={true}
+             
             />
           </div>
         </div>
