@@ -80,16 +80,23 @@
 
 /* Lesson container */
 .lesson-preview {
-  background-color: white;
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  margin-top: 20px;
-  text-align: center;
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
 }
+
+/* .lesson-preview {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  padding: 28px;
+} */
+
 
 .lesson-card {
   position: relative;
