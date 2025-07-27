@@ -1,0 +1,392 @@
+/* =================================================
+   📦 MODULE 2 – LISTENING GAME (CLEAN + REFACTORED)
+   ================================================= */
+
+/* ===================================
+   🔷 1. CONTAINER & PAGE STRUCTURE
+   =================================== */
+.listening2a-container,
+.listening2b-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* =========================
+   🔢 2. QUESTION TABS
+   ========================= */
+.question-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.question-tab {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #e0e0e0;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  user-select: none;
+}
+
+.question-tab:hover {
+  background: #d0f4fa;
+}
+
+.question-tab.active {
+  background-color: #00c2e5;
+  color: white;
+}
+
+.question-tab.correct {
+  background-color: #a0f3b4;
+}
+
+/* ========================
+   🖼️ 3. IMAGE SECTION
+   ======================== */
+.question-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  max-width: 800px;
+  margin: auto;
+}
+
+.question-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+}
+
+/* =======================
+   🎛 4. QUESTION CONTROLS
+   ======================= */
+.question-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.question-controls button {
+  background: #00c2e5;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.question-controls button:hover {
+  background: #00b2d0;
+}
+
+/* ======================
+   📜 5. TRANSCRIPT BOX
+   ====================== */
+.script-box {
+  margin-top: 1rem;
+  max-width: 600px;
+  background: #fff;
+  border: 1px dashed #00C2E5;
+  padding: 1rem;
+  border-radius: 10px;
+  font-style: italic;
+  animation: fadeIn 0.3s ease;
+}
+
+.pretty-script-box {
+  background-color: #e6fef9;
+  border: 1px solid #a3f3e8;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 20px auto 0;
+  max-width: 800px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #004d40;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  animation: fadeIn 0.4s ease;
+}
+
+.pretty-script-box::before {
+  content: "📜 ";
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  font-size: 1.2rem;
+}
+
+/* ======================
+   ✅ 6. FEEDBACK POPUP
+   ====================== */
+.popup {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  animation: fadeInUp 0.3s ease;
+  text-align: center;
+}
+
+.popup.correct {
+  border: 2px solid #00C2E5;
+  color: #00C2E5;
+}
+
+.popup.wrong {
+  border: 2px solid #ff4d4f;
+  color: #ff4d4f;
+}
+
+.popup button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: #00C2E5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.popup-script {
+  margin-top: 0.5rem;
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 10px;
+  font-style: italic;
+}
+
+.popup-controls {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.popup-controls button {
+  background-color: #00c2e5;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 0 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.popup-controls button:hover {
+  background-color: #009fb8;
+}
+
+/* ============================
+   ⭐ 7. STAR MARKER EFFECT
+   ============================ */
+.star-marker {
+  font-size: 28px;
+  color: #00c2e5;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.star-marker.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+  animation: starGlow 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(0, 194, 229, 0.5));
+}
+
+.star-marker.incorrect {
+  color: red;
+  animation: shakeStar 0.4s ease;
+}
+
+.star-marker.correct {
+  color: #000ce6;
+  animation: correctFancy 0.8s ease forwards;
+  filter: drop-shadow(0 0 8px #00e676);
+}
+
+@keyframes starGlow {
+  0%   { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
+  50%  { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
+}
+
+@keyframes shakeStar {
+  0% { transform: translate(-50%, -50%) rotate(0); }
+  25% { transform: translate(-50%, -50%) rotate(-5deg); }
+  50% { transform: translate(-50%, -50%) rotate(5deg); }
+  75% { transform: translate(-50%, -50%) rotate(-3deg); }
+  100% { transform: translate(-50%, -50%) rotate(0); }
+}
+
+@keyframes correctFancy {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+    filter: drop-shadow(0 0 2px #00e676);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.4) rotate(15deg);
+    filter: drop-shadow(0 0 12px #00e676);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1) rotate(-10deg);
+    filter: drop-shadow(0 0 6px #00e676);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(0deg);
+    filter: drop-shadow(0 0 8px #00e676);
+  }
+}
+
+/* =========================
+   🤖 8. MASCOT & SPEECH UI
+   ========================= */
+.mascot-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.mascot-img {
+  width: 160px;
+  height: auto;
+}
+
+.bubble {
+  margin-top: 1rem;
+  background: #e0f9ff;
+  border: 2px solid #00C2E5;
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bubble button {
+  padding: 0.6rem 1rem;
+  background: #00C2E5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mascot-in-image {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+}
+
+.mascot-in-image .mascot-section {
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 0;
+  gap: 12px;
+  animation: fadeIn 0.4s ease;
+}
+
+.mascot-in-image .mascot-img {
+  width: 80px;
+  height: 80px;
+}
+
+.mascot-in-image .bubble {
+  margin: 0;
+  background: #e0f9ff;
+  border: 2px solid #00c2e5;
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 240px;
+  box-shadow: 0 4px 8px rgba(0, 194, 229, 0.2);
+}
+
+.mascot-in-image .bubble button {
+  padding: 6px 10px;
+  background: #00c2e5;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+/* ===========================
+   🌀 9. ANIMATIONS & EFFECTS
+   =========================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.8); opacity: 0; }
+  50%  { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   📱 10. RESPONSIVE TWEAKS
+   ========================= */
+@media (max-width: 600px) {
+  .bubble {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .question-tab {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  .popup {
+    width: 90%;
+  }
+
+  .question-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+}
