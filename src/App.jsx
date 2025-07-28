@@ -6,6 +6,7 @@ import IntroPage from "./pages/module1/intro/IntroPage";
 import Vocabulary1ab from "./pages/module1/Vocabulary1ab";
 import Listening2AB from "./pages/module2/listening2ab";
 import Module3 from "./pages/module3/module3";
+import Module4 from "./pages/module4/module4";    
 import Part1Final from "./pages/module1/part1b/part1Final";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/course/a1/lesson-1/vocabulary/1a/result" element={<Part1Final />} />
         <Route path="/course/a1/lesson-1/listening" element={<Listening2AB />} />
         <Route path="/course/a1/lesson-1/writing" element={<Module3 />} />
+        <Route path="/course/a1/lesson-1/reading" element={<Module4 />} />
 
       </Routes>
     </Router>

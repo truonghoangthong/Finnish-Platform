@@ -1,8 +1,11 @@
 import './header.css';
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Header() {
   const [activeLink, setActiveLink] = useState('#home');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const sections = ['#home', '#courses', '#contact'];
@@ -34,6 +37,12 @@ function Header() {
 
   const handleClick = (e, id) => {
     e.preventDefault();
+    
+    if (location.pathname !== '/') {
+      navigate('/');
+      return;
+    }
+    
     setActiveLink(id);
     const element = document.querySelector(id);
     if (element) {
