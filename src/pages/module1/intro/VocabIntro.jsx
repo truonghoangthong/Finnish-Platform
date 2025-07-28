@@ -79,7 +79,7 @@ const VocabIntro = () => {
   };
 
   if (loading) {
-      return (
+    return (
       <div className="vocab-intro loader-wrapper">
         <Loader />
       </div>
@@ -96,38 +96,40 @@ const VocabIntro = () => {
       showImage={true}
       imageSrc={lesson.imageLink}
       imageChildren={(
-        <div className="mascot-overlay-in-image">
-          <div className="mascot-inner glow" onClick={handleMascotClick}>
-            <Mascot />
-          </div>
-
-          {isBubbleOpen && (
-            <div className="chat-bubble" onClick={(e) => e.stopPropagation()}>
-              <button className="action-button" onClick={toggleAudio}>
-                {isPlaying ? (
-                  <span className="audio-loading">
-                    ⏸️ Pysäytä
-                    <div className="audio-wave">
-                      <div className="wave-bar"></div>
-                      <div className="wave-bar"></div>
-                      <div className="wave-bar"></div>
-                      <div className="wave-bar"></div>
-                    </div>
-                  </span>
-                ) : (
-                  "🔊 Kuuntele uudelleen"
-                )}
-              </button>
-
-              <button className="action-button" onClick={handleToggleScript}>
-                {showScript ? "📖 Piilota käsikirjoitus" : "📖 Näytä käsikirjoitus"}
-              </button>
-
-              <button className="action-button" onClick={goToNext}>
-                ⏭️ Seuraava
-              </button>
+        <div className="mascot-in-image">
+          <div className="mascot-section">
+            <div className="mascot-img glow" onClick={handleMascotClick}>
+              <Mascot />
             </div>
-          )}
+
+            {isBubbleOpen && (
+              <div className="bubble" onClick={(e) => e.stopPropagation()}>
+                <button onClick={toggleAudio}>
+                  {isPlaying ? (
+                    <span className="audio-loading">
+                      ⏸️ Pysäytä
+                      <div className="audio-wave">
+                        <div className="wave-bar"></div>
+                        <div className="wave-bar"></div>
+                        <div className="wave-bar"></div>
+                        <div className="wave-bar"></div>
+                      </div>
+                    </span>
+                  ) : (
+                    "🔊 Kuuntele uudelleen"
+                  )}
+                </button>
+
+                <button onClick={handleToggleScript}>
+                  {showScript
+                    ? "📖 Piilota käsikirjoitus"
+                    : "📖 Näytä käsikirjoitus"}
+                </button>
+
+                <button onClick={goToNext}>⏭️ Seuraava</button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     >

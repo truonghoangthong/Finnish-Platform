@@ -186,13 +186,16 @@ const VocabPart1A = ({ data }) => {
         </div>
       )}
 
-      {/* ✅ Audio + Title + Description in ONE LINE */}
-      <div className="task-header oneline">
-        <div className="audio-wrapper">
+      {/* ✅ Đã chỉnh để giống Task 1B: audio trước, Tehtävä đậm + mô tả bên cạnh */}
+      <div className="task-header">
+        
+        <div className="task-audio">
           <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
         </div>
-        <span className="task-title">Tehtävä 1A</span>
-        <span className="task-description">{title?.script}</span>
+        <div className="task-title-wrapper">
+          <span className="task-title-bold">Tehtävä 1A</span>
+          <span className="task-desc">{title?.script}</span>
+        </div>
       </div>
 
       <div className="question-tabs">
