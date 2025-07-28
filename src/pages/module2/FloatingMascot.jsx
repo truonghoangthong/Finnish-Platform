@@ -98,7 +98,7 @@ const FloatingMascot = ({
           <button onClick={toggleAudio}>
             {isPlaying ? (
               <span className="audio-loading">
-                ⏸️ Pysäytä
+                ⏸️ 
                 <div className="audio-wave">
                   <div className="wave-bar"></div>
                   <div className="wave-bar"></div>

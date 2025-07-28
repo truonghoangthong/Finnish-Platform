@@ -169,21 +169,21 @@ const Listening2B = ({ data }) => {
 
       {phase === "task" && (
         <>
-          <div className="question-tabs">
-            {allQuestions.map((_, i) => (
-              <div
-                key={i}
-                className={`question-tab ${i === currentIndex ? "active" : ""} ${
-                  answeredCorrect.includes(allQuestions[i]) ? "correct" : ""
-                }`}
-                onClick={() => {
-                  if (isPracticeMode) setCurrentIndex(i);
-                }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </div>
-            ))}
-          </div>
+                <div className="question-tabs">
+      {allQuestions.map((_, i) => (
+        <div
+          key={i}
+          className={`tab ${i === currentIndex ? "active" : ""} ${
+            answeredCorrect.includes(allQuestions[i]) ? "correct" : ""
+          }`}
+          onClick={() => {
+            if (isPracticeMode) handleTabClick(i);
+          }}
+        >
+          {String(i + 1).padStart(2, "0")}
+        </div>
+      ))}
+    </div>
 
           <div className="question-image-wrapper" style={{ position: "relative" }}>
             <img src={data.imageLink} alt="lesson" className="question-image" />

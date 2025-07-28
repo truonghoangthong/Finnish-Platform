@@ -10,7 +10,7 @@ const AnswerPopup2 = ({
   onRetry,
 }) => {
   return (
-    <div className="popup">
+    <div className={`popup ${!isCorrect ? "shake" : ""}`}>
       <div className="popup-title">
         {isCorrect ? (
           <>

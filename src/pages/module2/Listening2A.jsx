@@ -17,7 +17,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [popupScript, setPopupScript] = useState("");
   const [popupAudio, setPopupAudio] = useState(null);
-  const [showPopupScript, setShowPopupScript] = useState(false); // ✅ tách script popup
+  const [showPopupScript, setShowPopupScript] = useState(false);
   const [showScript, setShowScript] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFinalPopup, setShowFinalPopup] = useState(false);
@@ -59,8 +59,9 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     setPopupScript(correct ? correctScript : wrongScript);
     setPopupAudio(correct ? correctAudio : wrongAudio);
     setShowPopup(true);
-    setShowPopupScript(false); // ✅ reset popup script
-    setShowScript(false); // ✅ reset script
+    setShowPopupScript(false);
+    setShowScript(false);
+
     const feedbackAudio = new Audio(
       `data:audio/mp3;base64,${correct ? correctAudio : wrongAudio}`
     );
@@ -174,13 +175,12 @@ const Listening2A = ({ data, onScrollToPartB }) => {
 
       {phase === "intro" && (
         <div className="question-image-wrapper">
-          <img src={data.imageLink} alt="lesson" className="question-image" />
+          <img src={data.imageLink} alt="lesson" className="lesson-image" />
           <div className="mascot-in-image">
             <FloatingMascot
               audio={data.introduction?.audioBase64}
               script={data.introduction?.script}
               onNext={handleStartTask}
-             
             />
           </div>
         </div>
@@ -192,19 +192,19 @@ const Listening2A = ({ data, onScrollToPartB }) => {
             {allQuestions.map((_, i) => (
               <div
                 key={i}
-                className={`question-tab ${i === currentIndex ? "active" : ""} ${
+                className={`tab ${i === currentIndex ? "active" : ""} ${
                   answeredCorrect.includes(allQuestions[i]) ? "correct" : ""
                 }`}
                 onClick={() => {
-                if (isPracticeMode) handleTabClick(i);
-              }}
+                  if (isPracticeMode) handleTabClick(i);
+                }}
               >
                 {String(i + 1).padStart(2, "0")}
               </div>
             ))}
           </div>
 
-          <div className="question-image-wrapper">
+          <div className="question-image-wrapper" style={{ position: "relative" }}>
             <img src={data.imageLink} alt="lesson" className="question-image" />
             {currentQuestion && (
               <QuestionBox
@@ -213,6 +213,18 @@ const Listening2A = ({ data, onScrollToPartB }) => {
                 onAnswer={handleAnswer}
                 index={currentIndex}
                 isAnswered={answeredCorrect.includes(currentQuestion)}
+              />
+            )}
+
+            {/* ✅ Popup moved inside image-wrapper */}
+            {showPopup && (
+              <AnswerPopup2
+                isCorrect={isCorrect}
+                popupScript={popupScript}
+                showScript={showPopupScript}
+                onShowScript={() => setShowPopupScript(true)}
+                onNext={handleNext}
+                onRetry={() => setShowPopup(false)}
               />
             )}
           </div>
@@ -280,17 +292,6 @@ const Listening2A = ({ data, onScrollToPartB }) => {
             🔁 Harjoittele uudelleen
           </button>
         </div>
-      )}
-
-      {showPopup && (
-        <AnswerPopup2
-          isCorrect={isCorrect}
-          popupScript={popupScript}
-          showScript={showPopupScript} // ✅ tách script popup riêng
-          onShowScript={() => setShowPopupScript(true)} // ✅ toggle riêng popup
-          onNext={handleNext}
-          onRetry={() => setShowPopup(false)}
-        />
       )}
     </div>
   );

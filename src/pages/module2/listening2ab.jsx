@@ -10,7 +10,7 @@ const Listening2AB = () => {
   const [dataB, setDataB] = useState(null);
   const [lessonInfo, setLessonInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activePart, setActivePart] = useState("2a"); // ✅ NEW
+  const [activePart, setActivePart] = useState("2a");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,18 +43,17 @@ const Listening2AB = () => {
   }, []);
 
   const scrollToPart2B = () => {
-    setActivePart("2b"); // ✅ Switch active part
+    setActivePart("2b");
     document.getElementById("part2b-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
   if (loading || !dataA || !dataB || !lessonInfo) {
-  return (
-    <div className="loader-wrapper">
-      <Loader />
-    </div>
-  );
-}
-
+    return (
+      <div className="loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <LessonLayout
@@ -64,9 +63,21 @@ const Listening2AB = () => {
       showImage={false}
       imageSrc={dataA.imageLink}
     >
-      <Listening2A data={dataA} onScrollToPartB={scrollToPart2B} active={activePart === "2a"} />
+      {/* ✅ Bọc phần 2A để popup hoạt động đúng */}
+      <div className="lesson-content" style={{ position: "relative" }}>
+        <Listening2A
+          data={dataA}
+          onScrollToPartB={scrollToPart2B}
+          active={activePart === "2a"}
+        />
+      </div>
 
-      <div id="part2b-section">
+      {/* ✅ Bọc phần 2B để popup hoạt động đúng */}
+      <div
+        id="part2b-section"
+        className="lesson-content part2b-wrapper"
+        style={{ position: "relative" }}
+      >
         <Listening2B data={dataB} active={activePart === "2b"} />
       </div>
     </LessonLayout>
