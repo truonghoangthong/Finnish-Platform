@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './vocab-part1b.css';
 import PopupScore from '../../../components/score/PopupScore';
 import AudioPlayer from '../../../components/audioPlayer/AudioPlayer';
+import Title from '../../../components/title/Title'; // ✅ Thêm Title component
 
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
@@ -102,13 +103,12 @@ const VocabPart1B = ({ data }) => {
 
   return (
     <div className="vocab1b-wrapper">
-      <div className="task-header oneline">
-        <div className="audio-wrapper">
-          <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
-        </div>
-        <span className="task-title">Tehtävä 1B</span>
-        <span className="task-description">{title?.script}</span>
-      </div>
+      {/* ✅ Dùng Title component để hiển thị tiêu đề */}
+      <Title
+        taskLabel="Tehtävä 1B"
+        script={title?.script}
+        audioBase64={title?.audioBase64}
+      />
 
       <div className="vocab1b-drop-area">
         <div className={`vocab1b-image-options ${questions.length < 7 ? 'center-flex' : 'grid-7'}`}>

@@ -78,13 +78,13 @@
 
 /* TRANSCRIPT */
 .transcript {
-  margin-top: -25px;
-  background-color: #f1fdf5;
-  border: 1px solid #a5d6a7;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.15);
+  margin-top: 30px; /* ✅ cách ảnh ra nhẹ nhàng */
+  background-color: #e0f9ff; /* ✅ nền xanh nhạt giống popup */
+  border: 1px solid #00c2e5; /* ✅ viền đồng bộ nút */
+  box-shadow: 0 6px 20px rgba(0, 194, 229, 0.1); /* ✅ shadow nhẹ xanh */
   padding: 20px;
   font-size: 15px;
-  color: #2e7d32;
+  color: #004466; /* ✅ màu text dịu và dễ đọc */
   line-height: 1.6;
   max-width: 690px;
   margin-left: auto;
