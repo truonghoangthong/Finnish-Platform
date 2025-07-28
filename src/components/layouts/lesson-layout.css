@@ -1,39 +1,51 @@
 .lesson-layout {
-  padding: 32px 16px;
+  padding: 12px 8px;
   max-width: 1200px;
   margin: 0 auto;
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Header */
+/* ========================
+   🔷 Header (LEVEL A1 + slogan ngang)
+======================== */
 .layout-header {
-  text-align: left;
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 0px;
+  padding: 0 8px;
 }
 
 .level-title {
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 800;
   color: #06ACFF;
-  margin-bottom: 6px;
+  margin: 0;
 }
 
-.layout-slogan {
-  font-size: 17px;
+/* .layout-slogan {
+  font-size: 13px;
   color: #555;
-  margin-bottom: 16px;
-}
+  margin: 0;
+  max-width: 70%;
+  text-align: right;
+} */
 
-/* Tabs */
+/* ========================
+   🔷 Tabs (Skills)
+======================== */
 .layout-tabs {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 32px;
-  margin-bottom: 10px;
-  padding: 0 16px;
+  gap: 10px;
+  margin: -10px auto;
+  padding: 0;
   text-align: center;
+  max-width: 360px;
+  
 }
 
 .layout-tab {
@@ -44,7 +56,7 @@
   padding: 6px 10px;
   border-radius: 10px;
   transition: 0.2s ease;
-  min-width: 68px;
+  min-width: 48px;
 }
 
 .layout-tab:hover {
@@ -58,8 +70,8 @@
 }
 
 .tab-number {
-  width: 42px;
-  height: 42px;
+  width: 30px;
+  height: 30px;
   border: 2px solid #06ACFF;
   border-radius: 50%;
   display: flex;
@@ -67,73 +79,65 @@
   justify-content: center;
   font-weight: bold;
   color: #06ACFF;
-  margin-bottom: 4px;
-  transition: all 0.3s ease;
+  margin-bottom: 2px;
+  font-size: 12px;
 }
 
 .tab-label {
-  font-size: 13px;
+  font-size: 11px;
   color: #06ACFF;
   font-weight: 500;
   word-break: keep-all;
 }
 
-/* Lesson container
-.lesson-preview {
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  padding: 28px;
-} */
-
-/* .lesson-preview {
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  padding: 28px;
-} */
-
-
-.lesson-card {
-  position: relative;
-}
-
-/* Title */
+/* ========================
+   🔷 Lesson Title
+======================== */
 .lesson-header {
-  margin-bottom: 8px;
+  margin: 0px auto;
   text-align: center;
 }
 
 .lesson-title {
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 800;
   color: #003366;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .lesson-subtitle {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 600;
   color: #005599;
   text-transform: capitalize;
-  margin-bottom: 0;
+  margin-bottom: 14px;
 }
 
-/* ✅ Image wrapper fix */
+/* ========================
+   🖼️ Image & Mascot
+======================== */
 .lesson-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
   position: relative;
-  margin: 0 auto 10px;
+  margin: -4px auto 10px;
   max-width: 500px;
   border-radius: 10px;
-  overflow: visible; /* ✅ giữ lại để bubble không bị cắt */
-  min-height: 300px;
+  overflow: hidden;
+  max-height: 55vh;
+  min-height: 200px;
 }
 
-/* ✅ Mascot fix: nằm đúng trong ảnh */
+.lesson-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 50vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
 .mascot-overlay-in-image {
   position: absolute;
   bottom: 12px;
@@ -146,13 +150,6 @@
   pointer-events: auto;
 }
 
-.lesson-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ✅ Mascot hình ảnh */
 .mascot-inner {
   width: 80px;
   height: 80px;
@@ -174,7 +171,9 @@
   }
 }
 
-/* Progress */
+/* ========================
+   📊 Progress Bar
+======================== */
 .progress-bar {
   width: 100%;
   max-width: 400px;
@@ -200,21 +199,25 @@
   margin-bottom: 12px;
 }
 
-/* Inner module content */
+/* ========================
+   📚 Inner Content
+======================== */
 .lesson-content {
-  margin-top: 24px;
+  margin-top: -65px;
   text-align: left;
   padding: 0 8px;
 }
 
-/* === Responsive === */
+/* ========================
+   📱 Responsive
+======================== */
 @media (max-width: 768px) {
   .lesson-layout {
-    padding: 24px 12px;
+    padding: 16px 12px;
   }
 
   .lesson-preview {
-    padding: 20px;
+    padding: 8px;
     max-width: 95vw;
   }
 
@@ -223,11 +226,11 @@
   }
 
   .lesson-title {
-    font-size: 24px;
+    font-size: 16px;
   }
 
   .lesson-subtitle {
-    font-size: 17px;
+    font-size: 13px;
   }
 
   .mascot-inner {
@@ -235,16 +238,45 @@
     height: 60px;
   }
 
-  .layout-tabs {
-    gap: 20px;
+  .tab-label {
+    font-size: 10px;
   }
 
   .tab-number {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .layout-slogan {
+    text-align: left;
+    font-size: 12px;
+    max-width: 100%;
   }
 
   .tab-label {
-    font-size: 12px;
+    display: none; /* ✳️ Ẩn label tab trên mobile */
+  }
+
+  .layout-tabs {
+    max-width: 220px;
+  }
+}
+
+@media (min-height: 700px) {
+  .lesson-image {
+    max-height: 60vh;
+  }
+
+  .lesson-image-wrapper {
+    max-height: 65vh;
   }
 }
