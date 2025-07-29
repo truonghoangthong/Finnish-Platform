@@ -16,8 +16,8 @@ const Listening2B = ({ data }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [popupScript, setPopupScript] = useState("");
   const [popupAudio, setPopupAudio] = useState(null);
-  const [showScript, setShowScript] = useState(false); // 👉 dùng cho câu hỏi
-  const [showPopupScript, setShowPopupScript] = useState(false); // 👉 dùng cho popup
+  const [showScript, setShowScript] = useState(false);
+  const [showPopupScript, setShowPopupScript] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFinalPopup, setShowFinalPopup] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
@@ -59,7 +59,7 @@ const Listening2B = ({ data }) => {
     setPopupAudio(correct ? correctAudio : wrongAudio);
     setShowPopup(true);
     setShowScript(false);
-    setShowPopupScript(false); // ✅ reset popup script
+    setShowPopupScript(false);
 
     const feedbackAudio = new Audio(
       `data:audio/mp3;base64,${correct ? correctAudio : wrongAudio}`
@@ -77,7 +77,7 @@ const Listening2B = ({ data }) => {
   const handleNext = () => {
     setShowPopup(false);
     setShowScript(false);
-    setShowPopupScript(false); // ✅ reset popup script
+    setShowPopupScript(false);
 
     if (answeredCorrect.length === allQuestions.length) {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -154,14 +154,13 @@ const Listening2B = ({ data }) => {
 
       {phase === "intro" && (
         <div className="question-image-wrapper">
-          <img src={data.imageLink} alt="lesson" className="question-image" />
+          <img src={data.imageLink} alt="lesson" className="question-img" />
           <div className="mascot-in-image">
             <FloatingMascot
               key={phase}
               audio={data.introduction?.audioBase64}
               script={data.introduction?.script}
               onNext={() => setPhase("task")}
-              
             />
           </div>
         </div>
@@ -169,25 +168,24 @@ const Listening2B = ({ data }) => {
 
       {phase === "task" && (
         <>
-                <div className="question-tabs">
-      {allQuestions.map((_, i) => (
-        <div
-          key={i}
-          className={`tab ${i === currentIndex ? "active" : ""} ${
-            answeredCorrect.includes(allQuestions[i]) ? "correct" : ""
-          }`}
-          onClick={() => {
-            if (isPracticeMode) handleTabClick(i);
-          }}
-        >
-          {String(i + 1).padStart(2, "0")}
-        </div>
-      ))}
-    </div>
+          <div className="question-tabs">
+            {allQuestions.map((_, i) => (
+              <div
+                key={i}
+                className={`tab ${i === currentIndex ? "active" : ""} ${
+                  answeredCorrect.includes(allQuestions[i]) ? "correct" : ""
+                }`}
+                onClick={() => {
+                  if (isPracticeMode) handleTabClick(i);
+                }}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </div>
+            ))}
+          </div>
 
           <div className="question-image-wrapper" style={{ position: "relative" }}>
-            <img src={data.imageLink} alt="lesson" className="question-image" />
-
+            <img src={data.imageLink} alt="lesson" className="question-img" />
             {currentQuestion && (
               <QuestionBox
                 data={currentQuestion}
@@ -249,7 +247,7 @@ const Listening2B = ({ data }) => {
       {phase === "conclusion" && (
         <>
           <div className="question-image-wrapper">
-            <img src={data.imageLink} alt="lesson" className="question-image" />
+            <img src={data.imageLink} alt="lesson" className="question-img" />
             <div className="mascot-in-image">
               <FloatingMascot
                 key={phase}
@@ -275,8 +273,8 @@ const Listening2B = ({ data }) => {
         <AnswerPopup2
           isCorrect={isCorrect}
           popupScript={popupScript}
-          showScript={showPopupScript} // ✅ riêng cho popup
-          onShowScript={() => setShowPopupScript(true)} // ✅ riêng cho popup
+          showScript={showPopupScript}
+          onShowScript={() => setShowPopupScript(true)}
           onNext={handleNext}
           onRetry={() => setShowPopup(false)}
         />

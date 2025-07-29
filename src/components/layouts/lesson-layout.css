@@ -1,8 +1,6 @@
 .lesson-layout {
   padding: 12px 8px;
-  max-width: 1200px;
   margin: 0 auto;
-  font-family: "Segoe UI", sans-serif;
 }
 
 /* ========================
@@ -36,7 +34,6 @@
   margin: 10px auto;
   padding: 0;
   text-align: center;
-  max-width: 360px;
 }
 
 .lesson-tab {
@@ -161,7 +158,7 @@
    📚 Content Area
 ======================== */
 .lesson-preview-container {
-  max-width: 800px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 16px 8px;
 }

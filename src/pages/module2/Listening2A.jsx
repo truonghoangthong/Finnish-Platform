@@ -175,7 +175,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
 
       {phase === "intro" && (
         <div className="question-image-wrapper">
-          <img src={data.imageLink} alt="lesson" className="lesson-image" />
+          <img src={data.imageLink} alt="lesson" className="question-img" />
           <div className="mascot-in-image">
             <FloatingMascot
               audio={data.introduction?.audioBase64}
@@ -205,7 +205,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
           </div>
 
           <div className="question-image-wrapper" style={{ position: "relative" }}>
-            <img src={data.imageLink} alt="lesson" className="question-image" />
+            <img src={data.imageLink} alt="lesson" className="question-img" />
             {currentQuestion && (
               <QuestionBox
                 data={currentQuestion}
@@ -216,7 +216,6 @@ const Listening2A = ({ data, onScrollToPartB }) => {
               />
             )}
 
-            {/* ✅ Popup moved inside image-wrapper */}
             {showPopup && (
               <AnswerPopup2
                 isCorrect={isCorrect}
@@ -272,7 +271,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
 
       {phase === "conclusion" && (
         <div className="question-image-wrapper">
-          <img src={data.imageLink} alt="lesson" className="question-image" />
+          <img src={data.imageLink} alt="lesson" className="question-img" />
           <div className="mascot-in-image">
             <FloatingMascot
               audio={data.conclusion?.audioBase64}
