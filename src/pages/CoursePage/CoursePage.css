@@ -6,21 +6,20 @@
   --bg-light: rgba(255, 255, 255, 0.92);
   --shadow-color: rgba(0, 0, 0, 0.08);
 
-  padding: 32px 16px;
+  padding: 20px 16px;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: "Segoe UI", sans-serif;
 }
 
 .course-heading {
   font-size: 30px;
   color: var(--main-color);
-  margin-bottom: 4px;
+  margin: 0 0 4px 0;
 }
 
 .course-slogan {
   font-size: 17px;
-  margin-bottom: 24px;
+  margin: 0 0 24px 0;
   color: #555;
 }
 
@@ -53,13 +52,19 @@
 .lesson-preview {
   background-color: white;
   border-radius: 16px;
-  padding: 28px;
+  padding: 20px;
   box-shadow: 0 4px 16px var(--shadow-color);
-  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 30px;
 }
 
 .lesson-card {
-  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .lesson-header {
@@ -70,23 +75,22 @@
   font-size: 28px;
   font-weight: 800;
   color: #003366;
-  margin-bottom: 4px;
+  margin: 0 0 4px 0;
 }
 
 .lesson-sub {
   font-size: 20px;
   font-weight: 600;
   color: #005599;
-  text-transform: capitalize; /* ✅ Thêm dòng này */
+  text-transform: capitalize;
 }
 
 .lesson-image {
-  max-width: 500px;
+  max-width: 400px;
   width: 100%;
-  border-radius: 10px;
-  margin: 24px auto;
-  display: block;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  margin: 0;
+  align-self: flex-start;
 }
 
 .skill-buttons {
@@ -114,7 +118,6 @@
   color: white;
 }
 
-/* ✅ Tiến độ theo từng skill */
 .progress-bar {
   width: 100%;
   max-width: 400px;
@@ -138,10 +141,24 @@
   font-size: 14px;
   color: #333;
   margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
 }
+
 .loader-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .lesson-preview {
+    flex-direction: column;
+  }
+  
+  .lesson-image {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
 }

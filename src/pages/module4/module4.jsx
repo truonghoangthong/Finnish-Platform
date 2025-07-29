@@ -39,7 +39,9 @@ const Module4 = () => {
           axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4b`),
           axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4c`)
         ]);
-
+        console.log(part4aRes.data.result.part4a);
+        console.log(part4bRes.data.result.part4b);
+        console.log(part4cRes.data.result.part4c);
         const part4aQuestions = [];
         for (let i = 1; i <= 6; i++) {
           const question = part4aRes.data.result.part4a[`question${i}`];
@@ -352,3 +354,5 @@ const Module4 = () => {
     </div>
   );
 };
+
+export default Module4; 

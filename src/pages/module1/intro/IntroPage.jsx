@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchLessonIntro } from "@/utils/api";
 import Loader from "@/components/loader/loader";
 import VocabIntro from "./VocabIntro";
+import './vocab-intro.css';
 
 const IntroPage = () => {
   const [lesson, setLesson] = useState(null);
