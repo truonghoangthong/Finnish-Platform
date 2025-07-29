@@ -1,7 +1,5 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./lesson-layout.css";
-import Mascot from "../mascot/Mascot";
 
 const skillLabels = {
   vocabulary: "Vocabulary",
@@ -34,32 +32,26 @@ const LessonLayout = ({
 
   return (
     <div className="lesson-layout">
-      {/* ✅ Gộp tiêu đề + slogan + tabs */}
-      <div className="layout-top">
-        <div className="layout-header">
-          <h2 className="level-title">LEVEL {level.toUpperCase()}</h2>
-          {/* <p className="layout-slogan">
-            Discover Finnish from day one – greet, introduce yourself, and fall in love with a new language!
-          </p> */}
-        </div>
-
-        <div className="layout-tabs">
-          {skillOrder.map((skill, index) => (
-            <div
-              key={skill}
-              className={`layout-tab ${currentSkill === skill ? "active" : ""}`}
-              onClick={() => handleSkillClick(skill)}
-            >
-              <div className="tab-number">0{index + 1}</div>
-              <div className="tab-label">{skillLabels[skill]}</div>
-            </div>
-          ))}
-        </div>
+      <div className="lesson-header-container">
+        <h2 className="lesson-level-title">LEVEL {level.toUpperCase()}</h2>
       </div>
 
-      <div className="lesson-header">
-        <h3 className="lesson-title">Lesson {lessonNumber}</h3>
-        <div className="lesson-subtitle">{title}</div>
+      <div className="lesson-tabs-container">
+        {skillOrder.map((skill, index) => (
+          <div
+            key={skill}
+            className={`lesson-tab ${currentSkill === skill ? "active" : ""}`}
+            onClick={() => handleSkillClick(skill)}
+          >
+            <div className="lesson-tab-number">0{index + 1}</div>
+            <div className="lesson-tab-label">{skillLabels[skill]}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="lesson-title-container">
+        <h3 className="lesson-main-title">Lesson {lessonNumber}</h3>
+        <div className="lesson-sub-title">{title}</div>
       </div>
 
       {showImage && (
@@ -69,14 +61,14 @@ const LessonLayout = ({
         </div>
       )}
 
-      <div className="lesson-preview">
+      <div className="lesson-preview-container">
         <div className="lesson-card">
           {progress !== undefined && (
             <>
-              <div className="progress-bar">
-                <div className="progress-bar-inner" style={{ width: `${progress}%` }} />
+              <div className="lesson-progress-bar">
+                <div className="lesson-progress-bar-inner" style={{ width: `${progress}%` }} />
               </div>
-              <p className="progress-text">{progress}% completed</p>
+              <p className="lesson-progress-text">{progress}% completed</p>
             </>
           )}
 

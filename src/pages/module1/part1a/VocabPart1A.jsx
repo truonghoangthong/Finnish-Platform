@@ -5,6 +5,7 @@ import { updateProgress } from '../../../utils/api';
 import { calculateModule1Progress } from '../../../utils/calculateProgress';
 import confetti from 'canvas-confetti';
 import AudioPlayer from '../../../components/audioPlayer/AudioPlayer';
+import '../../../components/title/Title.css';
 
 const VocabPart1A = ({ data }) => {
   const { title, ...questionsRaw } = data;
@@ -186,16 +187,13 @@ const VocabPart1A = ({ data }) => {
         </div>
       )}
 
-      {/* ✅ Đã chỉnh để giống Task 1B: audio trước, Tehtävä đậm + mô tả bên cạnh */}
-      <div className="task-header">
-        
-        <div className="task-audio">
+      {/* ✅ Đã chỉnh sửa để sử dụng class giống component Title */}
+      <div className="title-wrapper">
+        <div className="title-audio">
           <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
         </div>
-        <div className="task-title-wrapper">
-          <span className="task-title-bold">Tehtävä 1A</span>
-          <span className="task-desc">{title?.script}</span>
-        </div>
+        <span className="title-label">Tehtävä 1A</span>
+        <span className="title-description">{title?.script}</span>
       </div>
 
       <div className="question-tabs">
