@@ -24,6 +24,27 @@ const Module4 = () => {
   const [current4aIndex, setCurrent4aIndex] = useState(0);
   const [isPlayingSequence, setIsPlayingSequence] = useState(false);
   const [showFinnishInstruction, setShowFinnishInstruction] = useState(false);
+  const [checkingAnswers, setCheckingAnswers] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState({
+    show: false,
+    part4b: [],
+    part4c: []
+  });
+
+  const parseFeedback = (feedback) => {
+    try {
+      const cleanFeedback = feedback.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(cleanFeedback);
+      return parsed;
+    } catch (e) {
+      return {
+        grammar_feedback: feedback,
+        vocabulary_feedback: '',
+        overall_feedback: '',
+        encouragement: ''
+      };
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,9 +60,7 @@ const Module4 = () => {
           axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4b`),
           axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4c`)
         ]);
-        console.log(part4aRes.data.result.part4a);
-        console.log(part4bRes.data.result.part4b);
-        console.log(part4cRes.data.result.part4c);
+
         const part4aQuestions = [];
         for (let i = 1; i <= 6; i++) {
           const question = part4aRes.data.result.part4a[`question${i}`];
@@ -73,7 +92,8 @@ const Module4 = () => {
             part4cQuestions.push({
               id: `4c-${i}`,
               text: question.script,
-              audio: question.audioBase64
+              audio: question.audioBase64,
+              answer: question.answer
             });
           }
         }
@@ -200,10 +220,55 @@ const Module4 = () => {
     setShowFinnishInstruction(!showFinnishInstruction);
   };
 
-  const checkAnswers = () => {
-    console.log("Translations:", translations);
-    console.log("Answers:", answers);
-    alert("Vastaukset tarkistetaan... Tulokset näytetään konsolissa.");
+  const checkAnswers = async () => {
+    try {
+      setCheckingAnswers(true);
+      
+      const part4cResults = moduleData.part4c.map(item => {
+        const userAnswer = answers[item.id];
+        const correctAnswer = item.answer;
+        return {
+          question: item.text,
+          userAnswer,
+          correctAnswer,
+          isCorrect: userAnswer === correctAnswer
+        };
+      });
+
+      const translationEvaluations = await Promise.all(
+        moduleData.part4b.map(async (item) => {
+          try {
+            const response = await axios.post('http://localhost:3000/api/evaluate', {
+              finnishSentence: item.text,
+              userTranslation: translations[item.id] || ''
+            });
+            return {
+              question: item.text,
+              userTranslation: translations[item.id] || '',
+              feedback: response.data.feedback
+            };
+          } catch (error) {
+            return {
+              question: item.text,
+              userTranslation: translations[item.id] || '',
+              feedback: `Error evaluating translation: ${error.message}`
+            };
+          }
+        })
+      );
+
+      setFeedbackModal({
+        show: true,
+        part4b: translationEvaluations,
+        part4c: part4cResults
+      });
+      
+    } catch (error) {
+      console.error("Error checking answers:", error);
+      alert("Error checking answers. Please try again.");
+    } finally {
+      setCheckingAnswers(false);
+    }
   };
 
   if (loading) {
@@ -346,13 +411,82 @@ const Module4 = () => {
           <button 
             className="module4-check-button"
             onClick={checkAnswers}
+            disabled={checkingAnswers}
           >
-            Tarkista vastaukset
+            {checkingAnswers ? (
+              <>
+                <span className="module4-spinner"></span>
+                Tarkistetaan...
+              </>
+            ) : (
+              "Tarkista vastaukset"
+            )}
           </button>
         </div>
       </div>
+
+      {feedbackModal.show && (
+        <div className="module4-feedback-modal">
+          <div className="module4-feedback-content">
+            <h2>Vastauksesi tulokset</h2>
+            
+            <div className="module4-feedback-section">
+              <h3>Task 4b. Translations</h3>
+              {feedbackModal.part4b.map((item, index) => {
+                const parsedFeedback = parseFeedback(item.feedback);
+                return (
+                  <div key={`fb-4b-${index}`} className="module4-feedback-item">
+                    <p><strong>Lause:</strong> {item.question}</p>
+                    <p><strong>Sinun käännöksesi:</strong> {item.userTranslation || '(ei vastausta)'}</p>
+                    <div className="module4-feedback-text">
+                      {parsedFeedback.grammar_feedback && (
+                        <p><strong>Grammar Feedback:</strong> {parsedFeedback.grammar_feedback}</p>
+                      )}
+                      {parsedFeedback.vocabulary_feedback && (
+                        <p><strong>Vocabulary Feedback:</strong> {parsedFeedback.vocabulary_feedback}</p>
+                      )}
+                      {parsedFeedback.overall_feedback && (
+                        <p><strong>Overall Feedback:</strong> {parsedFeedback.overall_feedback}</p>
+                      )}
+                      {parsedFeedback.encouragement && (
+                        <p className="module4-encouragement">{parsedFeedback.encouragement}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="module4-feedback-section">
+              <h3>Task 4c. True/False</h3>
+              <p className="module4-score">
+                Your score: {feedbackModal.part4c.filter(r => r.isCorrect).length}/{feedbackModal.part4c.length} correct
+              </p>
+              {feedbackModal.part4c.map((item, index) => (
+                <div 
+                  key={`fb-4c-${index}`} 
+                  className={`module4-feedback-item ${item.isCorrect ? 'module4-correct' : 'module4-incorrect'}`}
+                >
+                  <p><strong>Question:</strong> {item.question}</p>
+                  <p>
+                    <strong>Your answer:</strong> {item.userAnswer ? 'True' : 'False'} | 
+                    <strong> Correct answer:</strong> {item.correctAnswer ? 'True' : 'False'}
+                  </p>
+                </div>
+              ))}
+            </div>
+            
+            <button 
+              className="module4-close-feedback"
+              onClick={() => setFeedbackModal({ show: false, part4b: [], part4c: [] })}
+            >
+              Sulje
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Module4; 
+export default Module4;

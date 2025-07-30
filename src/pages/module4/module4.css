@@ -173,76 +173,6 @@
   flex-shrink: 0;
 }
 
-.module4-audio-menu {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 15px;
-  z-index: 20;
-  width: calc(100% - 75px);
-  align-items: center;
-  justify-content: center;
-}
-
-.module4-part-selection, 
-.module4-sentence-selection {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.module4-audio-menu button {
-  padding: 8px 16px;
-  background: #e3f2fd;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-  color: #0d47a1;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.module4-audio-menu button:hover {
-  background: #bbdefb;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.module4-back-button {
-  background: #e0e0e0 !important;
-  color: #424242 !important;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.module4-active-audio {
-  background-color: #e3f2fd !important;
-  border-left: 4px solid #2196f3 !important;
-}
-
-.module4-check-button {
-  display: block;
-  margin: 30px auto;
-  padding: 12px 24px;
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.module4-check-button:hover {
-  background-color: #0b7dda;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
 .module4-instruction-box {
   background: white;
   padding: 15px;
@@ -274,6 +204,146 @@
   text-align: center;
 }
 
+.module4-check-button {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 24px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.module4-check-button:hover {
+  background-color: #0b7dda;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.module4-check-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.module4-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: module4-spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+@keyframes module4-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Feedback Modal Styles */
+.module4-feedback-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.module4-feedback-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: #333;
+}
+
+.module4-feedback-section {
+  margin-bottom: 25px;
+}
+
+.module4-feedback-section h3 {
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.module4-feedback-item {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.module4-correct {
+  border-left: 4px solid #4CAF50;
+}
+
+.module4-incorrect {
+  border-left: 4px solid #f44336;
+}
+
+.module4-feedback-text {
+  background-color: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.module4-feedback-text p {
+  margin: 8px 0;
+}
+
+.module4-feedback-text strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.module4-encouragement {
+  color: #4CAF50;
+  font-style: italic;
+  margin-top: 15px !important;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.module4-score {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.module4-close-feedback {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.module4-close-feedback:hover {
+  background-color: #0b7dda;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
@@ -299,7 +369,8 @@
     gap: 10px;
   }
   
-  .module4-audio-menu {
-    width: 100%;
+  .module4-feedback-content {
+    width: 90%;
+    padding: 20px;
   }
 }
