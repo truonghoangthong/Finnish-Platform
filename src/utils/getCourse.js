@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:3000/api";
 
-export const fetchLessons = async (level = "A1") => {
+export const fetchCourses = async (level = "A1") => {
   try {
     const response = await axios.get(`${BASE_URL}/learning/${level}`);
     return response.data.result.map((item, index) => ({

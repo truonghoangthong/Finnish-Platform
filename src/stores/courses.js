@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { fetchLessons, fetchProgress } from '../utils/getCourse';
+import { fetchCourses, fetchProgress } from '../utils/getCourse';
 const userId = "yugioh123";
 
 export const useCourseStore = create((set) => ({
@@ -24,7 +24,7 @@ export const useCourseStore = create((set) => ({
 
   fetchInitialData: async () => {
     try {
-      const lessonsData = await fetchLessons();
+      const lessonsData = await fetchCourses();
       const updatedLessons = await fetchProgress(userId, "A1", lessonsData);
       set({ lessons: updatedLessons, loading: false });
     } catch (error) {
