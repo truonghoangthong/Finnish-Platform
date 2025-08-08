@@ -7,6 +7,8 @@ import VerbMatchingGame from './VerbMatchingGame';
 import './module3.css';
 import '../../components/loader/loader.css';
 import { useModuleStore } from '../../stores/module';
+import '../../components/variables.css';
+import LessonLayout from '../../components/layouts/LessonLayout';
 
 const Module3 = () => {
   const location = useLocation();
@@ -144,65 +146,72 @@ const Module3 = () => {
     getCorrectCount(results.part3a) + getCorrectCount(results.part3b) + getCorrectCount(results.part3c) : 
     0;
   return (
-    <div className="module3-container">
-      <DndProvider backend={HTML5Backend}>
-        <div className="module3-verbs-section">
-          <div className="module3-header-row">
-            <h2>Tehtävä 3a</h2>
-            <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-          </div>
-          <MatchingGame
-            pairs={pairs3a}
-            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3a, 'part3a')}
-            showResults={showResults}
-          />
-        </div>
-        <div className="module3-verbs-section">
-          <div className="module3-header-row">
-            <h2>Tehtävä 3b</h2>
-            <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-          </div>
-          <MatchingGame
-            pairs={pairs3b}
-            onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3b, 'part3b')}
-            showResults={showResults}
-          />
-        </div>
-        <div className="module3-verbs-section">
-          <div className="module3-header-row">
-            <h2>Tehtävä 3c</h2>
-            <p>Ota selvää, mitä seuraavat verbit tarkoittavat.</p>
-          </div>
-          <VerbMatchingGame
-            questions={pairs3c.questions}
-            verbs={pairs3c.verbs}
-            onCheckAnswers={(partResults) => {
-              setResults(prev => ({ ...prev, part3c: partResults }));
-              return partResults;
-            }}
-            showResults={showResults}
-          />
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <button
-            className="module3-submit-btn"
-            onClick={handleCheckAllAnswers}
-            disabled={showResults && correctAnswers === totalQuestions}
-          >
-            {showResults ? 'Tarkista uudelleen' : 'Tarkista vastaukset'}
-          </button>
-
-          {showResults && (
-            <div className="module3-results-summary">
-              <p>
-                Oikein: {correctAnswers} / {totalQuestions}
-              </p>
+    <LessonLayout
+      level="A1" 
+      lessonNumber={3} 
+      title="The Break Room" 
+      showImage={false} 
+    >
+      <div className="module3-container">
+        <DndProvider backend={HTML5Backend}>
+          <div className="module3-verbs-section">
+            <div className="module3-header-row">
+              <h2>Tehtävä 3a</h2>
+              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
             </div>
-          )}
-        </div>
-      </DndProvider>
-    </div>
+            <MatchingGame
+              pairs={pairs3a}
+              onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3a, 'part3a')}
+              showResults={showResults}
+            />
+          </div>
+          <div className="module3-verbs-section">
+            <div className="module3-header-row">
+              <h2>Tehtävä 3b</h2>
+              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
+            </div>
+            <MatchingGame
+              pairs={pairs3b}
+              onCheckAnswers={(left, right) => checkRegularAnswers(left, right, pairs3b, 'part3b')}
+              showResults={showResults}
+            />
+          </div>
+          <div className="module3-verbs-section">
+            <div className="module3-header-row">
+              <h2>Tehtävä 3c</h2>
+              <p>Ota selvää, mitä seuraavat verbit tarkoittavat.</p>
+            </div>
+            <VerbMatchingGame
+              questions={pairs3c.questions}
+              verbs={pairs3c.verbs}
+              onCheckAnswers={(partResults) => {
+                setResults(prev => ({ ...prev, part3c: partResults }));
+                return partResults;
+              }}
+              showResults={showResults}
+            />
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '30px' }}>
+            <button
+              className="shared-btn"
+              onClick={handleCheckAllAnswers}
+              disabled={showResults && correctAnswers === totalQuestions}
+            >
+              {showResults ? 'Tarkista uudelleen' : 'Tarkista vastaukset'}
+            </button>
+
+            {showResults && (
+              <div className="module3-results-summary">
+                <p>
+                  Oikein: {correctAnswers} / {totalQuestions}
+                </p>
+              </div>
+            )}
+          </div>
+        </DndProvider>
+      </div>
+    </LessonLayout>
   );
 };
 

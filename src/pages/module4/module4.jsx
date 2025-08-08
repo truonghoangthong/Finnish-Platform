@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import "./module4.css";
 import "../../components/loader/loader.css";
 import Mascot from "../../components/mascot/Mascot";
+import Menu from "../../components/menu/menu";
+import LessonLayout from "../../components/layouts/LessonLayout";
 
 const Module4 = () => {
   const location = useLocation();
@@ -313,6 +315,9 @@ const Module4 = () => {
         </div>
       </div>
       <div className="module4-content-section">
+        <Menu 
+          lessonNumber={4}
+        />
         <div className="module4-scroll-container">
           <h2 className="module4-section-title">Tehtävä 4a. Tekstin ymmärtäminen.</h2>
           

@@ -16,7 +16,6 @@ const LessonLayout = ({
   title,
   showImage = false,
   imageSrc,
-  showMascot = false,
   progress,
   imageChildren,
   children,

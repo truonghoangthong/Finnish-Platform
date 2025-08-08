@@ -221,29 +221,6 @@
   border-radius: 8px;
 }
 
-.module3-submit-btn {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 20px 0;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.module3-submit-btn:hover {
-  background-color: #45a049;
-}
-
-.module3-submit-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
 .module3-verb-hint {
   font-size: 0.8rem;
   color: #666;
