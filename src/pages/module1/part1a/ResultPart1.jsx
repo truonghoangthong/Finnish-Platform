@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ResultPart1 from '../part1a/ResultPart1';
 import "./result-Part1.css"; 
-
 import { updateProgress } from '../../../utils/api';
 import { calculateModule1Progress } from '../../../utils/calculateProgress';
 

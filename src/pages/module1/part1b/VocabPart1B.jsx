@@ -172,14 +172,14 @@ const VocabPart1B = ({ data }) => {
       </div>
 
       <div className="vocab1b-buttons">
-        <button onClick={handleReset}>Yritä uudelleen</button>
+        <button className='shared-btn' onClick={handleReset}>Yritä uudelleen</button>
 
         {!hasReviewedAnswers && isCompleted && (
-          <button onClick={handleSubmit}>Lähetä</button>
+          <button className='shared-btn' onClick={handleSubmit}>Lähetä</button>
         )}
 
         {hasReviewedAnswers && (
-          <button onClick={() => navigate("/course/a1/lesson-1/vocabulary/1a/result")}>Seuraava</button>
+          <button className='shared-btn' onClick={() => navigate("/course/a1/lesson-1/vocabulary/1a/result")}>Seuraava</button>
         )}
       </div>
 

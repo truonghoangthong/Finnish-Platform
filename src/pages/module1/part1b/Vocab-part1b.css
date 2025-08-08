@@ -122,20 +122,8 @@
 }
 
 .vocab1b-buttons button {
-  padding: 12px 24px;
-  background-color: #00C2E5;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.vocab1b-buttons button:hover {
-  background-color: #06b6d4;
-  transform: translateY(-1px);
+  max-width: 30%;
+  background-color: #3dc0f1;
 }
 
 /* ============ RESPONSIVE ============ */
