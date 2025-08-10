@@ -86,6 +86,11 @@
   color: #00C2E5;
 }
 
+/* ============ Audio Button ============ */
+.question-audio {
+  margin-bottom: 1rem;
+}
+
 /* ============ Question Image ============ */
 .question-image {
   margin: 1.5rem 0 1rem;
@@ -276,5 +281,4 @@
 .task-title-bold {
   font-weight: bold;
   font-size: 1rem;
-  color: black;
 }

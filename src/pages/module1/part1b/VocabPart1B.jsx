@@ -179,7 +179,7 @@ const VocabPart1B = ({ data }) => {
         )}
 
         {hasReviewedAnswers && (
-          <button className='shared-btn' onClick={() => navigate("/course/a1/lesson-1/vocabulary/1a/result")}>Seuraava</button>
+          <button className='shared-btn' onClick={() => navigate("/course/a1/lesson-1/listening")}>Seuraava</button>
         )}
       </div>
 
