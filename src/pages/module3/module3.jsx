@@ -148,7 +148,7 @@ const Module3 = () => {
   return (
     <LessonLayout
       level="A1" 
-      lessonNumber={3} 
+      lessonNumber={1} 
       title="The Break Room" 
       showImage={false} 
     >

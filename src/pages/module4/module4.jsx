@@ -316,7 +316,7 @@ const Module4 = () => {
       </div>
       <div className="module4-content-section">
         <Menu 
-          lessonNumber={4}
+          lessonNumber={1}
         />
         <div className="module4-scroll-container">
           <h2 className="module4-section-title">Tehtävä 4a. Tekstin ymmärtäminen.</h2>
