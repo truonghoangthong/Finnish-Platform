@@ -37,6 +37,7 @@
 .icon.medium {
   transform: scale(0.85);
   transform-origin: center;
+  margin-left: -19px;
 }
 
 .icon.large {

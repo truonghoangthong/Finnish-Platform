@@ -221,7 +221,7 @@ const VocabPart1A = ({ data }) => {
       </div>
 
       <div className="question-audio">
-        <AudioPlayer src={`data:audio/mp3;base64,${currentQuestion?.audioBase64}`} size="large" />
+        <AudioPlayer src={`data:audio/mp3;base64,${currentQuestion?.audioBase64}`} size="medium" />
       </div>
 
       <div className="image-container">
