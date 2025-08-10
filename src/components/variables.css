@@ -1,0 +1,21 @@
+.shared-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #3dc0f1;
+  color: black;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95em;
+  width: 100%;
+  max-width: 250px;
+  margin-top: auto; 
+}
+
+.shared-btn:hover {
+  color: white;
+}
+
+.shared-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

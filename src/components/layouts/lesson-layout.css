@@ -1,0 +1,244 @@
+.lesson-layout {
+  padding: 12px 8px;
+  margin: 0 auto;
+}
+
+/* ========================
+   🔷 Header (LEVEL A1 + slogan)
+======================== */
+.lesson-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 0px;
+  padding: 0 20px; /* Đã thay đổi từ 0 8px để khớp với lesson-card */
+}
+
+.lesson-level-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #06ACFF;
+  margin: 0;
+}
+
+/* ========================
+   🔷 Tabs (Skills)
+======================== */
+.lesson-tabs-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px auto;
+  padding: 0;
+  text-align: center;
+}
+
+.lesson-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+  min-width: 48px;
+}
+
+.lesson-tab:hover {
+  background-color: rgba(0, 194, 229, 0.07);
+}
+
+.lesson-tab.active .lesson-tab-number {
+  background: linear-gradient(to right, #06ACFF, #00C2E5);
+  color: white;
+  border: none;
+}
+
+.lesson-tab-number {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #06ACFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #06ACFF;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+
+.lesson-tab-label {
+  font-size: 11px;
+  color: #06ACFF;
+  font-weight: 500;
+  word-break: keep-all;
+}
+
+/* ========================
+   🔷 Lesson Title
+======================== */
+.lesson-title-container {
+  margin: 0px auto;
+  text-align: center;
+}
+
+.lesson-main-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #003366;
+  margin-bottom: 2px;
+}
+
+.lesson-sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #005599;
+  text-transform: capitalize;
+  margin-bottom: 14px;
+}
+
+/* ========================
+   🖼️ Image & Mascot
+======================== */
+.lesson-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  margin: -4px auto 10px;
+  max-width: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 55vh;
+  min-height: 200px;
+}
+
+.lesson-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 50vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* ========================
+   📊 Progress Bar
+======================== */
+.lesson-progress-bar {
+  width: 100%;
+  max-width: 400px;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 20px auto 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-progress-bar-inner {
+  height: 100%;
+  background-color: #06ACFF;
+  width: 0%;
+  transition: width 0.4s ease;
+  border-radius: 999px;
+}
+
+.lesson-progress-text {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* ========================
+   📚 Content Area
+======================== */
+.lesson-preview-container {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 16px 8px;
+}
+
+.lesson-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-content {
+  margin-top: 0;
+  text-align: left;
+  padding: 0 8px;
+}
+
+/* ========================
+   📱 Responsive
+======================== */
+@media (max-width: 768px) {
+  .lesson-layout {
+    padding: 16px 12px;
+  }
+
+  .lesson-header-container {
+    padding: 0 8px; /* Điều chỉnh cho mobile */
+  }
+
+  .lesson-preview-container {
+    padding: 8px;
+    max-width: 95vw;
+  }
+
+  .lesson-image-wrapper {
+    max-width: 100%;
+  }
+
+  .lesson-main-title {
+    font-size: 16px;
+  }
+
+  .lesson-sub-title {
+    font-size: 13px;
+  }
+
+  .lesson-tab-label {
+    font-size: 10px;
+  }
+
+  .lesson-tab-number {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lesson-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 0 8px; /* Đảm bảo nhất quán trên mobile nhỏ */
+  }
+
+  .lesson-tab-label {
+    display: none;
+  }
+
+  .lesson-tabs-container {
+    max-width: 220px;
+  }
+}
+
+@media (min-height: 700px) {
+  .lesson-image {
+    max-height: 60vh;
+  }
+
+  .lesson-image-wrapper {
+    max-height: 65vh;
+  }
+}

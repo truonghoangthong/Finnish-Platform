@@ -1,0 +1,433 @@
+/* =================================================
+   📦 MODULE 2 – LISTENING GAME (CLEAN + REFACTORED)
+   ================================================= */
+
+/* ===================================
+   🔷 1. CONTAINER & PAGE STRUCTURE
+   =================================== */
+.listening2a-container,
+.listening2b-container {
+  padding: 2rem;
+  max-width: 12000px;
+  margin: auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* =========================
+   🔢 2. QUESTION TABS
+   ========================= */
+.question-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 0.3rem 0;
+  flex-wrap: wrap;
+}
+
+.tab {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: #fff;
+  border: 2px solid #00C2E5;
+  color: #00C2E5;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: default;
+}
+
+.tab.active {
+  background-color: #00C2E5;
+  color: white !important;
+}
+
+.tab.correct {
+  background-color: #34D399;
+  color: white;
+  border-color: #34D399;
+}
+
+.tab:not(.correct):not(.active):hover {
+  background-color: #e0faff;
+  color: #00C2E5;
+}
+
+/* ========================
+   🖼️ 3. IMAGE SECTION
+   ======================== */
+.question-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  margin: auto;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  border-radius: 12px;
+  max-width: 50%;
+}
+
+.question-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* =======================
+   🎛 4. QUESTION CONTROLS
+   ======================= */
+.question-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 0 rem;
+  margin-bottom: 0.5rem;
+}
+
+.question-controls button {
+  background-color: #00C2E5;
+  color: white;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  box-shadow: 0 3px 8px rgba(0, 194, 229, 0.25);
+}
+
+.question-controls button:hover {
+  background-color: #00afd1;
+}
+
+/* ======================
+   📜 5. TRANSCRIPT BOX
+   ====================== */
+.script-box {
+  margin: 1rem auto 0;
+  max-width: 240px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px dashed #00C2E5;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-style: italic;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #333;
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+/* ======================
+   ✅ 6. FEEDBACK POPUP
+   ====================== */
+.popup {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  animation: fadeInUp 0.3s ease;
+  text-align: center;
+}
+
+.popup.correct {
+  border: 2px solid #00C2E5;
+  color: #00C2E5;
+}
+
+.popup.wrong {
+  border: 2px solid #ff4d4f;
+  color: #ff4d4f;
+}
+
+.popup button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: #00C2E5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.popup-script {
+  margin-top: 0.5rem;
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 10px;
+  font-style: italic;
+}
+
+.popup-controls {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.popup-controls button {
+  background-color: #00c2e5;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 0 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.popup-controls button:hover {
+  background-color: #009fb8;
+}
+
+/* ============================
+   ⭐ 7. STAR MARKER EFFECT
+   ============================ */
+.star-marker {
+  font-size: 18px;
+  color: #00c2e5;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.star-marker.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+  animation: starGlow 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(0, 194, 229, 0.5));
+}
+
+.star-marker.incorrect {
+  color: red;
+  animation: shakeStar 0.4s ease;
+}
+
+.star-marker.correct {
+  color: #000ce6;
+  animation: correctFancy 0.8s ease forwards;
+  filter: drop-shadow(0 0 8px #00e676);
+}
+
+@keyframes starGlow {
+  0%   { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
+  50%  { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
+}
+
+@keyframes shakeStar {
+  0% { transform: translate(-50%, -50%) rotate(0); }
+  25% { transform: translate(-50%, -50%) rotate(-5deg); }
+  50% { transform: translate(-50%, -50%) rotate(5deg); }
+  75% { transform: translate(-50%, -50%) rotate(-3deg); }
+  100% { transform: translate(-50%, -50%) rotate(0); }
+}
+
+@keyframes correctFancy {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+    filter: drop-shadow(0 0 2px #00e676);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.4) rotate(15deg);
+    filter: drop-shadow(0 0 12px #00e676);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1) rotate(-10deg);
+    filter: drop-shadow(0 0 6px #00e676);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(0deg);
+    filter: drop-shadow(0 0 8px #00e676);
+  }
+}
+
+/* =========================
+   🤖 8. MASCOT & SPEECH UI
+   ========================= */
+.mascot-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.mascot-img {
+  width: 160px;
+  height: auto;
+}
+
+.bubble {
+  margin-top: 1rem;
+  background: #e0f9ff;
+  border: 2px solid #00C2E5;
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bubble button {
+  padding: 0.6rem 1rem;
+  background: #00C2E5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mascot-in-image {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+}
+
+.mascot-in-image .mascot-section {
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 0;
+  gap: 12px;
+  animation: fadeIn 0.4s ease;
+}
+
+.mascot-in-image .mascot-img {
+  width: 80px;
+  height: 80px;
+}
+
+.mascot-in-image .bubble {
+  margin: 0;
+  background: #e0f9ff;
+  border: 2px solid #00c2e5;
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 240px;
+  box-shadow: 0 4px 8px rgba(0, 194, 229, 0.2);
+}
+
+.mascot-in-image .bubble button {
+  padding: 6px 10px;
+  background: #00c2e5;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+/* ===========================
+   🌀 9. ANIMATIONS & EFFECTS
+   =========================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.8); opacity: 0; }
+  50%  { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   📱 10. RESPONSIVE TWEAKS
+   ========================= */
+@media (max-width: 600px) {
+  .bubble {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .popup {
+    width: 90%;
+  }
+
+  .question-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.mascot-popup-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mascot-in-image .bubble {
+  width: max-content;
+  max-width: 220px;
+  word-break: break-word;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 10px 12px;
+}
+
+.script-box {
+  max-width: 90%;
+  width: fit-content;
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  word-break: break-word;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.star-marker {
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.task-header {
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.part2b-wrapper {
+  margin-top: 3rem;
+}

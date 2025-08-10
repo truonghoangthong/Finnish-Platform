@@ -1,0 +1,135 @@
+/* ===== Mascot & bubble ===== */
+.mascot-overlay-in-image {
+  position: absolute;
+  bottom: 4%;          /* % để bám theo ảnh */
+  left: 3%;            /* % để bám theo ảnh */
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+.mascot-inner { width: 80px; height: 80px; cursor: pointer; }
+.mascot-inner img { width: 90%; height: 90%; object-fit: contain; }
+
+/* ===== POPUP CHUNG ===== */
+.chat-bubble {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translate(12px, -50%);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(180, 180, 180, 0.3);
+  border-radius: 10px;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  z-index: 1000;
+  transition: all .3s ease;
+  width: max-content;
+  max-width: min(90vw, 360px);
+}
+.chat-bubble::after { display: none; }
+
+/* Nút trong popup */
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(0, 194, 229, .95);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  transition: .2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,194,229,.25);
+  width: 90%;
+  justify-content: center;
+}
+.action-button:hover { transform: translateY(-1px); }
+
+/* ===== Transcript ===== */
+.transcript {
+  margin-top: 16px;
+  background: #e0f9ff;
+  border: 1px solid #00c2e5;
+  box-shadow: 0 6px 20px rgba(0,194,229,.1);
+  padding: 20px;
+  font-size: 15px;
+  color: #004466;
+  line-height: 1.6;
+  border-radius: 14px;
+  backdrop-filter: blur(3px);
+  text-align: left;
+}
+
+/* Audio wave */
+.audio-loading { display: inline-flex; align-items: center; gap: 6px; }
+.audio-wave { display: flex; align-items: flex-end; height: 18px; gap: 2px; margin-left: 6px; }
+.wave-bar { width: 3px; height: 6px; background: #fff; opacity: .9; animation: wave 1s infinite ease-in-out; border-radius: 2px; }
+.wave-bar:nth-child(1) { animation-delay: 0s; }
+.wave-bar:nth-child(2) { animation-delay: .1s; }
+.wave-bar:nth-child(3) { animation-delay: .2s; }
+.wave-bar:nth-child(4) { animation-delay: .3s; }
+@keyframes wave { 0%,100% { height: 6px; } 50% { height: 18px; } }
+
+/* Loader + glow */
+.loader-wrapper { display: flex; justify-content: center; align-items: center; min-height: 300px; }
+.glow { animation: glowPulse 2.5s infinite; filter: drop-shadow(0 0 6px #00c2e5); border-radius: 50%; }
+@keyframes glowPulse { 0%,100% { filter: drop-shadow(0 0 6px #00c2e5); } 50% { filter: drop-shadow(0 0 14px #00c2e5); } }
+
+/* ===== Intro card ===== */
+.intro-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto 24px;
+}
+
+/* Ảnh trong card */
+.intro-card .lesson-image-wrapper {
+  position: relative;
+  width: max-content;         /* ✅ ôm sát kích thước ảnh */
+  margin: 0 auto 14px;        /* ✅ căn giữa wrapper trong card */
+  border-radius: 10px;
+  overflow: hidden;
+}
+.intro-card .lesson-image {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  max-height: 55vh;
+}
+
+/* Responsive */
+@media (max-width:768px) {
+  .mascot-inner { width: 70px; height: 70px; }
+  .intro-card { max-width: 95vw; }
+}
+@media (max-width:640px) {
+  .chat-bubble {
+    left: 50%;
+    top: 0%;
+    transform: translate(-50%, -110%);
+  }
+}
+@media (max-width:480px) {
+  .chat-bubble { width: 95%; }
+  .action-button { font-size: 12px; padding: 8px 10px; }
+}
+
+/* ===== Bỏ khung trắng LessonLayout (IntroPage) ===== */
+.intro-page .lesson-card { display: contents; }
+.intro-page .lesson-content { padding: 0; }

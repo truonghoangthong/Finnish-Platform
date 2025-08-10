@@ -1,0 +1,105 @@
+/* part1-final.css */
+
+.final-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.final-container h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #00C2E5;
+}
+
+.score {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.final-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.final-box {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.final-box:hover {
+  transform: translateY(-4px);
+}
+
+.final-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.result-part1.correct {
+  color: green;
+}
+
+.result-part1.incorrect {
+  color: red;
+}
+
+.final-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.final-buttons button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.final-buttons button:first-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.final-buttons button:last-child {
+  background-color: #00C2E5;
+  color: white;
+}
+
+.final-buttons button:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .final-results {
+    grid-template-columns: 1fr;
+  }
+
+  .final-buttons {
+    flex-direction: column;
+  }
+}
+.coming-text {
+  font-size: 15px;
+  font-style: italic;
+  color: #777;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
