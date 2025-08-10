@@ -42,7 +42,7 @@
 .icon.large {
   transform: scale(1);
   transform-origin: center;
-  margin-left: -28px;
+  margin-left: -25px;
 }
 
 /* ====== Speaker shape and waves ====== */
@@ -86,15 +86,8 @@
 .wave2 {
   right: -3.2em;
   width: 1.2em;
-  height: 1.2em;
-  animation-delay: 0.2s;
-}
-
-.wave3 {
-  right: -4em;
-  width: 1.6em;
   height: 1.6em;
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 
 @keyframes pump {

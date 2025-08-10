@@ -24,7 +24,6 @@ const AudioPlayer = ({ src, size = 'small' }) => {
         <div className="speaker">
           <div className={`wave wave1 ${isPlaying ? '' : 'paused'}`}></div>
           <div className={`wave wave2 ${isPlaying ? '' : 'paused'}`}></div>
-          <div className={`wave wave3 ${isPlaying ? '' : 'paused'}`}></div>
         </div>
         <audio ref={audioRef} src={src}></audio>
       </div>
