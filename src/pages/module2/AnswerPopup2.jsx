@@ -14,7 +14,7 @@ const AnswerPopup2 = ({
       <div className="popup-title">
         {isCorrect ? (
           <>
-            <span style={{ fontSize: "2rem" }}>✅</span> Oikein!
+            <span style={{ color: "#4CAF50", fontWeight: "bold" }}>✔</span> Oikein!
           </>
         ) : (
           <>

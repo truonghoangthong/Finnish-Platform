@@ -1,4 +1,3 @@
-// ✅ VocabIntro.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchLessonIntro } from "../../../utils/api";
@@ -12,9 +11,11 @@ import LessonLayout from "../../../components/layouts/LessonLayout";
 const VocabIntro = () => {
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const [showScript, setShowScript] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBubbleOpen, setIsBubbleOpen] = useState(false);
+
   const audioRef = useRef(null);
   const transcriptRef = useRef(null);
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ const VocabIntro = () => {
   };
 
   const goToNext = () => {
+    // giữ nguyên route bạn đang dùng
     navigate("/course/a1/lesson-1/vocabulary/1a");
   };
 
@@ -89,63 +91,68 @@ const VocabIntro = () => {
   if (!lesson) return null;
 
   return (
-    <LessonLayout
-      level="A1"
-      lessonNumber={1}
-      title="The Break Room"
-      showImage={true}
-      imageSrc={lesson.imageLink}
-      imageChildren={(
-        <div className="mascot-in-image">
-          <div className="mascot-section">
-            <div className="mascot-img glow" onClick={handleMascotClick}>
-              <Mascot />
-            </div>
+    <div className={`intro-page ${showScript ? "has-transcript" : ""}`}>
+      <LessonLayout
+        level="A1"
+        lessonNumber={1}
+        title="The Break Room"
+        showImage={false}              // không dùng ảnh mặc định của layout
+        imageSrc={lesson.imageLink}
+      >
+        {/* Card trắng bao trọn ảnh + popup + transcript */}
+        <div className="intro-card">
+          <div className="lesson-image-wrapper">
+            <img src={lesson.imageLink} className="lesson-image" alt="lesson" />
 
-            {isBubbleOpen && (
-              <div className="bubble" onClick={(e) => e.stopPropagation()}>
-                <button onClick={toggleAudio}>
-                  {isPlaying ? (
-                    <span className="audio-loading">
-                      ⏸️ Pysäytä
-                      <div className="audio-wave">
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar"></div>
-                      </div>
-                    </span>
-                  ) : (
-                    "🔊 Kuuntele uudelleen"
-                  )}
-                </button>
-
-                <button onClick={handleToggleScript}>
-                  {showScript
-                    ? "📖 Piilota käsikirjoitus"
-                    : "📖 Näytä käsikirjoitus"}
-                </button>
-
-                <button onClick={goToNext}>⏭️ Seuraava</button>
+            {/* giữ nguyên popup 3 nút & class cũ */}
+            <div className="mascot-overlay-in-image">
+              <div className="mascot-inner glow" onClick={handleMascotClick}>
+                <Mascot />
               </div>
-            )}
-          </div>
-        </div>
-      )}
-    >
-      {/* ✅ Nội dung dưới ảnh */}
-      {showScript && (
-        <section className="transcript" data-aos="fade-up" ref={transcriptRef}>
-          <p>📜 {lesson.description}</p>
-        </section>
-      )}
 
-      <audio
-        ref={audioRef}
-        src={`data:audio/mp3;base64,${lesson.descriptionAudio}`}
-        onEnded={() => setIsPlaying(false)}
-      />
-    </LessonLayout>
+              {isBubbleOpen && (
+                <div className="chat-bubble" onClick={(e) => e.stopPropagation()}>
+                  <button className="action-button" onClick={toggleAudio}>
+                    {isPlaying ? (
+                      <span className="audio-loading">
+                        ⏸️ Pysäytä
+                        <div className="audio-wave">
+                          <div className="wave-bar"></div>
+                          <div className="wave-bar"></div>
+                          <div className="wave-bar"></div>
+                          <div className="wave-bar"></div>
+                        </div>
+                      </span>
+                    ) : (
+                      "🔊 Kuuntele uudelleen"
+                    )}
+                  </button>
+
+                  <button className="action-button" onClick={handleToggleScript}>
+                    {showScript ? "📜 Piilota Teksti" : "📜 Näytä Teksti"}
+                  </button>
+
+                  <button className="action-button" onClick={goToNext}>⏭️ Seuraava</button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {showScript && (
+            <section className="transcript" data-aos="fade-up" ref={transcriptRef}>
+              <p>📜 {lesson.description}</p>
+            </section>
+          )}
+
+          <audio
+            ref={audioRef}
+            src={`data:audio/mp3;base64,${lesson.descriptionAudio}`}
+            onEnded={() => setIsPlaying(false)}
+            preload="none"
+          />
+        </div>
+      </LessonLayout>
+    </div>
   );
 };
 
