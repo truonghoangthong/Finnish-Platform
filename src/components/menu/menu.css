@@ -1,0 +1,128 @@
+/* Menu Container */
+.menu-container {
+  padding: 12px 8px;
+  margin: 0 auto;
+}
+
+/* Header Container */
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 0px;
+  padding: 0 20px;
+}
+
+.menu-header-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #06ACFF;
+  margin: 0;
+}
+
+/* Tabs Container */
+.menu-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px auto;
+  padding: 0;
+  text-align: center;
+}
+
+.menu-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+  min-width: 48px;
+}
+
+.menu-tab:hover {
+  background-color: rgba(0, 194, 229, 0.07);
+}
+
+.menu-active .menu-tab-number {
+  background: linear-gradient(to right, #06ACFF, #00C2E5);
+  color: white;
+  border: none;
+}
+
+.menu-tab-number {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #06ACFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #06ACFF;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+
+.menu-tab-label {
+  font-size: 11px;
+  color: #06ACFF;
+  font-weight: 500;
+  word-break: keep-all;
+}
+
+/* Title Section Container */
+.menu-title-section {
+  margin: 0px auto;
+  text-align: center;
+}
+
+.menu-main-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #003366;
+  margin-bottom: 2px;
+}
+
+.menu-sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #005599;
+  text-transform: capitalize;
+  margin-bottom: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-main-title {
+    font-size: 16px;
+  }
+  
+  .menu-sub-title {
+    font-size: 13px;
+  }
+
+  .menu-tab-label {
+    font-size: 10px;
+  }
+
+  .menu-tab-number {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-tab-label {
+    display: none;
+  }
+
+  .menu-tabs {
+    max-width: 220px;
+  }
+}
