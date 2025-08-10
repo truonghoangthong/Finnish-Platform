@@ -1,10 +1,11 @@
 import { createServer } from '../src/server.mjs';
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   try {
-    const app = await createServer();
+    const app = createServer();
     return app(req, res);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('API Error:', error);
+    res.status(500).json({ error: 'Server error', message: error.message });
   }
 }
