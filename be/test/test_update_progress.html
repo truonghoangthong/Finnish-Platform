@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test API Progress - Miền Tây Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Test API Progress 📚</h1>
+    <form id="progressForm" class="space-y-4">
+      <div>
+        <label for="userId" class="block text-sm font-medium text-gray-700">User ID</label>
+        <input
+          type="text"
+          id="userId"
+          name="userId"
+          placeholder="Ví dụ: user_123"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
+        <input
+          type="text"
+          id="level"
+          name="level"
+          placeholder="Ví dụ: A1"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="lesson" class="block text-sm font-medium text-gray-700">Lesson</label>
+        <input
+          type="text"
+          id="lesson"
+          name="lesson"
+          placeholder="Ví dụ: lesson_break_room"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="module" class="block text-sm font-medium text-gray-700">Module</label>
+        <input
+          type="text"
+          id="module"
+          name="module"
+          placeholder="Ví dụ: module_1"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="progress" class="block text-sm font-medium text-gray-700">Progress (%)</label>
+        <input
+          type="number"
+          id="progress"
+          name="progress"
+          placeholder="Ví dụ: 75"
+          min="0"
+          max="100"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Gửi Request Nè Anh!
+      </button>
+    </form>
+    <div id="response" class="mt-6 p-4 border rounded-md hidden">
+      <h2 id="responseTitle" class="text-lg font-semibold"></h2>
+      <p id="responseMessage" class="text-gray-700"></p>
+      <p id="responseStatus" class="text-sm text-gray-500"></p>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = 'http://localhost:3000'; // Thay nếu API chạy trên host/port khác
+
+    document.getElementById('progressForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById('userId').value.trim();
+      const level = document.getElementById('level').value.trim();
+      const lesson = document.getElementById('lesson').value.trim();
+      const module = document.getElementById('module').value.trim();
+      const progress = parseInt(document.getElementById('progress').value);
+
+      // Kiểm tra input
+      if (!userId || !level || !lesson || !module || isNaN(progress)) {
+        showResponse('Lỗi', 'Vui lòng điền đầy đủ nha anh!', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/progress`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, level, lesson, module, progress }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showResponse(data.Title, data.Message, data.Status);
+        } else {
+          showResponse(data.Title || 'Lỗi', data.Message || 'Có gì đó sai sai!', 'error');
+        }
+      } catch (error) {
+        showResponse('Lỗi', `Lỗi mạng rồi anh ơi: ${error.message}`, 'error');
+      }
+    });
+
+    function showResponse(title, message, status) {
+      const responseDiv = document.getElementById('response');
+      const titleEl = document.getElementById('responseTitle');
+      const messageEl = document.getElementById('responseMessage');
+      const statusEl = document.getElementById('responseStatus');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      statusEl.textContent = `Status: ${status}`;
+      responseDiv.classList.remove('hidden');
+
+      // Màu sắc theo status
+      responseDiv.classList.remove('border-green-500', 'border-red-500');
+      responseDiv.classList.add(status === 'success' ? 'border-green-500' : 'border-red-500');
+      titleEl.classList.remove('text-green-600', 'text-red-600');
+      titleEl.classList.add(status === 'success' ? 'text-green-600' : 'text-red-600');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Coordinates + Preview Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: #6c757d;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .image-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .upload-area {
+            border: 3px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .image-container, #previewImageContainer {
+            position: relative;
+            display: none;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #previewImageContainer {
+            display: block;
+        }
+
+        .main-image, #previewImage {
+            width: 100%;
+            height: auto;
+            display: block;
+            user-select: none;
+            position: relative;
+        }
+
+        .selection-rectangle {
+            position: absolute;
+            border: 3px solid #667eea;
+            background: rgba(102, 126, 234, 0.3);
+            pointer-events: none;
+            border-radius: 4px;
+        }
+
+        .object-overlay {
+            position: absolute;
+            border: 2px solid #28a745;
+            background: rgba(40, 167, 69, 0.2);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #155724;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .object-overlay:hover {
+            background: rgba(40, 167, 69, 0.4);
+            transform: scale(1.02);
+        }
+
+        .object-overlay.clicked {
+            background: rgba(255, 193, 7, 0.4);
+            border-color: #ffc107;
+            animation: pulse 0.6s ease;
+        }
+
+        .object-overlay.correct {
+            background: rgba(40, 167, 69, 0.6);
+            border-color: #28a745;
+        }
+
+        .object-overlay.incorrect {
+            background: rgba(220, 53, 69, 0.4);
+            border-color: #dc3545;
+            animation: shake 0.5s ease;
+        }
+
+        .object-order {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #667eea;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .controls-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .button.danger {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+
+        .objects-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .object-item {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .object-item:last-child {
+            border-bottom: none;
+        }
+
+        .object-info {
+            flex: 1;
+            font-size: 0.9em;
+        }
+
+        .object-name {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 3px;
+        }
+
+        .object-coords {
+            color: #6c757d;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+        }
+
+        .small-button {
+            padding: 4px 8px;
+            font-size: 0.7em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: #dc3545;
+            color: white;
+        }
+
+        .small-button:hover {
+            transform: scale(1.05);
+        }
+
+        .coordinates-display {
+            background: #343a40;
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            min-height: 150px;
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .game-controls {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .audio-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .audio-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .audio-button.playing {
+            animation: pulse 1s infinite;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .progress-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ Tool Coordinates + Preview</h1>
+        <div class="subtitle">Tạo coordinates cho objects và test game ngay</div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('editor')">
+                📐 Editor Mode
+            </div>
+            <div class="tab" onclick="switchTab('preview')">
+                🎮 Preview Game
+            </div>
+        </div>
+        
+        <!-- EDITOR TAB -->
+        <div class="tab-content active" id="editorTab">
+            <div class="main-content">
+                <div class="image-section">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📸</div>
+                        <div><strong>Click hoặc kéo thả ảnh vào đây</strong></div>
+                        <div style="color: #6c757d; margin-top: 10px;">Hỗ trợ: JPG, PNG, GIF</div>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="image-container" id="imageContainer">
+                        <img id="mainImage" class="main-image" alt="Uploaded image">
+                    </div>
+                </div>
+                
+                <div class="controls-section">
+                    <div class="status-message" id="statusMessage"></div>
+                    
+                    <div class="form-group">
+                        <label for="objectName">Tên Object:</label>
+                        <input type="text" id="objectName" placeholder="vd: cup, book, chair...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="objectOrder">Thứ tự (Order):</label>
+                        <input type="number" id="objectOrder" placeholder="1, 2, 3... (để trống nếu không dùng)">
+                    </div>
+                    
+                    <button class="button" onclick="startSelection()" id="startBtn" disabled>
+                        🎯 Chọn vùng cho object này
+                    </button>
+                    
+                    <div class="form-group">
+                        <label>📦 Danh sách Objects:</label>
+                        <div class="objects-list" id="objectsList">
+                            <div style="padding: 20px; text-align: center; color: #6c757d;">
+                                Chưa có object nào
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="audioScript">Audio Script (cho preview):</label>
+                        <textarea id="audioScript" placeholder="vd: Cup is on the table. Book is on the chair."></textarea>
+                    </div>
+                    
+                    <button class="button success" onclick="clearAll()">
+                        🗑️ Xóa tất cả
+                    </button>
+                    
+                    <div class="coordinates-display" id="coordinatesDisplay">
+                        Objects sẽ hiển thị ở đây dưới dạng JSON
+                    </div>
+                    
+                    <button class="button" onclick="copyJSON()">
+                        📋 Copy JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PREVIEW TAB -->
+        <div class="tab-content" id="previewTab">
+            <div class="main-content">
+                <div class="image-section">
+                    <div id="previewImageContainer" style="display: none;">
+                        <img id="previewImage" class="main-image" alt="Preview image">
+                    </div>
+                    <div id="previewPlaceholder" style="padding: 60px; text-align: center; color: #6c757d; background: #f8f9fa; border-radius: 10px;">
+                        📷 Tạo objects trong Editor trước để preview game
+                    </div>
+                </div>
+                
+                <div class="controls-section">
+                    <div class="game-controls">
+                        <h3 style="color: #667eea; margin-bottom: 10px;">🎮 Game Controls</h3>
+                        <button class="audio-button" onclick="playPreviewAudio()" id="previewAudioBtn">
+                            🔊 Nghe Audio
+                        </button>
+                        <button class="button danger" onclick="resetPreviewGame()">
+                            🔄 Reset Game
+                        </button>
+                    </div>
+                    
+                    <div class="progress-info" id="progressInfo">
+                        Click vào objects theo thứ tự được nhắc trong audio
+                    </div>
+                    
+                    <div class="status-message" id="previewStatus"></div>
+                    
+                    <div class="coordinates-display" id="previewData">
+                        Game data sẽ hiển thị ở đây khi preview
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentImage = null;
+        let objects = [];
+        let isSelecting = false;
+        let startX, startY, currentSelection = null;
+        let currentTab = 'editor';
+        
+        // Preview game state
+        let currentStep = 0;
+        let userClicks = [];
+        let isGameComplete = false;
+        let currentAudio = null;
+
+        // Upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const imageUpload = document.getElementById('imageUpload');
+        const imageContainer = document.getElementById('imageContainer');
+        const mainImage = document.getElementById('mainImage');
+        const startBtn = document.getElementById('startBtn');
+
+        uploadArea.addEventListener('click', () => imageUpload.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        imageUpload.addEventListener('change', handleImageUpload);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                loadImage(files[0]);
+            }
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                loadImage(file);
+            }
+        }
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                mainImage.src = e.target.result;
+                mainImage.onload = function() {
+                    uploadArea.style.display = 'none';
+                    imageContainer.style.display = 'block';
+                    startBtn.disabled = false;
+                    currentImage = e.target.result;
+                    showStatus('success', '✅ Ảnh đã được tải lên!');
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'editor') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('editorTab').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('previewTab').classList.add('active');
+                setupPreview();
+            }
+        }
+
+        // Selection handling
+        function startSelection() {
+            const objectName = document.getElementById('objectName').value.trim();
+            if (!objectName) {
+                showStatus('error', '❌ Vui lòng nhập tên object trước!');
+                return;
+            }
+            
+            isSelecting = true;
+            mainImage.style.cursor = 'crosshair';
+            startBtn.textContent = '🎯 Click và kéo trên ảnh để chọn vùng';
+            startBtn.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+            
+            mainImage.addEventListener('mousedown', startDrawing);
+        }
+
+        function startDrawing(e) {
+            if (!isSelecting) return;
+            
+            const rect = mainImage.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            
+            if (currentSelection) {
+                currentSelection.remove();
+            }
+            
+            currentSelection = document.createElement('div');
+            currentSelection.className = 'selection-rectangle';
+            currentSelection.style.left = startX + 'px';
+            currentSelection.style.top = startY + 'px';
+            currentSelection.style.width = '0px';
+            currentSelection.style.height = '0px';
+            
+            imageContainer.appendChild(currentSelection);
+            
+            mainImage.addEventListener('mousemove', updateDrawing);
+            mainImage.addEventListener('mouseup', finishDrawing);
+            
+            e.preventDefault();
+        }
+
+        function updateDrawing(e) {
+            if (!currentSelection) return;
+            
+            const rect = mainImage.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            const width = Math.abs(currentX - startX);
+            const height = Math.abs(currentY - startY);
+            const left = Math.min(currentX, startX);
+            const top = Math.min(currentY, startY);
+            
+            currentSelection.style.left = left + 'px';
+            currentSelection.style.top = top + 'px';
+            currentSelection.style.width = width + 'px';
+            currentSelection.style.height = height + 'px';
+        }
+
+        function finishDrawing(e) {
+            if (!currentSelection) return;
+            
+            const rect = mainImage.getBoundingClientRect();
+            const selectionRect = currentSelection.getBoundingClientRect();
+            
+            // Calculate percentages
+            const x = ((selectionRect.left - rect.left) / rect.width * 100);
+            const y = ((selectionRect.top - rect.top) / rect.height * 100);
+            const width = (selectionRect.width / rect.width * 100);
+            const height = (selectionRect.height / rect.height * 100);
+            
+            // Create object
+            const objectName = document.getElementById('objectName').value.trim();
+            const objectOrder = document.getElementById('objectOrder').value.trim();
+            
+            const newObject = {
+                id: objectName.toLowerCase().replace(/\s+/g, '_'),
+                name: objectName,
+                x: parseFloat(x.toFixed(1)),
+                y: parseFloat(y.toFixed(1)),
+                width: parseFloat(width.toFixed(1)),
+                height: parseFloat(height.toFixed(1)),
+                order: objectOrder ? parseInt(objectOrder) : null
+            };
+            
+            objects.push(newObject);
+            
+            // Clean up
+            currentSelection.remove();
+            currentSelection = null;
+            isSelecting = false;
+            mainImage.style.cursor = 'default';
+            mainImage.removeEventListener('mousedown', startDrawing);
+            mainImage.removeEventListener('mousemove', updateDrawing);
+            mainImage.removeEventListener('mouseup', finishDrawing);
+            
+            startBtn.textContent = '🎯 Chọn vùng cho object này';
+            startBtn.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+            
+            // Clear form
+            document.getElementById('objectName').value = '';
+            document.getElementById('objectOrder').value = '';
+            
+            updateUI();
+            showStatus('success', `✅ Object "${objectName}" đã được tạo!`);
+        }
+
+        function updateUI() {
+            updateObjectsList();
+            updateCoordinatesDisplay();
+            renderObjectOverlays();
+        }
+
+        function updateObjectsList() {
+            const objectsList = document.getElementById('objectsList');
+            
+            if (objects.length === 0) {
+                objectsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Chưa có object nào</div>';
+                return;
+            }
+            
+            objectsList.innerHTML = objects.map((obj, index) => `
+                <div class="object-item">
+                    <div class="object-info">
+                        <div class="object-name">${obj.name}</div>
+                        <div class="object-coords">
+                            x:${obj.x}% y:${obj.y}% w:${obj.width}% h:${obj.height}% order:${obj.order || 'none'}
+                        </div>
+                    </div>
+                    <button class="small-button" onclick="deleteObject(${index})">Xóa</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteObject(index) {
+            objects.splice(index, 1);
+            updateUI();
+            showStatus('success', '✅ Đã xóa object!');
+        }
+
+        function clearAll() {
+            objects = [];
+            updateUI();
+            showStatus('success', '✅ Đã xóa tất cả objects!');
+        }
+
+        function renderObjectOverlays() {
+            // Remove existing overlays
+            const existingOverlays = imageContainer.querySelectorAll('.object-overlay');
+            existingOverlays.forEach(overlay => overlay.remove());
+            
+            // Add new overlays
+            objects.forEach(obj => {
+                const overlay = document.createElement('div');
+                overlay.className = 'object-overlay';
+                overlay.innerHTML = `
+                    ${obj.name}
+                    ${obj.order ? `<div class="object-order">${obj.order}</div>` : ''}
+                `;
+                
+                overlay.style.left = `${obj.x}%`;
+                overlay.style.top = `${obj.y}%`;
+                overlay.style.width = `${obj.width}%`;
+                overlay.style.height = `${obj.height}%`;
+                
+                imageContainer.appendChild(overlay);
+            });
+        }
+
+        function updateCoordinatesDisplay() {
+            const audioScript = document.getElementById('audioScript').value.trim();
+            const correctSequence = objects
+                .filter(obj => obj.order !== null)
+                .sort((a, b) => a.order - b.order)
+                .map(obj => obj.id);
+            
+            const output = {
+                image: "your-image-url.jpg",
+                audioBase64: "your-base64-audio",
+                script: audioScript || "Your audio script here",
+                objects: objects,
+                correctSequence: correctSequence,
+                gameType: "sequence"
+            };
+            
+            document.getElementById('coordinatesDisplay').textContent = JSON.stringify(output, null, 2);
+        }
+
+        function copyJSON() {
+            const text = document.getElementById('coordinatesDisplay').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showStatus('success', '✅ JSON đã được copy!');
+            }).catch(() => {
+                showStatus('error', '❌ Không thể copy. Vui lòng copy thủ công.');
+            });
+        }
+
+        // Preview functionality
+        function setupPreview() {
+            if (objects.length === 0 || !currentImage) {
+                document.getElementById('previewPlaceholder').style.display = 'block';
+                document.getElementById('previewImageContainer').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('previewPlaceholder').style.display = 'none';
+            const previewContainer = document.getElementById('previewImageContainer');
+            previewContainer.style.display = 'block';
+            previewContainer.style.position = 'relative'; // Ensure relative positioning
+            
+            // Set preview image
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = currentImage;
+            
+            // Reset game state
+            currentStep = 0;
+            userClicks = [];
+            isGameComplete = false;
+            
+            // Update preview data display
+            const previewData = {
+                objects: objects,
+                correctSequence: objects
+                    .filter(obj => obj.order !== null)
+                    .sort((a, b) => a.order - b.order)
+                    .map(obj => obj.id),
+                script: document.getElementById('audioScript').value.trim() || "Audio script not provided"
+            };
+            
+            document.getElementById('previewData').textContent = JSON.stringify(previewData, null, 2);
+            
+            // Wait for image to load before rendering objects
+            previewImage.onload = function() {
+                renderPreviewObjects();
+                updateProgressInfo();
+            };
+            
+            // If image is already loaded
+            if (previewImage.complete) {
+                renderPreviewObjects();
+                updateProgressInfo();
+            }
+        }
+
+        function renderPreviewObjects() {
+            const previewContainer = document.getElementById('previewImageContainer');
+            
+            // Remove existing overlays
+            const existingOverlays = previewContainer.querySelectorAll('.object-overlay');
+            existingOverlays.forEach(overlay => overlay.remove());
+            
+            // Add clickable objects
+            objects.forEach(obj => {
+                const overlay = document.createElement('div');
+                overlay.className = 'object-overlay';
+                overlay.style.position = 'absolute'; // Ensure absolute positioning
+                overlay.innerHTML = `
+                    ${obj.name}
+                    ${obj.order ? `<div class="object-order">${obj.order}</div>` : ''}
+                `;
+                
+                overlay.style.left = `${obj.x}%`;
+                overlay.style.top = `${obj.y}%`;
+                overlay.style.width = `${obj.width}%`;
+                overlay.style.height = `${obj.height}%`;
+                
+                overlay.addEventListener('click', () => handlePreviewClick(obj));
+                
+                previewContainer.appendChild(overlay);
+            });
+        }
+
+        function handlePreviewClick(obj) {
+            if (isGameComplete) return;
+            
+            const correctSequence = objects
+                .filter(o => o.order !== null)
+                .sort((a, b) => a.order - b.order)
+                .map(o => o.id);
+            
+            if (correctSequence.length === 0) {
+                showPreviewStatus('error', '❌ Không có sequence để test! Hãy set order cho objects.');
+                return;
+            }
+            
+            const expectedObject = correctSequence[currentStep];
+            const objectElement = event.target.closest('.object-overlay');
+            
+            objectElement.classList.add('clicked');
+            setTimeout(() => {
+                objectElement.classList.remove('clicked');
+            }, 600);
+            
+            if (obj.id === expectedObject) {
+                // Correct click
+                objectElement.classList.add('correct');
+                userClicks.push(obj.id);
+                currentStep++;
+                
+                if (currentStep >= correctSequence.length) {
+                    isGameComplete = true;
+                    showPreviewStatus('success', '🎉 Hoàn thành! Bạn đã click đúng tất cả objects!');
+                    document.getElementById('progressInfo').textContent = 'Game hoàn thành! 🎉';
+                } else {
+                    updateProgressInfo();
+                    showPreviewStatus('success', `✅ Đúng! Tiếp tục với object tiếp theo.`);
+                }
+            } else {
+                // Wrong click
+                objectElement.classList.add('incorrect');
+                setTimeout(() => {
+                    objectElement.classList.remove('incorrect');
+                }, 500);
+                
+                const expectedName = objects.find(o => o.id === expectedObject)?.name || expectedObject;
+                showPreviewStatus('error', `❌ Sai! Bạn cần click vào "${expectedName}" trước.`);
+            }
+        }
+
+        function updateProgressInfo() {
+            const correctSequence = objects
+                .filter(o => o.order !== null)
+                .sort((a, b) => a.order - b.order);
+            
+            if (currentStep < correctSequence.length) {
+                const nextObject = correctSequence[currentStep];
+                document.getElementById('progressInfo').textContent = 
+                    `Bước ${currentStep + 1}: Click vào "${nextObject.name}" (order: ${nextObject.order})`;
+            }
+        }
+
+        function playPreviewAudio() {
+            const audioScript = document.getElementById('audioScript').value.trim();
+            if (!audioScript) {
+                showPreviewStatus('error', '❌ Chưa có audio script! Hãy nhập trong Editor tab.');
+                return;
+            }
+            
+            const audioBtn = document.getElementById('previewAudioBtn');
+            
+            // Stop current audio
+            if (currentAudio) {
+                speechSynthesis.cancel();
+                audioBtn.classList.remove('playing');
+            }
+            
+            // Use Speech Synthesis API
+            const utterance = new SpeechSynthesisUtterance(audioScript);
+            utterance.lang = 'en-US'; // Change to 'fi-FI' for Finnish if available
+            utterance.rate = 0.8;
+            
+            audioBtn.classList.add('playing');
+            
+            utterance.onend = () => {
+                audioBtn.classList.remove('playing');
+            };
+            
+            utterance.onerror = () => {
+                audioBtn.classList.remove('playing');
+                showPreviewStatus('error', 'Lỗi phát audio. Text: ' + audioScript);
+            };
+            
+            speechSynthesis.speak(utterance);
+            currentAudio = utterance;
+        }
+
+        function resetPreviewGame() {
+            currentStep = 0;
+            userClicks = [];
+            isGameComplete = false;
+            
+            // Stop audio
+            if (currentAudio) {
+                speechSynthesis.cancel();
+                document.getElementById('previewAudioBtn').classList.remove('playing');
+            }
+            
+            // Reset all objects
+            const previewContainer = document.getElementById('previewImageContainer');
+            previewContainer.querySelectorAll('.object-overlay').forEach(overlay => {
+                overlay.classList.remove('correct', 'incorrect', 'clicked');
+            });
+            
+            // Hide status
+            document.getElementById('previewStatus').style.display = 'none';
+            
+            updateProgressInfo();
+            showPreviewStatus('success', '🔄 Game đã được reset!');
+        }
+
+        function showPreviewStatus(type, message) {
+            const statusElement = document.getElementById('previewStatus');
+            statusElement.className = `status-message ${type}`;
+            statusElement.textContent = message;
+            statusElement.style.display = 'block';
+            
+            if (type === 'success' && !message.includes('Hoàn thành')) {
+                setTimeout(() => {
+                    statusElement.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        function showStatus(type, message) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.textContent = message;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // Update coordinates display when audio script changes
+        document.getElementById('audioScript').addEventListener('input', updateCoordinatesDisplay);
+    </script>
+</body>
+</html>

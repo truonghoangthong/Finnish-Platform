@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Ghép Câu Tiếng Phần Lan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            padding: 40px;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .word-column {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 3px solid #e9ecef;
+        }
+
+        .column-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #495057;
+            font-size: 1.3em;
+            padding: 10px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+        }
+
+        .word-item {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1.1em;
+            position: relative;
+        }
+
+        .word-item:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .word-item.dragging {
+            opacity: 0.6;
+            transform: rotate(8deg) scale(0.95);
+        }
+
+        .drop-zone {
+            background: #f8f9fa;
+            border: 3px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            min-height: 80px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .drop-zone:hover {
+            border-color: #28a745;
+            background: #d4edda;
+            transform: scale(1.02);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #007bff;
+            background: #cce7ff;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+
+        .drop-zone.filled {
+            border-color: #28a745;
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            border-style: solid;
+        }
+
+        .drop-zone.correct {
+            border-color: #28a745;
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .drop-zone.incorrect {
+            border-color: #dc3545;
+            background: linear-gradient(45deg, #f8d7da, #f1aeb5);
+        }
+
+        .target-text {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .drop-area {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.7);
+        }
+
+        .drop-area.filled-content {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .audio-controls.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .audio-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .audio-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .audio-button:active {
+            transform: scale(0.95);
+        }
+
+        .sentence-preview {
+            font-size: 0.85em;
+            color: #495057;
+            font-style: italic;
+        }
+
+        .control-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .reset-button {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #495057;
+            margin: 15px 0;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 3px solid #28a745;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .completion-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .correct-match {
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .incorrect-match {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .audio-button.playing {
+            animation: pulse 1s infinite;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧩 Trò Chơi Ghép Câu Tiếng Phần Lan</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div class="score" id="scoreDisplay">
+            Đã ghép đúng: 0 / 0
+        </div>
+        
+        <div id="gameContent" class="loading">
+            Đang tải dữ liệu...
+        </div>
+        
+        <div class="completion-message" id="completionMessage">
+            🎉 Chúc mừng! Bạn đã hoàn thành tất cả câu!
+        </div>
+    </div>
+
+    <script>
+        let gameData = {};
+        let sentences = [];
+        let currentMatches = {};
+        let correctMatches = new Set();
+        let currentAudio = null;
+
+        // Fetch data from API
+        async function loadGameData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/studying/A1/the_break_room/module3/part3a');
+                const data = await response.json();
+                gameData = data.result.part3a;
+                processSentences();
+                renderGame();
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+                document.getElementById('gameContent').innerHTML = 
+                    '<div class="loading">❌ Không thể tải dữ liệu. Vui lòng kiểm tra API server.</div>';
+            }
+        }
+
+        function processSentences() {
+            sentences = [];
+            Object.keys(gameData).forEach(questionId => {
+                const script = gameData[questionId].script;
+                const [leftPart, rightPart] = script.split(' / ');
+                sentences.push({
+                    id: questionId,
+                    left: leftPart.trim(),
+                    right: rightPart.trim(),
+                    fullSentence: script.replace(' / ', ' '),
+                    audioBase64: gameData[questionId].audioBase64
+                });
+            });
+            
+            // Shuffle the arrays for random order
+            sentences = shuffleArray(sentences);
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function renderGame() {
+            const gameContent = document.getElementById('gameContent');
+            
+            // Shuffle left and right parts separately
+            const leftParts = shuffleArray(sentences.map(s => ({id: s.id, text: s.left})));
+            const rightParts = shuffleArray(sentences.map(s => ({id: s.id, text: s.right})));
+
+            const html = `
+                <div class="game-area">
+                    <div class="word-column left-words">
+                        <div class="column-title">🔤 Phần đầu câu</div>
+                        ${leftParts.map(part => `
+                            <div class="word-item" draggable="true" data-id="${part.id}" data-type="left">
+                                ${part.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="word-column right-words">
+                        <div class="column-title">🎯 Ghép với phần này</div>
+                        ${rightParts.map(part => {
+                            const sentence = sentences.find(s => s.id === part.id);
+                            return `
+                                <div class="drop-zone" data-id="${part.id}" data-type="right">
+                                    <div class="target-text">${part.text}</div>
+                                    <div class="drop-area">Kéo phần đầu câu vào đây</div>
+                                    <div class="audio-controls" id="audio-${part.id}">
+                                        <button class="audio-button" onclick="playAudio('${part.id}')">
+                                            🔊 Nghe
+                                        </button>
+                                        <div class="sentence-preview">"${sentence.fullSentence}"</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <button class="reset-button" onclick="resetGame()">
+                        🔄 Làm lại
+                    </button>
+                </div>
+            `;
+
+            gameContent.innerHTML = html;
+            setupDragAndDrop();
+            updateScore();
+        }
+
+        function setupDragAndDrop() {
+            const draggableItems = document.querySelectorAll('.word-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            draggableItems.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        id: e.target.dataset.id,
+                        type: e.target.dataset.type,
+                        text: e.target.textContent.trim()
+                    }));
+                    e.target.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    const draggedData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    const dropArea = zone.querySelector('.drop-area');
+                    const audioControls = zone.querySelector('.audio-controls');
+                    
+                    // Remove previous match if exists
+                    if (currentMatches[zone.dataset.id]) {
+                        const prevElement = document.querySelector(`[data-id="${currentMatches[zone.dataset.id]}"][data-type="left"]`);
+                        if (prevElement) {
+                            prevElement.style.display = 'block';
+                        }
+                        // Remove from correct matches if it was correct
+                        correctMatches.delete(zone.dataset.id);
+                    }
+                    
+                    // Set new match
+                    currentMatches[zone.dataset.id] = draggedData.id;
+                    dropArea.textContent = draggedData.text;
+                    dropArea.classList.add('filled-content');
+                    zone.classList.add('filled');
+                    
+                    // Hide the dragged item
+                    const draggedElement = document.querySelector(`[data-id="${draggedData.id}"][data-type="left"]`);
+                    if (draggedElement) {
+                        draggedElement.style.display = 'none';
+                    }
+                    
+                    // Check if this match is correct
+                    const isCorrect = zone.dataset.id === draggedData.id;
+                    
+                    if (isCorrect) {
+                        zone.classList.add('correct');
+                        zone.classList.remove('incorrect');
+                        zone.classList.add('correct-match');
+                        correctMatches.add(zone.dataset.id);
+                        
+                        // Show audio controls with animation
+                        setTimeout(() => {
+                            audioControls.classList.add('show');
+                        }, 300);
+                    } else {
+                        zone.classList.add('incorrect');
+                        zone.classList.remove('correct');
+                        zone.classList.add('incorrect-match');
+                        audioControls.classList.remove('show');
+                    }
+                    
+                    // Remove animation classes after animation completes
+                    setTimeout(() => {
+                        zone.classList.remove('correct-match', 'incorrect-match');
+                    }, 600);
+                    
+                    updateScore();
+                    checkCompletion();
+                });
+
+                // Allow clicking to remove match
+                zone.addEventListener('click', () => {
+                    if (zone.classList.contains('filled')) {
+                        const matchedId = currentMatches[zone.dataset.id];
+                        if (matchedId) {
+                            const originalElement = document.querySelector(`[data-id="${matchedId}"][data-type="left"]`);
+                            if (originalElement) {
+                                originalElement.style.display = 'block';
+                            }
+                            
+                            delete currentMatches[zone.dataset.id];
+                            correctMatches.delete(zone.dataset.id);
+                            
+                            const dropArea = zone.querySelector('.drop-area');
+                            const audioControls = zone.querySelector('.audio-controls');
+                            
+                            dropArea.textContent = 'Kéo phần đầu câu vào đây';
+                            dropArea.classList.remove('filled-content');
+                            zone.classList.remove('filled', 'correct', 'incorrect');
+                            audioControls.classList.remove('show');
+                            
+                            updateScore();
+                            checkCompletion();
+                        }
+                    }
+                });
+            });
+        }
+
+        function playAudio(questionId) {
+            // Stop current audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                // Remove playing class from all buttons
+                document.querySelectorAll('.audio-button').forEach(btn => {
+                    btn.classList.remove('playing');
+                });
+            }
+
+            const sentence = sentences.find(s => s.id === questionId);
+            const audioButton = document.querySelector(`#audio-${questionId} .audio-button`);
+            
+            if (sentence && sentence.audioBase64) {
+                try {
+                    // Add playing class
+                    audioButton.classList.add('playing');
+                    
+                    // Create audio from base64
+                    const audioBlob = new Blob([Uint8Array.from(atob(sentence.audioBase64), c => c.charCodeAt(0))], {type: 'audio/mpeg'});
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    currentAudio = new Audio(audioUrl);
+                    currentAudio.play().catch(error => {
+                        console.error('Lỗi khi phát audio:', error);
+                        alert('Không thể phát audio. Vui lòng thử lại.');
+                        audioButton.classList.remove('playing');
+                    });
+
+                    currentAudio.addEventListener('ended', () => {
+                        URL.revokeObjectURL(audioUrl);
+                        audioButton.classList.remove('playing');
+                    });
+                } catch (error) {
+                    console.error('Lỗi khi xử lý audio:', error);
+                    alert('Lỗi audio format. Vui lòng kiểm tra dữ liệu.');
+                    audioButton.classList.remove('playing');
+                }
+            }
+        }
+
+        function checkCompletion() {
+            const totalQuestions = sentences.length;
+            const completionMessage = document.getElementById('completionMessage');
+            
+            if (correctMatches.size === totalQuestions) {
+                setTimeout(() => {
+                    completionMessage.classList.add('show');
+                }, 500);
+            } else {
+                completionMessage.classList.remove('show');
+            }
+        }
+
+        function resetGame() {
+            currentMatches = {};
+            correctMatches.clear();
+            
+            // Stop any playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            
+            // Show all hidden items
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.style.display = 'block';
+            });
+            
+            // Clear all drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('filled', 'correct', 'incorrect', 'correct-match', 'incorrect-match');
+                const dropArea = zone.querySelector('.drop-area');
+                const audioControls = zone.querySelector('.audio-controls');
+                
+                dropArea.textContent = 'Kéo phần đầu câu vào đây';
+                dropArea.classList.remove('filled-content');
+                audioControls.classList.remove('show');
+            });
+            
+            // Remove playing class from all buttons
+            document.querySelectorAll('.audio-button').forEach(btn => {
+                btn.classList.remove('playing');
+            });
+            
+            // Hide completion message
+            document.getElementById('completionMessage').classList.remove('show');
+            
+            updateScore();
+        }
+
+        function updateScore() {
+            const totalQuestions = sentences.length;
+            const progress = (correctMatches.size / totalQuestions) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('scoreDisplay').textContent = `Đã ghép đúng: ${correctMatches.size} / ${totalQuestions}`;
+        }
+
+        // Load game data when page loads
+        window.addEventListener('load', loadGameData);
+    </script>
+</body>
+</html>
