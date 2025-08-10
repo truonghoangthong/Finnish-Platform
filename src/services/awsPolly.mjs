@@ -4,9 +4,9 @@ const command = async (script) => {
     const command = new SynthesizeSpeechCommand({
           Text: `<speak><prosody rate="80%">${script}</prosody></speak>`,
           OutputFormat: 'mp3',
-          VoiceId: 'Joanna',  //  VoiceId: 'Suvi', 
-          LanguageCode: 'en-US', // LanguageCode: 'fi-FI'
-          Engine: 'standard', // Engine: 'neural',  
+          VoiceId: 'Suvi',  //  VoiceId: 'Suvi', 
+          LanguageCode: 'fi-FI', // LanguageCode: 'fi-FI'
+          Engine: 'neural', // Engine: 'neural',  
           TextType: 'ssml' 
       });
       const { AudioStream } = await pollyClient.send(command); 
