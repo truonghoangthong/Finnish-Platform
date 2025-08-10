@@ -23,7 +23,7 @@ const AnswerPopup = ({ isCorrect, image, script, ipa, onClose }) => {
         {isCorrect ? (
           <>
             <p className="popup-message success">
-              ✅ Oikein! Hienoa työtä <span className="popup-celebrate"></span>
+              <span style={{ color: "#4CAF50" }}>✔</span> Oikein! Hienoa työtä <span className="popup-celebrate"></span>
             </p>
             <img src={image} alt="Answer" className="popup-image" />
             <p className="popup-word">{script}</p>

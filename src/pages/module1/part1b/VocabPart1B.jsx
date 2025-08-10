@@ -144,7 +144,7 @@ const VocabPart1B = ({ data }) => {
                 {hasReviewedAnswers && (
                   <div className="vocab1b-feedback">
                     <span className={isCorrect ? 'tick' : isFlipped ? 'tick' : 'cross'}>
-                      {isCorrect || isFlipped ? '✅' : hasAnswered ? '❌' : ''}
+                      {isCorrect || isFlipped ? <span style={{ color: "#4CAF50", fontWeight: "bold" }}>✔</span> : hasAnswered ? '❌' : ''}
                     </span>
                     <p className={`script ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>{q.script}</p>
                     {q.ipa && <p className={`ipa ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>[{q.ipa}]</p>}
