@@ -1,0 +1,225 @@
+/* ============ HEADER ============ */
+.vocab1b-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.vocab1b-audio {
+  flex-shrink: 0;
+  transform: scale(0.85);
+  transform-origin: left center;
+}
+
+.vocab1b-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #00C2E5;
+  white-space: nowrap;
+}
+
+.vocab1b-description {
+  font-size: 1rem;
+  color: #333;
+  flex: 1;
+  white-space: normal;
+  line-height: 1.5;
+}
+
+/* ============ DROP ZONE ============ */
+.vocab1b-drop-area {
+  background: #f2fbfd;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.vocab1b-image-options.grid-7 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  justify-items: center;
+  width: 100%;
+}
+
+.vocab1b-image-options.center-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.vocab1b-drop-box {
+  background: white;
+  border-radius: 12px;
+  padding: 0.75rem;
+  width: 100%;
+  max-width: 100px;
+  min-height: 130px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.vocab1b-drop-box:hover {
+  transform: translateY(-3px);
+}
+
+.vocab1b-drop-image {
+  margin-top: 0.5rem;
+}
+
+.vocab1b-drop-image img {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+}
+
+/* ============ DRAG ZONE ============ */
+.vocab1b-drag-wrapper {
+  background-color: #f2fbfd;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.vocab1b-drag-zone {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 1.25rem;
+  justify-items: center;
+}
+
+.vocab1b-drag-image {
+  width: 90px;
+  height: 80px;
+  object-fit: contain;
+  padding: 8px;
+  background-color: white;
+  border: 2px dashed #00C2E5;
+  border-radius: 12px;
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vocab1b-drag-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ============ BUTTONS ============ */
+.vocab1b-buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.vocab1b-buttons button {
+  max-width: 30%;
+  background-color: #3dc0f1;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .vocab1b-image-options.grid-7 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .vocab1b-image-options.grid-7 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .vocab1b-image-options.grid-7 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .vocab1b-drop-box {
+    max-width: 80px;
+    min-height: 100px;
+  }
+
+  .vocab1b-drop-image img {
+    height: 65px;
+  }
+
+  .vocab1b-drag-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .vocab1b-description {
+    font-size: 0.9rem;
+  }
+}
+.vocab1b-drop-box.is-playing {
+  background-color: #e6f2f4;
+  box-shadow: 0 0 0 2px #00C2E5 inset;
+  transition: background 0.3s ease;
+}
+/* ============ Duolingo-style Feedback ============ */
+.vocab1b-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  margin-top: 0.75rem;
+  min-height: 70px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.vocab1b-feedback .tick,
+.vocab1b-feedback .cross {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.vocab1b-feedback .tick {
+  color: #22C55E;
+}
+
+.vocab1b-feedback .cross {
+  color: #EF4444;
+}
+
+.vocab1b-feedback .script {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  margin-top: 2px;
+  line-height: 1.3;
+  word-break: keep-all;        /* ✅ Không chia từ giữa chừng */
+  white-space: normal;
+  overflow-wrap: normal;
+  text-align: center;
+}
+
+
+.vocab1b-feedback .ipa {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #666;
+  line-height: 1.2;
+  white-space: nowrap;       /* ✅ Không cho xuống dòng */
+  word-break: keep-all;      /* ✅ Không chia nhỏ từ */
+  overflow-wrap: normal;     /* ✅ Giữ nguyên cấu trúc */
+  text-align: center;
+}
+
+
+.vocab1b-feedback .dimmed {
+  color: #aaa;
+  opacity: 0.6;
+}

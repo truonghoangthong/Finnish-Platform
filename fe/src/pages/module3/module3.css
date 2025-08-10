@@ -1,0 +1,284 @@
+.module3-container {
+  padding: 20px;
+  font-family: sans-serif;
+  background-color: #fff;
+  color: #1A1A1A;
+}
+
+.module3-matching-section {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+.module3-column {
+  flex: 1;
+  max-width: 400px;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.module3-column.left {
+  padding-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.module3-column.right {
+  padding-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.module3-card {
+  position: relative;
+  background: gray;
+  color: #000;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  cursor: move;
+  transition: all 0.2s ease;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.module3-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #d1d1d1;
+  z-index: -1;
+  border-radius: 10px;
+}
+
+.module3-card.left {
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    calc(100% - 17px) 50%,
+    100% 100%,
+    0% 100%,
+    0% 0%
+  );
+  margin-right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.module3-card.left::before {
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    calc(100% - 18px) 50%,
+    100% 100%,
+    0% 100%,
+    0% 0%
+  );
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  background: white;
+  border-radius: 8px 0 0 8px;
+}
+
+.module3-card.right {
+  clip-path: polygon(
+    16px 0%,
+    100% 0%,
+    100% 100%,
+    16px 100%,
+    0% 50%,
+    16px 0%
+  );
+  margin-left: 0;
+}
+
+.module3-card.right::before {
+  clip-path: polygon(
+    16px 0%,
+    100% 0%,
+    100% 100%,
+    16px 100%,
+    0% 50%,
+    16px 0%
+  );
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  background: white;
+}
+
+.module3-card.correct {
+  background: #e8f5e9;
+  cursor: default;
+}
+
+.module3-card.correct::before {
+  background: #a5d6a7;
+}
+
+.module3-card.incorrect {
+  background: #ffebee;
+  cursor: default;
+}
+
+.module3-card.incorrect::before {
+  background: #ef9a9a;
+}
+
+.module3-card:hover:not(.correct):not(.incorrect) {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.module3-card.tight.left {
+  margin-right: -7.5px;
+}
+
+.module3-card.tight.right {
+  margin-left: -7.5px;
+}
+
+.module3-verbs-section {
+  margin-bottom: 16px;
+}
+
+.module3-verbs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.module3-verb-root {
+  background: #c0e8ff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.module3-variations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module3-variation-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.module3-input-box {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 150px;
+}
+
+.module3-header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+}
+
+.module3-header-row h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.module3-header-row p {
+  margin: 0;
+  color: #555;
+}
+
+.module3-header-row .cover {
+  align-self: center;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.module3-error {
+  text-align: center;
+  color: red;
+  margin: 30px 0;
+  padding: 15px;
+  background: #ffeeee;
+  border-radius: 8px;
+}
+
+.module3-verb-hint {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.module3-verbs-list {
+  margin-bottom: 20px;
+}
+
+.module3-verbs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.module3-verb-input.correct {
+  background-color: #2e7d32;
+}
+
+.module3-verb-input.incorrect {
+  background-color: #ef9a9a;
+}
+
+.module3-verb-input {
+  border-radius: 4px;
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  padding: 2.75px;
+  transition: background-color 0.3s ease;
+}
+
+.module3-results-summary {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.module3-container {
+  padding-bottom: 50px;
+}
+.module3-verb-tag {
+  background: #e0f7fa;
+  padding: 8px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.module3-verb-tag:hover {
+  background: #b2ebf2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

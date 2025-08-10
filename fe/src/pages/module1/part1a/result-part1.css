@@ -1,0 +1,60 @@
+/* result-part1.css */
+
+.result-part1 {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.result-part1.correct {
+  background-color: #e0f7ea; /* xanh nhạt */
+  color: #007e57;
+  border: 1px solid #00c58e;
+}
+
+.result-part1.incorrect {
+  background-color: #fdecea; /* đỏ nhạt */
+  color: #b00020;
+  border: 1px solid #e53935;
+}
+
+.result-check {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.result-info .result-script {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.result-info .result-ipa {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #555;
+}
+.coming-soon-text {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+.final-container.empty h2 {
+  font-size: 24px;
+  color: #06ACFF;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.final-container.empty p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 16px;
+  text-align: center;
+}
