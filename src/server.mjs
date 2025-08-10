@@ -275,10 +275,6 @@ app.post('/api/new_lesson', async (req, res) => {
   }
 });
 
-export const createServer = () => app;
-export default app;
-
-
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
