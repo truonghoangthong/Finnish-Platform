@@ -1,8 +1,0 @@
-[submodule "be"]
-	path = be
-	url = https://github.com/truonghoangthong/Finnish-Platform.git
-	branch = Backend
-[submodule "fe"]
-	path = fe
-	url = https://github.com/truonghoangthong/Finnish-Platform.git
-	branch = Frontend
