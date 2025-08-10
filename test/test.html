@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Audio with API</title>
+  <style>
+    .question { margin: 20px 0; }
+    button { margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <div id="questions"></div>
+
+  <script>
+    // Fetch data từ API
+    fetch('http://localhost:3000/api/studying/A1/the_break_room/module1/part1a')
+      .then(response => response.json())
+      .then(data => {
+        const questionsDiv = document.getElementById('questions');
+        const part1a = data?.result?.part1a;
+
+        if (part1a) {
+          Object.keys(part1a).forEach(questionKey => {
+            const question = part1a[questionKey];
+            const script = question.script || 'No script nè mầy!';
+            const audioBase64 = question.audioBase64 || '';
+
+            // Tạo phần tử HTML
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.innerHTML = `
+              <p><strong>${questionKey}:</strong> ${script}</p>
+              <button onclick="playAudio('${audioBase64}')">Play</button>
+            `;
+            questionsDiv.appendChild(div);
+          });
+        } else {
+          questionsDiv.innerHTML = '<p>Không có data nè mầy!</p>';
+        }
+      })
+      .catch(error => console.error('Lỗi fetch nè mầy:', error));
+
+    // Hàm play audio từ base64
+    function playAudio(base64String) {
+      if (base64String) {
+        const audio = new Audio(`data:audio/mp3;base64,${base64String}`);
+        audio.play().catch(error => console.error('Lỗi play audio nè mầy:', error));
+      } else {
+        alert('Không có audio nè mầy!');
+      }
+    }
+  </script>
+</body>
+</html>
