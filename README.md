@@ -23,7 +23,7 @@ This API provides comprehensive endpoints for a Finnish language learning platfo
 yarn dev
 ```
 The backend API will be accessible at http://localhost:3000 when running in development mode.
-
+The backend API will be accessible at https://finnish-platform-thong-truongs-projects.vercel.app/ when running in production mode.
 ---
 ## API Overview
 
