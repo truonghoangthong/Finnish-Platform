@@ -4,6 +4,7 @@ import QuestionBox from "./QuestionBox";
 import FloatingMascot from "./FloatingMascot";
 import useAudioPlayer from "@/utils/useAudioPlayer";
 import AudioPlayer from "@/components/audioPlayer/AudioPlayer";
+import Title from "@/components/title/Title"; // ✅ dùng Title đồng bộ với module 1
 import confetti from "canvas-confetti";
 import { updateProgress } from "@/utils/updateProgress";
 import { calculateModule2Progress } from "@/utils/calculateProgress";
@@ -224,16 +225,10 @@ const Listening2A = ({ data, onScrollToPartB }) => {
   return (
     <div className="listening2a-container">
       {(phase === "intro" || phase === "task") && (
-        <div className="task-header oneline">
-          <div className="audio-wrapper">
-            <AudioPlayer
-              src={`data:audio/mp3;base64,${data?.title?.audioBase64}`}
-              size="small"
-            />
-          </div>
-          <span className="task-title">Tehtävä 2A</span>
-          <span className="task-description">{data?.title?.script}</span>
-        </div>
+        <Title
+          audioBase64={data?.title?.audioBase64}
+          script={data?.title?.script}
+        />
       )}
 
       {phase === "intro" && (

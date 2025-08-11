@@ -23,6 +23,7 @@
   transform-origin: center;
   font-family: 'Poppins', sans-serif;
   position: relative;
+  color: #111
 }
 
 /* Viền trạng thái */
@@ -43,6 +44,13 @@
   font-size: 1.12rem;
   font-weight: 700;
   margin-bottom: 0.4rem;
+  .popup-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #111; /* 🔹 Màu chữ tiêu đề */
+}
+
 }
 
 /* Script toggle */
@@ -129,4 +137,7 @@
     line-height: 36px;
     font-size: 0.9rem;
   }
+}
+.answer-popup {
+  color: initial;
 }

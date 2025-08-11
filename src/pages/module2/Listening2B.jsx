@@ -214,7 +214,7 @@ const Listening2B = ({ data }) => {
               size="small"
             />
           </div>
-          <span className="task-title">Tehtävä 2B</span>
+          <span className="task-title">Tehtävä 2b</span>
           <span className="task-description">{data?.title?.script}</span>
         </div>
       )}
