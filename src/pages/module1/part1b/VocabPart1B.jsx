@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './vocab-part1b.css';
 import PopupScore from '../../../components/score/PopupScore';
 import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
-import Title from '../../../components/title/Title'; // ✅ Thêm Title component
+import Title from '../../../components/title/Title'; 
 
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
@@ -103,11 +103,10 @@ const VocabPart1B = ({ data }) => {
 
   return (
     <div className="vocab1b-wrapper">
-      {/* ✅ Dùng Title component để hiển thị tiêu đề */}
+      {/* ✅ Dùng Title: BE trả 1 chuỗi, FE sẽ tự tách tiêu đề (đậm) + mô tả */}
       <Title
-        taskLabel="Tehtävä 1B"
-        script={title?.script}
         audioBase64={title?.audioBase64}
+        script={title?.script}
       />
 
       <div className="vocab1b-drop-area">

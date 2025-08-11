@@ -5,7 +5,7 @@ import { updateProgress } from '../../../utils/api';
 import { calculateModule1Progress } from '../../../utils/calculateProgress';
 import confetti from 'canvas-confetti';
 import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
-import '../../../components/title/Title.css';
+import Title from '../../../components/title/Title'; // ✅ dùng Title component
 
 const VocabPart1A = ({ data }) => {
   const { title, ...questionsRaw } = data;
@@ -187,14 +187,12 @@ const VocabPart1A = ({ data }) => {
         </div>
       )}
 
-      {/* ✅ Đã chỉnh sửa để sử dụng class giống component Title */}
-      <div className="title-wrapper">
-        <div className="title-audio">
-          <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
-        </div>
-        <span className="title-label">Tehtävä 1A</span>
-        <span className="title-description">{title?.script}</span>
-      </div>
+      {/* ✅ Dùng Title component thay vì viết lại HTML */}
+      <Title
+        audioBase64={title?.audioBase64}
+        // taskLabel={title?.taskLabel || 'Tehtävä 1A'}
+        script={title?.script}
+      />
 
       <div className="question-tabs">
         {allQuestions.map((_, idx) => (
