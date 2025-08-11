@@ -4,7 +4,7 @@ import './vocab-part1a.css';
 import { updateProgress } from '../../../utils/api';
 import { calculateModule1Progress } from '../../../utils/calculateProgress';
 import confetti from 'canvas-confetti';
-import AudioPlayer from '../../../components/audioPlayer/AudioPlayer';
+import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
 import '../../../components/title/Title.css';
 
 const VocabPart1A = ({ data }) => {

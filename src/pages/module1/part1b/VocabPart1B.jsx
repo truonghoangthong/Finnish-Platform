@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './vocab-part1b.css';
 import PopupScore from '../../../components/score/PopupScore';
-import AudioPlayer from '../../../components/audioPlayer/AudioPlayer';
+import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
 import Title from '../../../components/title/Title'; // ✅ Thêm Title component
 
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
