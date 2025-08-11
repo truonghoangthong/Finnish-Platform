@@ -1,11 +1,7 @@
-/* ===============================
-   Title.css – Dùng cho Title.jsx
-   =============================== */
-
 .title-wrapper {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;           /* ✅ Cho phép xuống dòng nếu hẹp */
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 1rem;
 }
@@ -17,7 +13,7 @@
 }
 
 .title-label {
-  font-weight: 600;
+  font-weight: 700; /* in đậm */
   font-size: 1.125rem;
   color: #111;
   white-space: nowrap;
