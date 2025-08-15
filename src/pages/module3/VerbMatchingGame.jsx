@@ -26,7 +26,7 @@ const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
       setLeftItems(
         verbs.map(v => ({
           id: `left-${v.id}`,
-          text: v.text,
+          text: '',
           pairId: v.id.replace('vocabulary', 'question'),
           meaning: v.meaning,
           audioBase64: v.audioBase64
@@ -39,13 +39,16 @@ const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
     }
   }, [questions, verbs]);
 
-  //return state to module3.jsx
-  useEffect(() => {
-    onStateChange({
-      userInputs,
-      matches
-    });
-  }, [userInputs, matches, onStateChange]);
+useEffect(() => {
+  onStateChange({
+    userInputs,
+    matches,
+    leftItems,
+    rightItems,
+    questions,
+    verbs
+  });
+}, [userInputs, matches, leftItems, rightItems, questions, verbs, onStateChange]);
 
   const playAudio = (audioBase64) => {
     if (audioBase64) {

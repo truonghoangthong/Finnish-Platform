@@ -112,24 +112,43 @@ const Module3 = () => {
     });
     return partResults;
   };
-
-  const checkVerbAnswers = ({ userInputs, matches }) => {
+  const checkVerbAnswers = ({ userInputs, matches, leftItems, rightItems, questions }) => {
     const results = {};
-    const correctAnswers = {};
-    pairs3c.questions.forEach(q => {
-      const conjugatedVerb = q.conjugatedVerb.replace(/[\[\]]/g, '');
-      correctAnswers[q.pairId] = conjugatedVerb;
-    });
 
-    pairs3c.questions.forEach(question => {
-      const userInput = userInputs[question.pairId];
-      if (userInput) {
-        const isVerbCorrect = userInput.trim().toLowerCase() === correctAnswers[question.pairId].toLowerCase();
-        const matchEntry = matches.find(m => m.questionId === question.pairId);
-        const correctLeftId = `left-vocabulary${question.pairId.replace('question', '')}`;
-        const isMatchCorrect = matchEntry?.verbId === correctLeftId;
-        results[question.pairId] = isVerbCorrect && isMatchCorrect;
-      }
+    // Map pairId -> correct answer
+    const correctAnswers = Object.fromEntries(
+      questions.map(q => [
+        q.pairId,
+        q.conjugatedVerb.replace(/[\[\]]/g, '')
+      ])
+    );
+
+    rightItems.forEach((question, idx) => {
+      const userInput = (userInputs[question.pairId] || '').trim().toLowerCase();
+
+      // Get match from drag and drop, or fallback to current position
+      const verbId =
+        matches.find(m => m.questionId === question.id)?.verbId ||
+        leftItems[idx]?.id;
+
+      const verbCard = leftItems.find(v => v.id === verbId);
+
+      const correctVerb = correctAnswers[question.pairId];
+      const isVerbCorrect = userInput === correctVerb.toLowerCase();
+      const isMatchCorrect = verbCard?.pairId === question.pairId;
+
+      // Debug log
+      console.log("----- Check Verb Answer -----");
+      console.log("Question:", question.text);
+      console.log("User input:", userInput);
+      console.log("Correct answer:", correctVerb);
+      console.log("Matched verb:", verbCard?.text || "None");
+      console.log("Matched correct question?:", isMatchCorrect);
+      console.log("Verb correct?:", isVerbCorrect);
+      console.log("Final result:", isVerbCorrect && isMatchCorrect);
+      console.log("-----------------------------");
+
+      results[question.pairId] = isVerbCorrect && isMatchCorrect;
     });
 
     return results;
