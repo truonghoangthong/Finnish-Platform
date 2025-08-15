@@ -25,9 +25,9 @@
    ========================= */
 .question-tabs {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  margin: 0.3rem 0;
+  margin: 0.100005rem 0;
   flex-wrap: wrap;
 }
 
@@ -67,10 +67,10 @@
    🖼️ 3. IMAGE SECTION
    ======================== */
 .question-image-wrapper {
-  position: relative;
+  position: relative;      /* để popup absolute bám vào */
   overflow: hidden;
   margin: auto;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.rem;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -89,31 +89,97 @@
 /* =======================
    🎛 4. QUESTION CONTROLS
    ======================= */
+/* == Compact, unified buttons for the 3 controls == */
 .question-controls {
   display: flex;
-  gap: 1rem;
+  gap: 12px;
   justify-content: center;
-  margin-top: 0 rem;
-  margin-bottom: 0.5rem;
+  align-items: center;
+  margin: 8px 0 12px;
 }
 
-.question-controls button {
-  background-color: #00C2E5;
-  color: white;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
+/* Base style áp cho TẤT CẢ button trong cụm */
+.question-controls button,
+.question-controls .control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;                    /* khoảng cách icon–text */
+  height: 35px;                /* ↓ nhỏ gọn hơn */
+  padding: 0 10px;             /* độ rộng nút */
   border: none;
   border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
+  background: #00C2E5;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 550;
+  font-size: 0.8.5rem;          /* đồng bộ cỡ chữ */
+  line-height: 1;
   cursor: pointer;
-  transition: background 0.25s ease;
-  box-shadow: 0 3px 8px rgba(0, 194, 229, 0.25);
+  box-shadow: 0 3px px rgba(0, 194, 229, 0.22);
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
 }
 
-.question-controls button:hover {
-  background-color: #00afd1;
+/* hover/active */
+.question-controls button:hover,
+.question-controls .control-btn:hover {
+  background: #00AFD1;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 194, 229, 0.28);
 }
+.question-controls button:active,
+.question-controls .control-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 194, 229, 0.18);
+}
+
+/* Icon trong nút (loa, mũi tên...) đồng nhất kích thước) */
+.question-controls .icon { 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+.question-controls .icon svg {
+  width: 20px; 
+  height: 20px; 
+  display: block;
+}
+
+/* Audio wave gọn, không làm lệch chiều cao */
+.question-controls .audio-wave {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+  margin-left: 4px;
+}
+.question-controls .audio-wave .wave-bar {
+  width: 2px; 
+  height: 5px; 
+  border-radius: 1px;
+  background: currentColor;
+  transform-origin: bottom; 
+  animation: waveMini 1s ease-in-out infinite;
+  opacity: .95;
+}
+@keyframes waveMini {
+  0%,100% { height: 5px; }
+  50%     { height: 10px; }
+}
+
+/* Mobile: xếp dọc, full-width vừa tay */
+@media (max-width: 600px) {
+  .question-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .question-controls button,
+  .question-controls .control-btn {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
 
 /* ======================
    📜 5. TRANSCRIPT BOX
@@ -137,41 +203,8 @@
 /* ======================
    ✅ 6. FEEDBACK POPUP
    ====================== */
-.popup {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 1.5rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  z-index: 999;
-  animation: fadeInUp 0.3s ease;
-  text-align: center;
-}
-
-.popup.correct {
-  border: 2px solid #00C2E5;
-  color: #00C2E5;
-}
-
-.popup.wrong {
-  border: 2px solid #ff4d4f;
-  color: #ff4d4f;
-}
-
-.popup button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.5rem;
-  background: #00C2E5;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
+/* ❗ĐÃ GỠ toàn bộ .popup dạng fixed để tránh đè style của AnswerPopup2.css */
+/* vẫn giữ các phần con dùng chung nếu cần, KHÔNG định nghĩa .popup ở đây */
 .popup-script {
   margin-top: 0.5rem;
   background: #f5f5f5;
@@ -284,28 +317,24 @@
   height: auto;
 }
 
+/* ——— Bubble (generic) ——— */
 .bubble {
   margin-top: 1rem;
   background: #e0f9ff;
-  border: 2px solid #00C2E5;
-  border-radius: 20px;
-  padding: 1rem;
+  border: 1px solid #00C2E5;
+  border-radius: 14px;
+  /* ↓ kiểu “nhỏ xinh” như Part 1 */
+  width: max-content;
+  max-width: 160px;
+  padding: 5px 0;
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  font-family: inherit;   /* đồng bộ font với Part 1 */
 }
 
-.bubble button {
-  padding: 0.6rem 1rem;
-  background: #00C2E5;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
+/* ——— Bubble (trong ảnh) ——— */
 .mascot-in-image {
   position: absolute;
   bottom: 16px;
@@ -331,21 +360,18 @@
 .mascot-in-image .bubble {
   margin: 0;
   background: #e0f9ff;
-  border: 2px solid #00c2e5;
-  border-radius: 16px;
-  padding: 10px 14px;
+  border: 1px solid #00C2E5;      /* 2px → 1px để đồng bộ Part 1 */
+  border-radius: 14px;
+  width: max-content;
+  max-width: 160px;
+  padding: 5px 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-width: 240px;
   box-shadow: 0 4px 8px rgba(0, 194, 229, 0.2);
-}
-
-.mascot-in-image .bubble button {
-  padding: 6px 10px;
-  background: #00c2e5;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  word-break: break-word;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 /* ===========================
@@ -356,27 +382,17 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounceIn {
-  0%   { transform: scale(0.8); opacity: 0; }
-  50%  { transform: scale(1.05); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
 /* =========================
    📱 10. RESPONSIVE TWEAKS
    ========================= */
 @media (max-width: 600px) {
   .bubble {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    max-width: 180px;       /* mobile rộng hơn chút để dễ bấm */
   }
 
-  .popup {
+  .popup { /* width only, không ảnh hưởng canh giữa */
     width: 90%;
   }
 
@@ -393,32 +409,7 @@
   gap: 10px;
 }
 
-.mascot-in-image .bubble {
-  width: max-content;
-  max-width: 220px;
-  word-break: break-word;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  padding: 10px 12px;
-}
-
-.script-box {
-  max-width: 90%;
-  width: fit-content;
-  font-size: 0.8rem;
-  padding: 8px 10px;
-  word-break: break-word;
-  text-align: left;
-  line-height: 1.5;
-}
-
-.star-marker {
-  font-size: 14px;
-}
-
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 .task-header {
   margin-bottom: 1.2rem;
@@ -428,6 +419,232 @@
   flex-wrap: wrap;
 }
 
-.part2b-wrapper {
-  margin-top: 3rem;
+.part2b-wrapper { margin-top: 3rem; }
+
+/* ==============================
+   🎛 Buttons: control-btn (clean)
+   ============================== */
+.control-btn{
+  display: inline-flex;
+  align-items: center;      /* căn giữa icon + text */
+  gap: 0px;
+  height: 40px;
+  line-height: 1;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  background: #00C2E5;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.control-btn .icon{ display:inline-flex; align-items:center; }
+.control-btn .icon svg{ display:block; flex-shrink:0; }
+
+/* --- Audio wave for control-btn --- */
+.control-btn.playing { padding-right: 12px; }
+
+.audio-wave{
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin-left: 6px;
+}
+.audio-wave .wave-bar{
+  width: 3px;
+  height: 8px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: wave 1s ease-in-out infinite;
+  opacity: .9;
+}
+.audio-wave .wave-bar:nth-child(2){ animation-delay: .15s; }
+.audio-wave .wave-bar:nth-child(3){ animation-delay: .3s; }
+.audio-wave .wave-bar:nth-child(4){ animation-delay: .45s; }
+
+@keyframes wave{
+  0%,100%{ transform: scaleY(0.6); }
+  50%    { transform: scaleY(1.4); }
+}
+
+/* ==============================
+   💬 Buttons inside mascot bubble
+   ============================== */
+
+/* Nút chung trong bubble – nhỏ xinh như Part 1 */
+.bubble .action-button {
+  height: 25px;            /* chiều cao như Part 1 */
+  width: 90%;              /* vừa với bubble */
+  padding: 0 10px;
+  border: 1px solid #00C2E5;   /* viền xanh */
+  border-radius: 8px;
+  background: #00C2E5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;         /* cỡ chữ như Part 1 */
+  letter-spacing: .2px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0,194,229,.25);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+}
+.bubble .action-button:hover { transform: translateY(-1px); }
+.bubble .action-button:focus-visible { outline: 2px solid #99ecfb; outline-offset: 2px; }
+
+/* Icon đồng bộ Part 1 */
+.bubble .action-button .icon {
+  width: 18px; height: 18px; flex: 0 0 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bubble .action-button .icon svg {
+  width: 18px; height: 18px; display: block;
+}
+
+/* Pysäytä + equalizer – gọn trong 25px */
+.bubble .audio-loading {
+  display: inline-flex; align-items: center; gap: 6px; height: 100%;
+}
+.bubble .audio-wave {
+  display: inline-flex; align-items: flex-end;
+  gap: 2px; height: 10px; margin-left: 4px;
+}
+.bubble .audio-wave .wave-bar {
+  width: 2px; height: 5px; background: rgba(255,255,255,.95);
+  border-radius: 1px; transform-origin: bottom; animation: waveMini2 1s ease-in-out infinite;
+}
+@keyframes waveMini2 {
+  0%,100%{ height: 5px; opacity: .95; }
+  50%   { height: 10px; opacity: 1; }
+}
+/* === Bubble & Transcript: clone đúng style Part 1 === */
+.bubble {
+  background: #e0f9ff;
+  border: 1px solid #00C2E5;
+  border-radius: 14px;
+  width: max-content;
+  max-width: 160px;
+  padding: 5px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+/* Bubble khi nằm trong ảnh (overlay) cũng giống hệt Part 1 */
+.mascot-in-image .bubble {
+  background: #e0f9ff;
+  border: 1px solid #00C2E5;
+  border-radius: 14px;
+  width: max-content;
+  max-width: 160px;
+  padding: 5px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+/* Nút trong bubble: nhỏ gọn + đều, icon 18px, font 13px */
+.bubble .action-button {
+  height: 25px;
+  width: 90%;
+  padding: 0 10px;
+  border: 1px solid #00C2E5;
+  border-radius: 8px;
+  background: #00C2E5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .2px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0,194,229,.25);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+}
+.bubble .action-button:hover { transform: translateY(-1px); }
+
+.bubble .action-button .icon {
+  width: 18px; height: 18px; flex: 0 0 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bubble .action-button .icon svg {
+  width: 18px; height: 18px; display: block;
+}
+
+/* Sóng audio gọn (không đội chiều cao 25px) */
+.bubble .audio-loading { display: inline-flex; align-items: center; gap: 6px; height: 100%; }
+.bubble .audio-wave { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; margin-left: 4px; }
+.bubble .audio-wave .wave-bar { width: 2px; height: 5px; background: rgba(255,255,255,.95); border-radius: 1px; transform-origin: bottom; animation: waveMini2 1s ease-in-out infinite; }
+@keyframes waveMini2 { 0%,100%{ height:5px; opacity:.95 } 50%{ height:10px; opacity:1 } }
+
+/* ======================
+   📜 Transcript (CLEAN)
+   ====================== */
+
+/* Base: dùng chung cho transcript intro/task/outro */
+.transcript {
+  margin: 16px auto 0;
+  padding: 16px 18px;
+  background: #eafaff;                 /* nhạt, dễ đọc */
+  border: 1px solid #00C2E5;
+  border-radius: 14px;
+  color: #004466;
+  font-size: 15px;
+  line-height: 1.6;
+  box-shadow: 0 6px 20px rgba(0, 194, 229, 0.10);
+  backdrop-filter: blur(3px);
+  text-align: left;
+  scroll-margin-top: 16px;              /* auto-scroll không dính mép */
+  animation: popIn .28s ease-out both;
+  max-width: min(720px, 92%);           /* default: gọn trên mobile/desktop */
+}
+
+/* Khi transcript nằm NGAY SAU ảnh: match độ rộng ảnh (ảnh đang max-width: 50%) */
+.question-image-wrapper + .transcript {
+  max-width: 50%;
+}
+
+/* Bản “nhỏ gọn” dùng cho script câu hỏi (task) – giữ style giống Part 1 */
+.script-box {
+  margin: 12px auto 0;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px dashed #00C2E5;
+  border-radius: 12px;
+  color: #333;
+  font-size: 0.95rem;                   /* đọc dễ hơn 0.85 */
+  line-height: 1.5;
+  font-style: italic;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  scroll-margin-top: 16px;
+  animation: popIn .24s ease-out both;
+  max-width: min(420px, 92%);           /* gọn hơn transcript thường */
+}
+
+/* Responsive: giữ transcript đồng bộ độ rộng ảnh trên màn lớn */
+@media (min-width: 768px) {
+  .transcript {
+    max-width: min(720px, 90%);
+  }
+  .question-image-wrapper + .transcript {
+    max-width: 50%;
+  }
+}
+
+/* Hiệu ứng vào gọn nhẹ */
+@keyframes popIn {
+  0%   { transform: translateY(8px) scale(.98); opacity: 0; }
+  100% { transform: translateY(0)   scale(1);   opacity: 1; }
 }
