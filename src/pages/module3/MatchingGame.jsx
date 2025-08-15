@@ -1,51 +1,38 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Column from './Column';
+import './module3.css';
 
-const MatchingGame = ({ pairs, onCheckAnswers, showResults }) => {
+const MatchingGame = ({ pairs, showResults, onStateChange }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [statusMap, setStatusMap] = useState({});
-  const shuffledPairs = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (pairs.length > 0 && !shuffledPairs.current) {
-      shuffledPairs.current = [...pairs].sort(() => Math.random() - 0.5);
-      const leftItemsData = shuffledPairs.current.map(p => ({
-        id: 'left-' + p.pairId,
+    if (pairs.length > 0) {
+      const left = pairs.map(p => ({
+        id: `left-${p.pairId}`,
         text: p.left,
         pairId: p.pairId,
         audioBase64: p.audioBase64
-      })).sort(() => Math.random() - 0.5);
-
-      const rightItemsData = shuffledPairs.current.map(p => ({
-        id: 'right-' + p.pairId,
+      }));
+      const right = pairs.map(p => ({
+        id: `right-${p.pairId}`,
         text: p.right,
-        pairId: p.pairId,
-        audioBase64: p.audioBase64
-      })).sort(() => Math.random() - 0.5);
-
-      setLeftItems(leftItemsData);
-      setRightItems(rightItemsData);
+        pairId: p.pairId
+      }));
+      setLeftItems(left);
+      setRightItems(right);
       setLoading(false);
-    } else if (pairs.length === 0) {
+    } else {
       setLoading(false);
     }
   }, [pairs]);
-
+  
+  //return state to module3.jsx
   useEffect(() => {
-    if (showResults) {
-      const results = onCheckAnswers(leftItems, rightItems);
-      const newStatusMap = {};
-      leftItems.forEach(item => {
-        newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
-      });
-      rightItems.forEach(item => {
-        newStatusMap[item.id] = results[item.pairId] ? 'correct' : 'incorrect';
-      });
-      setStatusMap(newStatusMap);
-    }
-  }, [showResults, leftItems, rightItems, onCheckAnswers]);
+    onStateChange(leftItems, rightItems);
+  }, [leftItems, rightItems, onStateChange]);
 
   const findCard = useCallback((id, type) => {
     const items = type === 'left' ? leftItems : rightItems;
@@ -73,15 +60,25 @@ const MatchingGame = ({ pairs, onCheckAnswers, showResults }) => {
   }
 
   if (pairs.length === 0) {
-    return <div>No matching pairs available</div>;
+    return <div>No matching data available</div>;
   }
 
   return (
-    <div>
-      <div className="module3-matching-section">
-        <Column items={leftItems} type="left" findCard={findCard} moveCard={moveCard} statusMap={statusMap} />
-        <Column items={rightItems} type="right" findCard={findCard} moveCard={moveCard} statusMap={statusMap} />
-      </div>
+    <div className="module3-matching-section">
+      <Column
+        items={leftItems}
+        type="left"
+        findCard={findCard}
+        moveCard={moveCard}
+        statusMap={statusMap}
+      />
+      <Column
+        items={rightItems}
+        type="right"
+        findCard={findCard}
+        moveCard={moveCard}
+        statusMap={statusMap}
+      />
     </div>
   );
 };
