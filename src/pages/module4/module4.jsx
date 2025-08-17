@@ -6,6 +6,7 @@ import "../../components/loader/loader.css";
 import Mascot from "../../components/mascot/Mascot";
 import Menu from "../../components/menu/menu";
 import LessonLayout from "../../components/layouts/LessonLayout";
+import Title from "../../components/title/Title";
 
 const Module4 = () => {
   const location = useLocation();
@@ -319,8 +320,7 @@ const Module4 = () => {
           lessonNumber={1}
         />
         <div className="module4-scroll-container">
-          <h2 className="module4-section-title">Tehtävä 4a. Tekstin ymmärtäminen.</h2>
-          
+          <Title text="Tehtävä 4a. Tekstin ymmärtäminen." />
           <div className="module4-audio-list">
             {moduleData.part4a.questions.map((item, index) => (
               <div 
@@ -343,7 +343,7 @@ const Module4 = () => {
             ))}
           </div>
 
-          <h2 className="module4-section-title">Tehtävä 4b. Lue teksti uudelleen.</h2>
+          <Title text="Tehtävä 4b. Lue teksti uudelleen." />
           <p>Kirjoita jokaisen lauseen käännös alla olevaan kenttään:</p>
           
           <div className="module4-translation-exercise">

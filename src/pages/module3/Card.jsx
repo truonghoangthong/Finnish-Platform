@@ -3,7 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 const ItemTypes = { CARD: 'card' };
 
-const Card = memo(({ id, text, type, pairId, findCard, moveCard, status, audioBase64, userInput, onInputChange, onMatch }) => {
+const Card = memo(({ id, text, type, pairId, findCard, moveCard, status, audioBase64, userInput, onInputChange, onMatch, disableDrag }) => {
   const [initialRender, setInitialRender] = useState(true);
   const originalIndex = findCard(id, type)?.index || 0;
   const ref = useRef(null);
@@ -17,15 +17,15 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, status, audioBa
     type: ItemTypes.CARD,
     item: { id, originalIndex, type, pairId },
     collect: monitor => ({ isDragging: monitor.isDragging() }),
-    canDrag: () => !status,
+    canDrag: () => !status && !disableDrag,
     end: (item, monitor) => {
       if (!monitor.didDrop()) moveCard(item.id, item.originalIndex, item.type);
     },
-  }), [id, originalIndex, moveCard, type, status, pairId]);
+  }), [id, originalIndex, moveCard, type, status, pairId, disableDrag]);
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    canDrop: () => !status,
+    canDrop: () => !status && !disableDrag,
     drop: (draggedItem) => {
       if (draggedItem.id !== id && draggedItem.type !== type) {
         const { index: overIndex } = findCard(id, type);
@@ -41,7 +41,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, status, audioBa
         moveCard(draggedId, overIndex, type);
       }
     },
-  }), [findCard, moveCard, type, status, onMatch]);
+  }), [findCard, moveCard, type, status, onMatch, disableDrag]);
 
   drag(drop(ref));
 
@@ -59,7 +59,7 @@ const Card = memo(({ id, text, type, pairId, findCard, moveCard, status, audioBa
   return (
     <div
       ref={ref}
-      className={`module3-card ${type} ${status || ''} ${initialRender ? 'initial-render' : ''}`}
+      className={`module3-card ${type} ${status || ''} ${initialRender ? 'initial-render' : ''} ${disableDrag ? 'drag-disabled' : ''}`}
       style={{ opacity: isDragging ? 0 : 1 }}
       onClick={status ? playAudio : undefined}
     >

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import Card from './Card';
 
-const Column = memo(({ items, type, findCard, moveCard, statusMap, userInputs, onInputChange, onMatch }) => (
+const Column = memo(({ items, type, findCard, moveCard, statusMap, userInputs, onInputChange, onMatch, disableDrag }) => (
   <div className={`module3-column ${type}`}>
     {items.map(item => (
       <Card
@@ -17,6 +17,7 @@ const Column = memo(({ items, type, findCard, moveCard, statusMap, userInputs, o
         userInput={userInputs?.[item.pairId]}
         onInputChange={onInputChange}
         onMatch={onMatch}
+        disableDrag={disableDrag}
       />
     ))}
   </div>

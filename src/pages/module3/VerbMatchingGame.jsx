@@ -39,16 +39,16 @@ const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
     }
   }, [questions, verbs]);
 
-useEffect(() => {
-  onStateChange({
-    userInputs,
-    matches,
-    leftItems,
-    rightItems,
-    questions,
-    verbs
-  });
-}, [userInputs, matches, leftItems, rightItems, questions, verbs, onStateChange]);
+  useEffect(() => {
+    onStateChange({
+      userInputs,
+      matches,
+      leftItems,
+      rightItems,
+      questions,
+      verbs
+    });
+  }, [userInputs, matches, leftItems, rightItems, questions, verbs, onStateChange]);
 
   const playAudio = (audioBase64) => {
     if (audioBase64) {
@@ -63,16 +63,9 @@ useEffect(() => {
     return { card, index: items.indexOf(card) };
   }, [leftItems, rightItems]);
 
-  const moveCard = useCallback((id, atIndex, type) => {
-    const items = type === 'left' ? leftItems : rightItems;
-    const { card, index } = findCard(id, type);
-    if (!card) return;
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    newItems.splice(atIndex, 0, card);
-    if (type === 'left') setLeftItems(newItems);
-    else setRightItems(newItems);
-  }, [findCard, leftItems, rightItems]);
+  const moveCard = useCallback(() => {
+    return; // Vô hiệu hóa chức năng di chuyển
+  }, []);
 
   const handleInputChange = (pairId, value) => {
     setUserInputs(prev => ({
@@ -138,6 +131,7 @@ useEffect(() => {
           userInputs={userInputs}
           onInputChange={handleInputChange}
           onMatch={handleMatch}
+          disableDrag={true}
         />
         <Column
           items={rightItems}
@@ -146,6 +140,7 @@ useEffect(() => {
           moveCard={moveCard}
           statusMap={statusMap}
           onMatch={handleMatch}
+          disableDrag={true}
         />
       </div>
     </div>
