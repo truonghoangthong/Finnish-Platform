@@ -1,301 +1,150 @@
-import { useState, useEffect, useRef } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
-import MatchingGame from './MatchingGame';
-import VerbMatchingGame from './VerbMatchingGame';
+import { useState, useCallback, useEffect } from 'react';
 import './module3.css';
 import '../../components/loader/loader.css';
-import '../../components/variables.css';
-import LessonLayout from '../../components/layouts/LessonLayout';
-import Title from '../../components/title/Title';
-import Loader from '../../components/loader/loader';
+import Column from './Column';
 
-const BASE_URL = 'https://finnish-platform-thong-truongs-projects.vercel.app/api';
-
-const Module3 = () => {
-  const location = useLocation();
-  const [moduleData, setModuleData] = useState(null);
+const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
+  const [leftItems, setLeftItems] = useState([]);
+  const [rightItems, setRightItems] = useState([]);
+  const [userInputs, setUserInputs] = useState({});
+  const [matches, setMatches] = useState([]);
+  const [statusMap, setStatusMap] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const [pairs3a, setPairs3a] = useState([]);
-  const [pairs3b, setPairs3b] = useState([]);
-  const [pairs3c, setPairs3c] = useState({ questions: [], verbs: [] });
-
-  const [results, setResults] = useState({
-    part3a: {},
-    part3b: {},
-    part3c: {}
-  });
-  const [showResults, setShowResults] = useState(false);
-
-  const pairs3aRef = useRef({ left: [], right: [] });
-  const pairs3bRef = useRef({ left: [], right: [] });
-  const pairs3cRef = useRef({ userInputs: {}, matches: [] });
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const pathParts = location.pathname.split('/');
-        const level = pathParts[pathParts.indexOf('course') + 1] || 'A1';
-        const moduleName = location.pathname.includes('lesson-2') ? 'another_module' : 'the_break_room';
-        const moduleNumber = 3;
+    if (questions.length > 0 && verbs.length > 0) {
+      setRightItems(
+        questions.map(q => ({
+          id: `right-${q.pairId}`,
+          text: q.sentence,
+          pairId: q.pairId,
+          conjugatedVerb: q.conjugatedVerb,
+          audioBase64: q.audioBase64
+        }))
+      );
 
-        const partsToFetch = ['part3a', 'part3b', 'part3c'];
-        const responses = await Promise.all(
-          partsToFetch.map(part => 
-            axios.get(`${BASE_URL}/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`)
-          )
-        );
+      setLeftItems(
+        verbs.map(v => ({
+          id: `left-${v.id}`,
+          text: '',
+          pairId: v.id.replace('vocabulary', 'question'),
+          meaning: v.meaning,
+          audioBase64: v.audioBase64
+        }))
+      );
 
-        const data = {};
-        partsToFetch.forEach((part, index) => {
-          data[part] = responses[index]?.data?.result?.[part] || {};
-        });
-
-        setModuleData(data);
-      } catch (err) {
-        console.error('Error fetching module data:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (moduleData) {
-      const processRegularPart = (partData) => {
-        return Object.entries(partData)
-          .filter(([key, value]) =>
-            key.startsWith('question') &&
-            value?.script?.includes('/')
-          )
-          .map(([key, question]) => {
-            const [left, right] = question.script.split('/').map(s => s.trim());
-            return {
-              pairId: key,
-              left,
-              right,
-              audioBase64: question.audioBase64
-            };
-          });
-      };
-
-      const processVerbMatchingPart = (partData) => {
-        const questions = Object.entries(partData)
-          .filter(([key, value]) =>
-            key.startsWith('question') && typeof value?.script === 'string'
-          )
-          .map(([key, question]) => {
-            const verbMatch = question.script.match(/\[(.*?)\]/);
-            const conjugatedVerb = verbMatch ? verbMatch[1] : '';
-            const sentence = question.script.replace(/\[.*?\]/, '______');
-            return {
-              pairId: key,
-              conjugatedVerb,
-              sentence,
-              audioBase64: question.audioBase64
-            };
-          });
-        const verbs = Object.entries(partData)
-          .filter(([key, value]) =>
-            key.startsWith('vocabulary') && typeof value?.script === 'string'
-          )
-          .map(([key, vocab]) => ({
-            id: key,
-            text: vocab.script,
-            meaning: vocab.meaning,
-            audioBase64: vocab.audioBase64
-          }));
-        return { questions, verbs };
-      };
-
-      setPairs3a(processRegularPart(moduleData.part3a || {}));
-      setPairs3b(processRegularPart(moduleData.part3b || {}));
-      setPairs3c(processVerbMatchingPart(moduleData.part3c || {}));
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-  }, [moduleData]);
+  }, [questions, verbs]);
 
-  const checkRegularAnswers = (leftItems, rightItems, correctPairs) => {
-    const partResults = {};
-    leftItems.forEach((leftItem, index) => {
-      const rightItem = rightItems[index];
-      partResults[leftItem.pairId] =
-        correctPairs.some(
-          p => p.pairId === leftItem.pairId && p.right === rightItem.text
-        );
+  useEffect(() => {
+    onStateChange({
+      userInputs,
+      matches,
+      leftItems,
+      rightItems,
+      questions,
+      verbs
     });
-    return partResults;
+  }, [userInputs, matches, leftItems, rightItems, questions, verbs, onStateChange]);
+
+  const playAudio = (audioBase64) => {
+    if (audioBase64) {
+      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+      audio.play().catch(e => console.error("Audio playback failed:", e));
+    }
   };
 
-  const checkVerbAnswers = ({ userInputs, matches, leftItems, rightItems, questions }) => {
-    const results = {};
+  const findCard = useCallback((id, type) => {
+    const items = type === 'left' ? leftItems : rightItems;
+    const card = items.find(c => c.id === id);
+    return { card, index: items.indexOf(card) };
+  }, [leftItems, rightItems]);
 
-    const correctAnswers = Object.fromEntries(
-      questions.map(q => [
-        q.pairId,
-        q.conjugatedVerb.replace(/[\[\]]/g, '')
-      ])
-    );
+  const moveCard = useCallback(() => {
+    return; // Vô hiệu hóa chức năng di chuyển
+  }, []);
 
-    rightItems.forEach((question, idx) => {
-      const userInput = (userInputs[question.pairId] || '')
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '');
-
-      const verbId =
-        matches.find(m => m.questionId === question.id)?.verbId ||
-        leftItems[idx]?.id;
-
-      const verbCard = leftItems.find(v => v.id === verbId);
-
-      const correctVerb = (correctAnswers[question.pairId] || '')
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '');
-
-      const isVerbCorrect = userInput === correctVerb;
-      const isMatchCorrect = verbCard?.pairId === question.pairId;
-
-      results[question.pairId] = isVerbCorrect && isMatchCorrect;
+  const handleInputChange = (pairId, value) => {
+    setUserInputs(prev => ({
+      ...prev,
+      [pairId]: value
+    }));
+    setStatusMap(prev => {
+      const newStatus = { ...prev };
+      delete newStatus[`left-${pairId}`];
+      delete newStatus[`right-${pairId}`];
+      return newStatus;
     });
-
-    return results;
   };
 
-  const handleCheckAllAnswers = () => {
-    const part3aResults = checkRegularAnswers(
-      pairs3aRef.current.left,
-      pairs3aRef.current.right,
-      pairs3a
-    );
-    const part3bResults = checkRegularAnswers(
-      pairs3bRef.current.left,
-      pairs3bRef.current.right,
-      pairs3b
-    );
-    const part3cResults = checkVerbAnswers({
-      userInputs: pairs3cRef.current.userInputs,
-      matches: pairs3cRef.current.matches,
-      leftItems: pairs3c.verbs,
-      rightItems: pairs3c.questions,
-      questions: pairs3c.questions
+  const handleMatch = (questionId, verbId) => {
+    setMatches(prev => {
+      const existing = prev.filter(m => m.questionId !== questionId);
+      return [...existing, { questionId, verbId }];
     });
-
-    setResults({
-      part3a: part3aResults,
-      part3b: part3bResults,
-      part3c: part3cResults
+    setStatusMap(prev => {
+      const newStatus = { ...prev };
+      delete newStatus[`right-${verbId}`];
+      return newStatus;
     });
-
-    setShowResults(true);
   };
-
-  const getCorrectCount = (partResults) =>
-    Object.values(partResults).filter(Boolean).length;
-
-  const totalQuestions =
-    pairs3a.length + pairs3b.length + pairs3c.questions.length;
 
   if (loading) {
     return (
-      <Loader />
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
     );
   }
 
-  if (error) {
-    return <div className="module3-error">{error}</div>;
+  if (questions.length === 0 || verbs.length === 0) {
+    return <div>No verb matching data available</div>;
   }
 
-  const correctAnswers = showResults
-    ? getCorrectCount(results.part3a) +
-      getCorrectCount(results.part3b) +
-      getCorrectCount(results.part3c)
-    : 0;
-
   return (
-    <LessonLayout
-      level="A1"
-      lessonNumber={1}
-      title="The Break Room"
-      showImage={false}
-    >
-      <div className="module3-container">
-        <DndProvider backend={HTML5Backend}>
-          <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3a</h2>
-              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-            </div>
-            <MatchingGame
-              pairs={pairs3a}
-              showResults={showResults}
-              results={results.part3a}
-              onStateChange={(left, right) => {
-                pairs3aRef.current = { left, right };
-              }}
-            />
-          </div>
-          <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3b</h2>
-              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-            </div>
-            <MatchingGame
-              pairs={pairs3b}
-              showResults={showResults}
-              results={results.part3b}
-              onStateChange={(left, right) => {
-                pairs3bRef.current = { left, right };
-              }}
-            />
-          </div>
-          <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3c</h2>
-              <p>Ota selvää, mitä seuraavat verbit tarkoittavat.</p>
-            </div>
-            <VerbMatchingGame
-              questions={pairs3c.questions}
-              verbs={pairs3c.verbs}
-              showResults={showResults}
-              results={results.part3c}
-              onStateChange={(state) => {
-                pairs3cRef.current = state;
-              }}
-            />
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <button
-              className="shared-btn"
-              onClick={handleCheckAllAnswers}
-              disabled={showResults && correctAnswers === totalQuestions}
+    <div>
+      <div className="module3-verbs-list">
+        <div className="module3-verbs-container">
+          {verbs.map(verb => (
+            <div
+              key={verb.id}
+              className="module3-verb-tag"
+              onClick={() => playAudio(verb.audioBase64)}
+              style={{ cursor: verb.audioBase64 ? 'pointer' : 'default' }}
             >
-              {showResults ? 'Tarkista uudelleen' : 'Tarkista vastaukset'}
-            </button>
-
-            {showResults && (
-              <div className="module3-results-summary">
-                <p>
-                  Oikein: {correctAnswers} / {totalQuestions}
-                </p>
-              </div>
-            )}
-          </div>
-        </DndProvider>
+              {verb.text} - {verb.meaning}
+            </div>
+          ))}
+        </div>
       </div>
-    </LessonLayout>
+
+      <div className="module3-matching-section">
+        <Column
+          items={leftItems}
+          type="left"
+          findCard={findCard}
+          moveCard={moveCard}
+          statusMap={statusMap}
+          userInputs={userInputs}
+          onInputChange={handleInputChange}
+          onMatch={handleMatch}
+          disableDrag={true}
+        />
+        <Column
+          items={rightItems}
+          type="right"
+          findCard={findCard}
+          moveCard={moveCard}
+          statusMap={statusMap}
+          onMatch={handleMatch}
+          disableDrag={true}
+        />
+      </div>
+    </div>
   );
 };
 
-export default Module3;
+export default VerbMatchingGame;
