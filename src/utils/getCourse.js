@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "https://finnish-platform-thong-truongs-projects.vercel.app/api";
 
 export const fetchCourses = async (level = "A1") => {
   try {
