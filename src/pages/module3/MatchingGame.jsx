@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Column from './Column';
 import './module3.css';
 
-const MatchingGame = ({ pairs, showResults, onStateChange }) => {
+const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [statusMap, setStatusMap] = useState({});
@@ -19,9 +19,7 @@ const MatchingGame = ({ pairs, showResults, onStateChange }) => {
 
   useEffect(() => {
     if (pairs.length > 0) {
-      setLoading(true); // Bắt đầu loading ngay khi nhận pairs mới
-
-      // Delay nhẹ để tránh hiển thị mảng gốc
+      setLoading(true);
       setTimeout(() => {
         const left = pairs.map(p => ({
           id: `left-${p.pairId}`,
@@ -38,14 +36,28 @@ const MatchingGame = ({ pairs, showResults, onStateChange }) => {
 
         setLeftItems(shuffleArray(left));
         setRightItems(shuffleArray(right));
-        setLoading(false); // Chỉ render khi đã shuffle xong
+        setLoading(false);
       }, 0);
     } else {
       setLoading(false);
     }
   }, [pairs]);
 
-  // Gửi state về Module3.jsx
+  // cập nhật statusMap khi showResults thay đổi
+  useEffect(() => {
+    if (showResults && results) {
+      const newStatusMap = {};
+      Object.keys(results).forEach(pairId => {
+        const isCorrect = results[pairId];
+        newStatusMap[`left-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
+        newStatusMap[`right-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
+      });
+      setStatusMap(newStatusMap);
+    } else {
+      setStatusMap({});
+    }
+  }, [showResults, results]);
+
   useEffect(() => {
     if (!loading) {
       onStateChange(leftItems, rightItems);

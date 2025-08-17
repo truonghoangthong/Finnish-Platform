@@ -9,6 +9,8 @@ import './module3.css';
 import '../../components/loader/loader.css';
 import '../../components/variables.css';
 import LessonLayout from '../../components/layouts/LessonLayout';
+import Title from '../../components/title/Title';
+import Loader from '../../components/loader/loader';
 
 const BASE_URL = 'https://finnish-platform-thong-truongs-projects.vercel.app/api';
 
@@ -213,9 +215,7 @@ const Module3 = () => {
 
   if (loading) {
     return (
-      <div className="loader-container">
-        <div className="loader"></div>
-      </div>
+      <Loader />
     );
   }
 
@@ -239,40 +239,43 @@ const Module3 = () => {
       <div className="module3-container">
         <DndProvider backend={HTML5Backend}>
           <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3a</h2>
-              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-            </div>
+            <Title
+              script={moduleData.part3a.title?.script}
+              audioBase64={moduleData.part3a.title?.audioBase64}
+            />
             <MatchingGame
               pairs={pairs3a}
               showResults={showResults}
+              results={results.part3a}   
               onStateChange={(left, right) => {
                 pairs3aRef.current = { left, right };
               }}
             />
           </div>
           <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3b</h2>
-              <p>Harjoittele sanoja lisää. Yhdistä lauseet oikein.</p>
-            </div>
+            <Title
+              script={moduleData.part3b.title?.script}
+              audioBase64={moduleData.part3b.title?.audioBase64}
+            />
             <MatchingGame
               pairs={pairs3b}
               showResults={showResults}
+              results={results.part3b}  
               onStateChange={(left, right) => {
                 pairs3bRef.current = { left, right };
               }}
             />
           </div>
           <div className="module3-verbs-section">
-            <div className="module3-header-row">
-              <h2>Tehtävä 3c</h2>
-              <p>Ota selvää, mitä seuraavat verbit tarkoittavat.</p>
-            </div>
+            <Title
+              script={moduleData.part3c.title?.script}
+              audioBase64={moduleData.part3c.title?.audioBase64}
+            />
             <VerbMatchingGame
               questions={pairs3c.questions}
               verbs={pairs3c.verbs}
               showResults={showResults}
+              results={results.part3c}   
               onStateChange={(state) => {
                 pairs3cRef.current = state;
               }}
