@@ -8,31 +8,49 @@ const MatchingGame = ({ pairs, showResults, onStateChange }) => {
   const [statusMap, setStatusMap] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const shuffleArray = (array) => {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
   useEffect(() => {
     if (pairs.length > 0) {
-      const left = pairs.map(p => ({
-        id: `left-${p.pairId}`,
-        text: p.left,
-        pairId: p.pairId,
-        audioBase64: p.audioBase64
-      }));
-      const right = pairs.map(p => ({
-        id: `right-${p.pairId}`,
-        text: p.right,
-        pairId: p.pairId
-      }));
-      setLeftItems(left);
-      setRightItems(right);
-      setLoading(false);
+      setLoading(true); // Bắt đầu loading ngay khi nhận pairs mới
+
+      // Delay nhẹ để tránh hiển thị mảng gốc
+      setTimeout(() => {
+        const left = pairs.map(p => ({
+          id: `left-${p.pairId}`,
+          text: p.left,
+          pairId: p.pairId,
+          audioBase64: p.audioBase64
+        }));
+
+        const right = pairs.map(p => ({
+          id: `right-${p.pairId}`,
+          text: p.right,
+          pairId: p.pairId
+        }));
+
+        setLeftItems(shuffleArray(left));
+        setRightItems(shuffleArray(right));
+        setLoading(false); // Chỉ render khi đã shuffle xong
+      }, 0);
     } else {
       setLoading(false);
     }
   }, [pairs]);
-  
-  //return state to module3.jsx
+
+  // Gửi state về Module3.jsx
   useEffect(() => {
-    onStateChange(leftItems, rightItems);
-  }, [leftItems, rightItems, onStateChange]);
+    if (!loading) {
+      onStateChange(leftItems, rightItems);
+    }
+  }, [leftItems, rightItems, loading, onStateChange]);
 
   const findCard = useCallback((id, type) => {
     const items = type === 'left' ? leftItems : rightItems;
