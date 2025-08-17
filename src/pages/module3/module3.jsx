@@ -60,7 +60,6 @@ const Module3 = () => {
 
         setModuleData(data);
       } catch (err) {
-        console.error('Error fetching module data:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -159,16 +158,6 @@ const Module3 = () => {
       const isVerbCorrect = userInput === correctVerb.toLowerCase();
       const isMatchCorrect = verbCard?.pairId === question.pairId;
 
-      console.log("----- Check Verb Answer -----");
-      console.log("Question:", question.text);
-      console.log("User input:", userInput);
-      console.log("Correct answer:", correctVerb);
-      console.log("Matched verb:", verbCard?.text || "None");
-      console.log("Matched correct question?:", isMatchCorrect);
-      console.log("Verb correct?:", isVerbCorrect);
-      console.log("Final result:", isVerbCorrect && isMatchCorrect);
-      console.log("-----------------------------");
-
       results[question.pairId] = isVerbCorrect && isMatchCorrect;
     });
 
@@ -193,10 +182,6 @@ const Module3 = () => {
       rightItems: pairs3c.questions,
       questions: pairs3c.questions
     });
-
-    console.log('Part 3a Results:', part3aResults);
-    console.log('Part 3b Results:', part3bResults);
-    console.log('Part 3c Results:', part3cResults);
 
     setResults({
       part3a: part3aResults,

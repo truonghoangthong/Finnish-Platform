@@ -7,6 +7,8 @@ import Mascot from "../../components/mascot/Mascot";
 import Menu from "../../components/menu/menu";
 import Title from "../../components/title/Title";
 
+const API = "https://finnish-platform-thong-truongs-projects.vercel.app/api";
+
 const parseFeedback = (feedback) => {
   try {
     const clean = feedback.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -62,9 +64,9 @@ const Module4 = () => {
         const moduleName = location.pathname.includes("lesson-2") ? "another_module" : "the_break_room";
 
         const [a, b, c] = await Promise.all([
-          axios.get(`https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/${level.toUpperCase()}/${moduleName}/module4/part4a`),
-          axios.get(`https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/${level.toUpperCase()}/${moduleName}/module4/part4b`),
-          axios.get(`https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/${level.toUpperCase()}/${moduleName}/module4/part4c`)
+          axios.get(`/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4a`),
+          axios.get(`/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4b`),
+          axios.get(`/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4c`)
         ]);
 
         setModuleData({
@@ -116,7 +118,7 @@ const Module4 = () => {
       const part4bResults = await Promise.all(
         moduleData.part4b.questions.map(async (q) => {
           try {
-            const res = await axios.post("http://localhost:3000/api/evaluate", {
+            const res = await axios.post(`${API}evaluate`, {
               finnishSentence: q.text,
               userTranslation: translations[q.id] || ""
             });
