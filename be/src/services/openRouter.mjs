@@ -9,7 +9,7 @@ If no sentence is provided, use a sample Finnish sentence and its English transl
   const userContent = `Please evaluate the following:\n- Finnish sentence:'${finnishSentence}'\n- Learner's English translation: '${userTranslation}'`;
   try {
     const completion = await openai.chat.completions.create({
-      model: "deepseek/deepseek-chat-v3-0324:free",
+      model: "deepseek/deepseek-chat-v3-0324",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userContent }
