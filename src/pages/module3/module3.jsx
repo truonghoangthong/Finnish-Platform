@@ -2,22 +2,21 @@ import { useState, useEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import MatchingGame from './MatchingGame';
 import VerbMatchingGame from './VerbMatchingGame';
 import './module3.css';
 import '../../components/loader/loader.css';
-import { useModuleStore } from '../../stores/module';
 import '../../components/variables.css';
 import LessonLayout from '../../components/layouts/LessonLayout';
 
+const BASE_URL = 'https://finnish-platform-thong-truongs-projects.vercel.app/api';
+
 const Module3 = () => {
   const location = useLocation();
-  const {
-    moduleData,
-    loading,
-    error,
-    fetchModuleData
-  } = useModuleStore();
+  const [moduleData, setModuleData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [pairs3a, setPairs3a] = useState([]);
   const [pairs3b, setPairs3b] = useState([]);
@@ -36,16 +35,38 @@ const Module3 = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const pathParts = location.pathname.split('/');
-      const level = pathParts[pathParts.indexOf('course') + 1] || 'A1';
-      const moduleName = location.pathname.includes('lesson-2') ? 'another_module' : 'the_break_room';
-      const moduleNumber = 3;
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const pathParts = location.pathname.split('/');
+        const level = pathParts[pathParts.indexOf('course') + 1] || 'A1';
+        const moduleName = location.pathname.includes('lesson-2') ? 'another_module' : 'the_break_room';
+        const moduleNumber = 3;
 
-      await fetchModuleData(level, moduleName, moduleNumber);
+        const partsToFetch = ['part3a', 'part3b', 'part3c'];
+        const responses = await Promise.all(
+          partsToFetch.map(part => 
+            axios.get(`${BASE_URL}/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`)
+          )
+        );
+
+        const data = {};
+        partsToFetch.forEach((part, index) => {
+          data[part] = responses[index]?.data?.result?.[part] || {};
+        });
+
+        setModuleData(data);
+      } catch (err) {
+        console.error('Error fetching module data:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadData();
-  }, [location.pathname, fetchModuleData]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (moduleData) {
@@ -112,10 +133,10 @@ const Module3 = () => {
     });
     return partResults;
   };
+
   const checkVerbAnswers = ({ userInputs, matches, leftItems, rightItems, questions }) => {
     const results = {};
 
-    // Map pairId -> correct answer
     const correctAnswers = Object.fromEntries(
       questions.map(q => [
         q.pairId,
@@ -126,7 +147,6 @@ const Module3 = () => {
     rightItems.forEach((question, idx) => {
       const userInput = (userInputs[question.pairId] || '').trim().toLowerCase();
 
-      // Get match from drag and drop, or fallback to current position
       const verbId =
         matches.find(m => m.questionId === question.id)?.verbId ||
         leftItems[idx]?.id;
@@ -137,7 +157,6 @@ const Module3 = () => {
       const isVerbCorrect = userInput === correctVerb.toLowerCase();
       const isMatchCorrect = verbCard?.pairId === question.pairId;
 
-      // Debug log
       console.log("----- Check Verb Answer -----");
       console.log("Question:", question.text);
       console.log("User input:", userInput);
@@ -165,7 +184,14 @@ const Module3 = () => {
       pairs3bRef.current.right,
       pairs3b
     );
-    const part3cResults = checkVerbAnswers(pairs3cRef.current);
+    const part3cResults = checkVerbAnswers({
+      userInputs: pairs3cRef.current.userInputs,
+      matches: pairs3cRef.current.matches,
+      leftItems: pairs3c.verbs,
+      rightItems: pairs3c.questions,
+      questions: pairs3c.questions
+    });
+
     console.log('Part 3a Results:', part3aResults);
     console.log('Part 3b Results:', part3bResults);
     console.log('Part 3c Results:', part3cResults);
