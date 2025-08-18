@@ -21,7 +21,6 @@ const AnswerPopup2 = ({
   return (
     <div className="answer-popup">
       <div className={`popup-card ${isCorrect ? "correct" : "wrong"}`}>
-        {/* Icon + tiêu đề */}
         <span className="popup-icon">{isCorrect ? "🎉" : "❌"}</span>
         <div className="popup-title">
           {isCorrect ? (
@@ -33,14 +32,12 @@ const AnswerPopup2 = ({
           )}
         </div>
 
-        {/* Script (toggle) */}
         {showScript && popupScript && (
           <div className="popup-script">
             <p>{popupScript}</p>
           </div>
         )}
 
-        {/* Khu nút: giữ nút của Part 2 */}
         <div className="popup-actions">
           <button className="popup-btn" onClick={onShowScript}>
             {showScript ? "Piilota Teksti" : "Näytä Teksti"}

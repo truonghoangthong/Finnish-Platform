@@ -1,4 +1,3 @@
-/* =================== POPUP (Part 2) =================== */
 .answer-popup {
   position: fixed;
   inset: 0;
@@ -11,7 +10,6 @@
   will-change: transform, opacity;
 }
 
-/* Card trung tâm – gọn gàng */
 .popup-card {
   width: 320px;
   background: #fff;
@@ -26,14 +24,12 @@
   color: #111
 }
 
-/* Viền trạng thái */
 .popup-card.correct { border-top: 5px solid #22C55E; }
 .popup-card.wrong {
   border-top: 5px solid #EF4444;
   animation: scaleIn 0.3s ease both, shakeY 0.4s ease-in-out 0.3s both;
 }
 
-/* Icon + tiêu đề */
 .popup-icon {
   font-size: 2.4rem;
   margin-bottom: 0.3rem;
@@ -53,7 +49,6 @@
 
 }
 
-/* Script toggle */
 .popup-script {
   margin-top: 0.35rem;
   background: #f6f7f8;
@@ -65,7 +60,6 @@
   text-align: left;
 }
 
-/* =================== Buttons =================== */
 .popup-actions {
   margin-top: 0.75rem;
   display: flex;
@@ -97,12 +91,11 @@
   box-shadow: 0 4px 12px rgba(0,194,229,0.22);
 }
 
-/* đặt emoji bằng pseudo-element để không làm lệch metrics */
 .popup-actions .popup-btn::before{
   content: "📜";
   margin-right: 6px;
   display: inline-block;
-  line-height: 1;            /* tách khỏi line-box của nút */
+  line-height: 1;            
 }
 
 .popup-actions .popup-btn:hover,
@@ -110,7 +103,6 @@
 .popup-actions .popup-btn:active,
 .popup-actions .popup-button:active { transform: translateY(1px); }
 
-/* =================== Animations =================== */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleIn { from { transform: scale(0.97); } to { transform: scale(1); } }
 @keyframes popIn   { 0% { transform: scale(0.4); opacity: 0; } 80% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
@@ -123,7 +115,6 @@
   100% { transform: translateY(0); }
 }
 
-/* =================== Responsive =================== */
 @media (max-width: 420px) {
   .popup-card { width: 300px; padding: 1rem 0.85rem; }
   .popup-actions {

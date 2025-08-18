@@ -5,7 +5,6 @@ const AudioPlayer = ({ src, size = 'small' }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Lắng nghe sự kiện thực từ <audio> để đồng bộ animation
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;

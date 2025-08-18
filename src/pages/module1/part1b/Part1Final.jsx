@@ -1,5 +1,3 @@
-// Part1Final.jsx
-import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './part1-final.css';
 // import ResultPart1 from "../part1a/ResultPart1";

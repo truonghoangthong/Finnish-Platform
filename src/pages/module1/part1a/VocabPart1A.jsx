@@ -5,7 +5,7 @@ import { updateProgress } from '../../../utils/api';
 import { calculateModule1Progress } from '../../../utils/calculateProgress';
 import confetti from 'canvas-confetti';
 import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
-import Title from '../../../components/title/Title'; // ✅ dùng Title component
+import Title from '../../../components/title/Title'; 
 
 const VocabPart1A = ({ data }) => {
   const { title, ...questionsRaw } = data;
@@ -45,7 +45,6 @@ const VocabPart1A = ({ data }) => {
     setShuffledImages(shuffled);
   }, [questionChangeKey]);
 
-  // ✅ ĐÃ CHỈNH – không autoplay câu đầu tiên
   useEffect(() => {
     if (!currentQuestion?.audioBase64) return;
     const audioEl = new Audio(`data:audio/mp3;base64,${currentQuestion.audioBase64}`);
@@ -187,10 +186,8 @@ const VocabPart1A = ({ data }) => {
         </div>
       )}
 
-      {/* ✅ Dùng Title component thay vì viết lại HTML */}
       <Title
         audioBase64={title?.audioBase64}
-        // taskLabel={title?.taskLabel || 'Tehtävä 1A'}
         script={title?.script}
       />
 

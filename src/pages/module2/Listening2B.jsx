@@ -24,15 +24,12 @@ const Listening2B = ({ data }) => {
 
   const autoAudioRef = useRef(null);
 
-  // --- Audio wave state ---
   const [isQPlaying, setIsQPlaying] = useState(false);
   const questionAudioRef = useRef(null);
 
-  // === Transcript states (intro / task / outro) ===
   const [showIntroScript, setShowIntroScript] = useState(false);
   const [showOutroScript, setShowOutroScript] = useState(false);
 
-  // === Refs for auto-scroll ===
   const introScriptRef = useRef(null);
   const taskScriptRef = useRef(null);
   const outroScriptRef = useRef(null);
@@ -144,7 +141,6 @@ const Listening2B = ({ data }) => {
     setCurrentIndex(allQuestions.indexOf(nextQ));
   };
 
-  // giống 2A: cho phép chọn tab khi practice mode
   const handleTabClick = (index) => {
     setCurrentQuestion(allQuestions[index]);
     setCurrentIndex(index);
@@ -179,7 +175,6 @@ const Listening2B = ({ data }) => {
     };
   }, [currentIndex, phase]);
 
-  // === Auto-scroll to transcript blocks ===
   useEffect(() => {
     if (showIntroScript) {
       setTimeout(() => {
@@ -229,7 +224,6 @@ const Listening2B = ({ data }) => {
                 audio={data.introduction?.audioBase64}
                 script={data.introduction?.script}
                 onNext={() => setPhase("task")}
-                /* hiển thị script dưới ảnh – giống Part 2A */
                 externalScript={true}
                 isScriptVisible={showIntroScript}
                 onToggleScript={() => setShowIntroScript(v => !v)}
@@ -345,7 +339,6 @@ const Listening2B = ({ data }) => {
                 onNext={() => setPhase("task")}
                 onRetry={handleRetry}
                 autoPlay={true}
-                /* hiển thị script dưới ảnh – giống Part 2A */
                 externalScript={true}
                 isScriptVisible={showOutroScript}
                 onToggleScript={() => setShowOutroScript(v => !v)}

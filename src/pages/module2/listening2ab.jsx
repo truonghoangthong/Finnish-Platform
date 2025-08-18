@@ -63,7 +63,6 @@ const Listening2AB = () => {
       showImage={false}
       imageSrc={dataA.imageLink}
     >
-      {/* ✅ Bọc phần 2A để popup hoạt động đúng */}
       <div className="lesson-content" style={{ position: "relative" }}>
         <Listening2A
           data={dataA}
@@ -72,7 +71,6 @@ const Listening2AB = () => {
         />
       </div>
 
-      {/* ✅ Bọc phần 2B để popup hoạt động đúng */}
       <div
         id="part2b-section"
         className="lesson-content part2b-wrapper"

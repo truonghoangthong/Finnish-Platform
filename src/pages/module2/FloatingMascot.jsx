@@ -1,4 +1,3 @@
-// FloatingMascot.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { stopAllAudio } from "@/utils/audioControl";
 import Mascot from "../../components/mascot/Mascot";
@@ -10,8 +9,6 @@ const FloatingMascot = ({
   isOutro = false,
   onRetry,
   autoPlay = false,
-
-  // 🔽 mới thêm để đẩy transcript ra ngoài (giống Part 1)
   externalScript = false,
   isScriptVisible,          // optional controlled
   onToggleScript,           // optional callback
@@ -82,7 +79,6 @@ const FloatingMascot = ({
     }
   };
 
-  // 👇 logic bấm nút hiện/ẩn text
   const handleToggleScript = () => {
     if (externalScript && onToggleScript) {
       onToggleScript();     // giao cho parent
@@ -91,7 +87,6 @@ const FloatingMascot = ({
     }
   };
 
-  // 👇 state hiển thị hiện tại (ưu tiên controlled)
   const scriptVisible = externalScript
     ? !!isScriptVisible
     : showScript;
@@ -157,7 +152,6 @@ const FloatingMascot = ({
         </div>
       )}
 
-      {/* ❗Nếu externalScript=true thì KHÔNG render script ở đây */}
       {!externalScript && scriptVisible && (
         <div className="script-box">
           <p>{script}</p>

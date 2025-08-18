@@ -1,4 +1,3 @@
-/* ===== Mascot & bubble ===== */
 .mascot-overlay-in-image {
   position: absolute;
   bottom: 4%;          /* % để bám theo ảnh */
@@ -13,7 +12,6 @@
 .mascot-inner { width: 80px; height: 80px; cursor: pointer; }
 .mascot-inner img { width: 90%; height: 90%; object-fit: contain; }
 
-/* ===== POPUP CHUNG ===== */
 .chat-bubble {
   position: absolute;
   top: 30%;
@@ -35,7 +33,6 @@
 }
 .chat-bubble::after { display: none; }
 
-/* ===== Transcript ===== */
 .transcript {
   margin-top: 16px;
   background: #e0f9ff;
@@ -50,7 +47,6 @@
   text-align: left;
 }
 
-/* ===== Audio wave (base) ===== */
 .audio-loading { display: inline-flex; align-items: center; gap: 6px; }
 .audio-wave { display: flex; align-items: flex-end; height: 18px; gap: 2px; margin-left: 6px; }
 .wave-bar { width: 3px; height: 6px; background: #fff; opacity: .9; animation: wave 1s infinite ease-in-out; border-radius: 2px; }
@@ -60,12 +56,10 @@
 .wave-bar:nth-child(4) { animation-delay: .3s; }
 @keyframes wave { 0%,100% { height: 6px; } 50% { height: 18px; } }
 
-/* Loader + glow */
 .loader-wrapper { display: flex; justify-content: center; align-items: center; min-height: 300px; }
 .glow { animation: glowPulse 2.5s infinite; filter: drop-shadow(0 0 6px #00c2e5); border-radius: 50%; }
 @keyframes glowPulse { 0%,100% { filter: drop-shadow(0 0 6px #00c2e5); } 50% { filter: drop-shadow(0 0 14px #00c2e5); } }
 
-/* ===== Intro card ===== */
 .intro-card {
   background: #fff;
   border-radius: 12px;

@@ -3,16 +3,13 @@
   margin: 0 auto;
 }
 
-/* ========================
-   🔷 Header (LEVEL A1 + slogan)
-======================== */
 .lesson-header-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   margin-bottom: 0px;
-  padding: 0 20px; /* Đã thay đổi từ 0 8px để khớp với lesson-card */
+  padding: 0 20px; 
 }
 
 .lesson-level-title {
@@ -22,9 +19,6 @@
   margin: 0;
 }
 
-/* ========================
-   🔷 Tabs (Skills)
-======================== */
 .lesson-tabs-container {
   display: flex;
   justify-content: center;
@@ -78,9 +72,6 @@
   word-break: keep-all;
 }
 
-/* ========================
-   🔷 Lesson Title
-======================== */
 .lesson-title-container {
   margin: 0px auto;
   text-align: center;
@@ -101,9 +92,6 @@
   margin-bottom: 14px;
 }
 
-/* ========================
-   🖼️ Image & Mascot
-======================== */
 .lesson-image-wrapper {
   display: flex;
   justify-content: center;
@@ -126,9 +114,6 @@
   margin: 0 auto;
 }
 
-/* ========================
-   📊 Progress Bar
-======================== */
 .lesson-progress-bar {
   width: 100%;
   max-width: 400px;
@@ -154,9 +139,6 @@
   margin-bottom: 12px;
 }
 
-/* ========================
-   📚 Content Area
-======================== */
 .lesson-preview-container {
   max-width: 80%;
   margin: 0 auto;
@@ -176,16 +158,13 @@
   padding: 0 8px;
 }
 
-/* ========================
-   📱 Responsive
-======================== */
 @media (max-width: 768px) {
   .lesson-layout {
     padding: 16px 12px;
   }
 
   .lesson-header-container {
-    padding: 0 8px; /* Điều chỉnh cho mobile */
+    padding: 0 8px; 
   }
 
   .lesson-preview-container {
@@ -221,7 +200,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-    padding: 0 8px; /* Đảm bảo nhất quán trên mobile nhỏ */
+    padding: 0 8px; 
   }
 
   .lesson-tab-label {

@@ -103,7 +103,6 @@ const VocabPart1B = ({ data }) => {
 
   return (
     <div className="vocab1b-wrapper">
-      {/* ✅ Dùng Title: BE trả 1 chuỗi, FE sẽ tự tách tiêu đề (đậm) + mô tả */}
       <Title
         audioBase64={title?.audioBase64}
         script={title?.script}

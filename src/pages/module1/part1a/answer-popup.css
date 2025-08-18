@@ -1,5 +1,3 @@
-/* =================== POPUP =================== */
-/* Overlay căn giữa tuyệt đối bằng flex */
 .answer-popup {
   position: fixed;
   inset: 0;
@@ -9,7 +7,7 @@
   align-items: center;
   z-index: 999;
   animation: fadeIn 0.3s ease-in-out;
-  /* tránh repaint bất ngờ trên một số trình duyệt */
+  /* tránh repaint bất ngờ */
   will-change: transform, opacity;
 }
 
@@ -22,25 +20,21 @@
   text-align: center;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   animation: scaleIn 0.3s ease;
-  animation-fill-mode: both;      /* ✅ giữ trạng thái cuối của animation */
-  transform-origin: center;       /* ✅ scale quanh tâm, không lệch */
+  animation-fill-mode: both;      
+  transform-origin: center;      
   font-family: 'Poppins', sans-serif;
   position: relative;
 }
 
-/* Viền màu theo trạng thái */
 .popup-card.correct {
   border-top: 6px solid #22C55E;
 }
 
-/* ❌ Trường hợp sai: KHÔNG ghi đè animation.
-   Thay vào đó: chain scaleIn (0.3s) ➜ shakeY (0.4s) sau 0.3s */
 .popup-card.wrong {
   border-top: 6px solid #EF4444;
   animation: scaleIn 0.3s ease both, shakeY 0.4s ease-in-out 0.3s both;
 }
 
-/* Icon đầu popup */
 .popup-icon {
   font-size: 3.2rem;
   margin-bottom: 0.6rem;
@@ -48,13 +42,11 @@
   animation: popIn 0.3s ease-out;
 }
 
-/* Chữ chúc mừng nhỏ cạnh message (nếu dùng) */
 .popup-celebrate {
   font-size: 1.8rem;
   margin-left: 0.4rem;
 }
 
-/* Ảnh từ vựng */
 .popup-image {
   width: 100px;
   height: 100px;
@@ -63,7 +55,6 @@
   border-radius: 8px;
 }
 
-/* Từ hiển thị */
 .popup-word {
   font-size: 1.8rem;
   font-weight: 600;
@@ -71,7 +62,6 @@
   color: #111;
 }
 
-/* IPA */
 .popup-ipa {
   font-family: 'Source Serif 4', 'Noto Sans', serif;
   font-size: 1.2rem;
@@ -85,7 +75,6 @@
   position: relative;
 }
 
-/* Message */
 .popup-message {
   font-size: 1.1rem;
   font-weight: 500;
@@ -102,7 +91,6 @@
   font-weight: 600;
 }
 
-/* Nút tiếp tục */
 .popup-button {
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
@@ -119,7 +107,6 @@
   background: #08afd0;
 }
 
-/* =================== TABS =================== */
 .question-tabs {
   margin: 1rem auto;
   display: flex;
@@ -155,7 +142,6 @@
 }
 .tab:hover { filter: brightness(1.05); }
 
-/* =================== RESET PRACTICE =================== */
 .practice-again-wrapper {
   margin-top: 2rem;
   text-align: center;
@@ -175,7 +161,6 @@
   background-color: #08afd0;
 }
 
-/* =================== ANIMATIONS =================== */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -192,7 +177,6 @@
   100% { transform: scale(1); }
 }
 
-/* Lắc theo trục Y để không gây cảm giác lệch ngang */
 @keyframes shakeY {
   0%   { transform: translateY(0); }
   20%  { transform: translateY(-6px); }
@@ -201,70 +185,62 @@
   80%  { transform: translateY(4px); }
   100% { transform: translateY(0); }
 }
-/* ==== Compact style for CORRECT popup only ==== */
+
 .popup-card.correct {
-  width: 300px;                 /* 320 -> 300 */
-  padding: 1rem 1rem 1.1rem;    /* 1.5rem -> 1rem */
-  border-top-width: 4px;        /* 6px -> 4px */
-  border-radius: 14px;          /* 18px -> 14px */
-  box-shadow: 0 10px 22px rgba(0,0,0,0.16); /* nhẹ hơn */
+  width: 300px;                 
+  padding: 1rem 1rem 1.1rem;    
+  border-top-width: 4px;        
+  border-radius: 14px;          
+  box-shadow: 0 10px 22px rgba(0,0,0,0.16); 
 }
 
-/* icon party nhỏ lại, khoảng cách gọn hơn */
 .popup-card.correct .popup-icon {
-  font-size: 2.2rem;            /* 3.2rem -> 2.2rem */
-  margin-bottom: 0.4rem;        /* 0.6rem -> 0.4rem */
+  font-size: 2.2rem;           
+  margin-bottom: 0.4rem;       
 }
 
-/* dòng chúc mừng */
 .popup-card.correct .popup-message.success {
-  font-size: 1.15rem;           /* 1.4rem -> 1.15rem */
+  font-size: 1.15rem;           
   font-weight: 600;
   margin-bottom: 0.35rem;
 }
 
-/* ảnh minh họa nhỏ hơn một chút */
 .popup-card.correct .popup-image {
-  width: 84px;                  /* 100 -> 84 */
+  width: 84px;                 
   height: 84px;
   margin: 0.6rem auto;
   border-radius: 6px;
 }
 
-/* từ vựng: chữ gọn, khoảng cách nhỏ hơn */
 .popup-card.correct .popup-word {
-  font-size: 1.5rem;            /* 1.8rem -> 1.5rem */
+  font-size: 1.5rem;           
   font-weight: 600;
   margin: 0.2rem 0 0.1rem;
 }
 
-/* IPA mảnh hơn, màu dịu hơn */
 .popup-card.correct .popup-ipa {
-  font-size: 1rem;              /* 1.2rem -> 1rem */
-  color: #666;                  /* #444 -> #666 */
-  margin: 0.4rem auto 0.8rem;   /* 0.8/1.4 -> 0.4/0.8 */
-  letter-spacing: 0.3px;        /* 0.4 -> 0.3 */
-  line-height: 1.4;             /* 1.5 -> 1.4 */
+  font-size: 1rem;              
+  color: #666;                  
+  margin: 0.4rem auto 0.8rem;   
+  letter-spacing: 0.3px;        
+  line-height: 1.4;             
 }
 
-/* nút tiếp tục gọn, bo ít hơn */
 .popup-card.correct .popup-button {
-  padding: 0.5rem 1rem;         /* 0.6/1.2 -> 0.5/1 */
-  font-size: 0.95rem;           /* 1rem -> 0.95rem */
-  border-radius: 8px;           /* 10px -> 8px */
+  padding: 0.5rem 1rem;         
+  font-size: 0.95rem;           
+  border-radius: 8px;           
   box-shadow: 0 4px 10px rgba(0,194,229,0.18);
 }
 .popup-card.correct .popup-button:hover {
   transform: translateY(-1px);
 }
 
-/* tổng thể card scale-in nhẹ hơn để cảm giác thanh */
 @keyframes scaleIn {
-  from { transform: scale(0.98); }  /* 0.95 -> 0.98 */
+  from { transform: scale(0.98); }  
   to   { transform: scale(1); }
 }
 
-/* Mobile: nhỏ thêm một nấc khi màn hẹp */
 @media (max-width: 420px) {
   .popup-card.correct { width: 280px; padding: 0.9rem; }
   .popup-card.correct .popup-icon { font-size: 2rem; }

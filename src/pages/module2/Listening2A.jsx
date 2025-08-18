@@ -26,15 +26,12 @@ const Listening2A = ({ data, onScrollToPartB }) => {
 
   const autoAudioRef = useRef(null);
 
-  // --- Audio wave state ---
   const [isQPlaying, setIsQPlaying] = useState(false);
   const questionAudioRef = useRef(null);
 
-  // === Transcript states (intro / task / outro)
   const [showIntroScript, setShowIntroScript] = useState(false);
   const [showOutroScript, setShowOutroScript] = useState(false);
 
-  // === Refs for auto-scroll
   const introScriptRef = useRef(null);
   const taskScriptRef = useRef(null);
   const outroScriptRef = useRef(null);
@@ -197,7 +194,6 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     };
   }, [currentIndex, phase]);
 
-  // === Auto-scroll to transcript blocks
   useEffect(() => {
     if (showIntroScript) {
       setTimeout(() => {
@@ -240,7 +236,6 @@ const Listening2A = ({ data, onScrollToPartB }) => {
                 audio={data.introduction?.audioBase64}
                 script={data.introduction?.script}
                 onNext={handleStartTask}
-                /* hiển thị script dưới ảnh – giống Part 1 */
                 externalScript={true}
                 isScriptVisible={showIntroScript}
                 onToggleScript={() => setShowIntroScript(v => !v)}
@@ -360,7 +355,6 @@ const Listening2A = ({ data, onScrollToPartB }) => {
                 onNext={handleFinish}
                 onRetry={handleRetry}
                 autoPlay={true}
-                /* hiển thị script dưới ảnh – giống Part 1 */
                 externalScript={true}
                 isScriptVisible={showOutroScript}
                 onToggleScript={() => setShowOutroScript(v => !v)}

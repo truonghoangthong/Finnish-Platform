@@ -29,7 +29,6 @@ const Part1Final = () => {
     });
   }, [score, questions, userId, part1aViewed, part1aCorrect]);
 
-  // ✅ Nếu chưa có dữ liệu: hiển thị Coming soon
   if (!questions || !answers || typeof score !== 'number') {
     return (
       <div className="final-container empty">
