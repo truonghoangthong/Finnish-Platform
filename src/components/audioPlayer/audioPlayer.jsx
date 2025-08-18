@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import './audioPlayer.css';
+import React, { useEffect, useRef, useState } from "react";
+import "./audioPlayer.css";
 
-const AudioPlayer = ({ src, size = 'small' }) => {
+const AudioPlayer = ({ src, size = "small" }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -13,14 +13,14 @@ const AudioPlayer = ({ src, size = 'small' }) => {
     const onPause = () => setIsPlaying(false);
     const onEnded = () => setIsPlaying(false);
 
-    audio.addEventListener('play', onPlay);
-    audio.addEventListener('pause', onPause);
-    audio.addEventListener('ended', onEnded);
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("ended", onEnded);
 
     return () => {
-      audio.removeEventListener('play', onPlay);
-      audio.removeEventListener('pause', onPause);
-      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("ended", onEnded);
     };
   }, []);
 
@@ -53,8 +53,8 @@ const AudioPlayer = ({ src, size = 'small' }) => {
     <div className={`cover ${size}`} onClick={togglePlay}>
       <div className={`icon ${size}`}>
         <div className="speaker">
-          <div className={`wave wave1 ${isPlaying ? '' : 'paused'}`}></div>
-          <div className={`wave wave2 ${isPlaying ? '' : 'paused'}`}></div>
+          <div className={`wave wave1 ${isPlaying ? "" : "paused"}`}></div>
+          <div className={`wave wave2 ${isPlaying ? "" : "paused"}`}></div>
         </div>
         <audio ref={audioRef} src={src} preload="auto"></audio>
       </div>

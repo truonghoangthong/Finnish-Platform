@@ -2,9 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AnswerPopup2 from "./AnswerPopup2";
 import QuestionBox from "./QuestionBox";
 import FloatingMascot from "./FloatingMascot";
-import useAudioPlayer from "@/utils/useAudioPlayer";
-import AudioPlayer from "@/components/audioPlayer/AudioPlayer";
-import Title from "@/components/title/Title"; // ✅ dùng Title đồng bộ với module 1
+import Title from "@/components/title/Title"; 
 import confetti from "canvas-confetti";
 import { updateProgress } from "@/utils/updateProgress";
 import { calculateModule2Progress } from "@/utils/calculateProgress";
@@ -61,9 +59,12 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     }
 
     stopAllAudio();
-    const audio = new Audio(`data:audio/mp3;base64,${currentQuestion.audioBase64}`);
+    const audio = new Audio(
+      `data:audio/mp3;base64,${currentQuestion.audioBase64}`,
+    );
     questionAudioRef.current = audio;
-    audio.play()
+    audio
+      .play()
       .then(() => {
         setIsQPlaying(true);
         window.currentGlobalAudio = audio;
@@ -88,7 +89,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     correctAudio,
     wrongAudio,
     correctScript,
-    wrongScript
+    wrongScript,
   ) => {
     stopAllAudio();
     setIsCorrect(correct);
@@ -99,14 +100,14 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     setShowScript(false);
 
     const feedbackAudio = new Audio(
-      `data:audio/mp3;base64,${correct ? correctAudio : wrongAudio}`
+      `data:audio/mp3;base64,${correct ? correctAudio : wrongAudio}`,
     );
     feedbackAudio.play().catch(() => {});
     window.currentGlobalAudio = feedbackAudio;
 
     if (correct) {
       setAnsweredCorrect((prev) =>
-        prev.includes(currentQuestion) ? prev : [...prev, currentQuestion]
+        prev.includes(currentQuestion) ? prev : [...prev, currentQuestion],
       );
     }
   };
@@ -128,15 +129,19 @@ const Listening2A = ({ data, onScrollToPartB }) => {
         part2bViewed: false,
         part2bCorrect: false,
       });
-      updateProgress(userId, "A1", "the_break_room", "module2", progress.toString());
+      updateProgress(
+        userId,
+        "A1",
+        "the_break_room",
+        "module2",
+        progress.toString(),
+      );
 
       setShowFinalPopup(true);
       return;
     }
 
-    const unanswered = allQuestions.filter(
-      (q) => !answeredCorrect.includes(q)
-    );
+    const unanswered = allQuestions.filter((q) => !answeredCorrect.includes(q));
     const currentIdx = unanswered.indexOf(currentQuestion);
     const nextIdx = (currentIdx + 1) % unanswered.length;
     const nextQ = unanswered[nextIdx];
@@ -183,7 +188,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
     stopAllAudio();
 
     const newAudio = new Audio(
-      `data:audio/mp3;base64,${currentQuestion.audioBase64}`
+      `data:audio/mp3;base64,${currentQuestion.audioBase64}`,
     );
     newAudio.currentTime = 0;
     newAudio.play().catch(() => {});
@@ -197,7 +202,10 @@ const Listening2A = ({ data, onScrollToPartB }) => {
   useEffect(() => {
     if (showIntroScript) {
       setTimeout(() => {
-        introScriptRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        introScriptRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 120);
     }
   }, [showIntroScript]);
@@ -205,7 +213,10 @@ const Listening2A = ({ data, onScrollToPartB }) => {
   useEffect(() => {
     if (showScript) {
       setTimeout(() => {
-        taskScriptRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        taskScriptRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 120);
     }
   }, [showScript]);
@@ -213,7 +224,10 @@ const Listening2A = ({ data, onScrollToPartB }) => {
   useEffect(() => {
     if (showOutroScript) {
       setTimeout(() => {
-        outroScriptRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        outroScriptRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 120);
     }
   }, [showOutroScript]);
@@ -238,7 +252,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
                 onNext={handleStartTask}
                 externalScript={true}
                 isScriptVisible={showIntroScript}
-                onToggleScript={() => setShowIntroScript(v => !v)}
+                onToggleScript={() => setShowIntroScript((v) => !v)}
               />
             </div>
           </div>
@@ -269,7 +283,10 @@ const Listening2A = ({ data, onScrollToPartB }) => {
             ))}
           </div>
 
-          <div className="question-image-wrapper" style={{ position: "relative" }}>
+          <div
+            className="question-image-wrapper"
+            style={{ position: "relative" }}
+          >
             <img src={data.imageLink} alt="lesson" className="question-img" />
             {currentQuestion && (
               <QuestionBox
@@ -299,9 +316,14 @@ const Listening2A = ({ data, onScrollToPartB }) => {
               onClick={toggleQuestionAudio}
             >
               <span className="icon" aria-hidden>
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
-                     viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z" />
                 </svg>
               </span>
               <span>Kuuntele kysymys</span>
@@ -357,7 +379,7 @@ const Listening2A = ({ data, onScrollToPartB }) => {
                 autoPlay={true}
                 externalScript={true}
                 isScriptVisible={showOutroScript}
-                onToggleScript={() => setShowOutroScript(v => !v)}
+                onToggleScript={() => setShowOutroScript((v) => !v)}
               />
             </div>
           </div>

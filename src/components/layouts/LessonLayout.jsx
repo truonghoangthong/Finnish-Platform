@@ -65,7 +65,10 @@ const LessonLayout = ({
           {progress !== undefined && (
             <>
               <div className="lesson-progress-bar">
-                <div className="lesson-progress-bar-inner" style={{ width: `${progress}%` }} />
+                <div
+                  className="lesson-progress-bar-inner"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
               <p className="lesson-progress-text">{progress}% completed</p>
             </>

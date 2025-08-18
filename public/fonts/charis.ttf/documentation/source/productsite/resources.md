@@ -1,4 +1,3 @@
-
 ## Requirements
 
 These fonts are supported by all major operating systems (macOS, Windows, Linux-based, iOS, and Android). However, the extent of that support depends on the individual OS and application.
@@ -17,7 +16,7 @@ See [Character set support](charset) for details of the Unicode characters suppo
 
 These fonts will work normally like any other fonts in most applications. If the writing system requires special diacritic positioning the application/OS will need to support OpenType.
 
-These fonts also include extensive OpenType features for small caps, literacy forms, character alernates and language-specific preferences. For information on the specific features available in these fonts see [Font features](features). 
+These fonts also include extensive OpenType features for small caps, literacy forms, character alernates and language-specific preferences. For information on the specific features available in these fonts see [Font features](features).
 
 If special font features are to be activated, the application will need to provide a way to turn on the feature or choose the feature setting. Details of current application support, and specific techniques for activating features, are on the [Using Font Features](https://software.sil.org/fonts/features) help page.
 

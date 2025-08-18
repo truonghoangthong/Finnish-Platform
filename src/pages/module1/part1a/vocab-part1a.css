@@ -11,37 +11,39 @@
   height: 38px;
   border-radius: 10px;
   background-color: #fff;
-  border: 2px solid #00C2E5;
-  color: #00C2E5;
+  border: 2px solid #00c2e5;
+  color: #00c2e5;
   font-weight: 600;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
   cursor: default;
 }
 
 .tab.active {
-  background-color: #00C2E5;
+  background-color: #00c2e5;
   color: white !important;
 }
 
 .tab.correct {
-  background-color: #34D399;
+  background-color: #34d399;
   color: white;
-  border-color: #34D399;
+  border-color: #34d399;
 }
 
 .tab.wrong {
-  background-color: #F87171;
+  background-color: #f87171;
   color: white;
-  border-color: #F87171;
+  border-color: #f87171;
 }
 
 .tab:not(.correct):not(.wrong):not(.active):hover {
   background-color: #e0faff;
-  color: #00C2E5;
+  color: #00c2e5;
 }
 
 .question-audio {
@@ -80,7 +82,7 @@
 }
 
 .option-img:hover {
-  border-color: #00C2E5;
+  border-color: #00c2e5;
   transform: scale(1.03);
 }
 
@@ -99,7 +101,7 @@
 
 .spinner {
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #00C2E5;
+  border-top: 5px solid #00c2e5;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -107,8 +109,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
@@ -214,7 +220,7 @@
 }
 
 .audio-player-button svg {
-  color: #00C2E5;
+  color: #00c2e5;
   font-size: 28px;
   transition: 0.2s ease;
 }
@@ -228,7 +234,6 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
-
 
 .task-title-bold {
   font-weight: bold;

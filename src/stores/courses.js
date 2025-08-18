@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { fetchCourses, fetchProgress } from '../utils/getCourse';
+import { create } from "zustand";
+import { fetchCourses, fetchProgress } from "../utils/getCourse";
 const userId = "yugioh123";
 
 export const useCourseStore = create((set) => ({

@@ -24,9 +24,7 @@ const Title = ({ audioBase64, script }) => {
       </div>
 
       {taskLabel && <span className="title-label">{taskLabel}</span>}
-      {description && (
-        <span className="title-description">{description}</span>
-      )}
+      {description && <span className="title-description">{description}</span>}
     </div>
   );
 };

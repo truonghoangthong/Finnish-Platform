@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://finnish-platform-thong-truongs-projects.vercel.app/api";
+const BASE_URL =
+  "https://finnish-platform-thong-truongs-projects.vercel.app/api";
 
 export const fetchCourses = async (level = "A1") => {
   try {
@@ -30,7 +31,7 @@ export const fetchProgress = async (userId, level = "A1", lessons) => {
     return await Promise.all(
       lessons.map(async (lesson) => {
         const res = await axios.get(
-          `${BASE_URL}/progress/${userId}/${level}/${lesson.lessonName}`
+          `${BASE_URL}/progress/${userId}/${level}/${lesson.lessonName}`,
         );
         const p = res.data.result[lesson.lessonName];
         return {
@@ -42,7 +43,7 @@ export const fetchProgress = async (userId, level = "A1", lessons) => {
             reading: { status: parseProgress(p?.module4) },
           },
         };
-      })
+      }),
     );
   } catch (error) {
     console.error("Failed to fetch progress:", error.message);
@@ -53,7 +54,10 @@ export const fetchProgress = async (userId, level = "A1", lessons) => {
 const formatTitle = (str) =>
   str
     .replace(/_/g, " ")
-    .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+    .replace(
+      /\w\S*/g,
+      (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(),
+    );
 
 const parseProgress = (val) => {
   if (!val) return 0;

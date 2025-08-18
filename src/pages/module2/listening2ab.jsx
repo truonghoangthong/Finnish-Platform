@@ -16,9 +16,13 @@ const Listening2AB = () => {
     const fetchData = async () => {
       try {
         const [resA, resB, resLesson] = await Promise.all([
-          fetch("http://localhost:3000/api/studying/A1/the_break_room/module2/part2a"),
-          fetch("http://localhost:3000/api/studying/A1/the_break_room/module2/part2b"),
-          fetch("http://localhost:3000/api/learning/A1")
+          fetch(
+            "http://localhost:3000/api/studying/A1/the_break_room/module2/part2a",
+          ),
+          fetch(
+            "http://localhost:3000/api/studying/A1/the_break_room/module2/part2b",
+          ),
+          fetch("http://localhost:3000/api/learning/A1"),
         ]);
 
         const jsonA = await resA.json();
@@ -26,7 +30,7 @@ const Listening2AB = () => {
         const lessonJson = await resLesson.json();
 
         const currentLesson = lessonJson.result.find(
-          (item) => item.lessonName === "the_break_room"
+          (item) => item.lessonName === "the_break_room",
         );
 
         setLessonInfo(currentLesson);
@@ -44,7 +48,9 @@ const Listening2AB = () => {
 
   const scrollToPart2B = () => {
     setActivePart("2b");
-    document.getElementById("part2b-section")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("part2b-section")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
   if (loading || !dataA || !dataB || !lessonInfo) {
@@ -59,7 +65,9 @@ const Listening2AB = () => {
     <LessonLayout
       level="A1"
       lessonNumber={lessonInfo.lessonNumber}
-      title={lessonInfo.lessonName.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+      title={lessonInfo.lessonName
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase())}
       showImage={false}
       imageSrc={dataA.imageLink}
     >

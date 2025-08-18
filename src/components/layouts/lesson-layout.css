@@ -9,13 +9,13 @@
   justify-content: space-between;
   flex-wrap: wrap;
   margin-bottom: 0px;
-  padding: 0 20px; 
+  padding: 0 20px;
 }
 
 .lesson-level-title {
   font-size: 20px;
   font-weight: 800;
-  color: #06ACFF;
+  color: #06acff;
   margin: 0;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .lesson-tab.active .lesson-tab-number {
-  background: linear-gradient(to right, #06ACFF, #00C2E5);
+  background: linear-gradient(to right, #06acff, #00c2e5);
   color: white;
   border: none;
 }
@@ -54,20 +54,20 @@
 .lesson-tab-number {
   width: 30px;
   height: 30px;
-  border: 2px solid #06ACFF;
+  border: 2px solid #06acff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: #06ACFF;
+  color: #06acff;
   margin-bottom: 2px;
   font-size: 12px;
 }
 
 .lesson-tab-label {
   font-size: 11px;
-  color: #06ACFF;
+  color: #06acff;
   font-weight: 500;
   word-break: keep-all;
 }
@@ -127,7 +127,7 @@
 
 .lesson-progress-bar-inner {
   height: 100%;
-  background-color: #06ACFF;
+  background-color: #06acff;
   width: 0%;
   transition: width 0.4s ease;
   border-radius: 999px;
@@ -164,7 +164,7 @@
   }
 
   .lesson-header-container {
-    padding: 0 8px; 
+    padding: 0 8px;
   }
 
   .lesson-preview-container {
@@ -200,7 +200,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-    padding: 0 8px; 
+    padding: 0 8px;
   }
 
   .lesson-tab-label {

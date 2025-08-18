@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import Column from './Column';
-import './module3.css';
+import { useState, useEffect, useCallback } from "react";
+import Column from "./Column";
+import "./module3.css";
 
 const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
   const [leftItems, setLeftItems] = useState([]);
@@ -21,17 +21,17 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     if (pairs.length > 0) {
       setLoading(true);
       setTimeout(() => {
-        const left = pairs.map(p => ({
+        const left = pairs.map((p) => ({
           id: `left-${p.pairId}`,
           text: p.left,
           pairId: p.pairId,
-          audioBase64: p.audioBase64
+          audioBase64: p.audioBase64,
         }));
 
-        const right = pairs.map(p => ({
+        const right = pairs.map((p) => ({
           id: `right-${p.pairId}`,
           text: p.right,
-          pairId: p.pairId
+          pairId: p.pairId,
         }));
 
         setLeftItems(shuffleArray(left));
@@ -47,10 +47,10 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
   useEffect(() => {
     if (showResults && results) {
       const newStatusMap = {};
-      Object.keys(results).forEach(pairId => {
+      Object.keys(results).forEach((pairId) => {
         const isCorrect = results[pairId];
-        newStatusMap[`left-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
-        newStatusMap[`right-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
+        newStatusMap[`left-${pairId}`] = isCorrect ? "correct" : "incorrect";
+        newStatusMap[`right-${pairId}`] = isCorrect ? "correct" : "incorrect";
       });
       setStatusMap(newStatusMap);
     } else {
@@ -64,22 +64,28 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     }
   }, [leftItems, rightItems, loading, onStateChange]);
 
-  const findCard = useCallback((id, type) => {
-    const items = type === 'left' ? leftItems : rightItems;
-    const card = items.find(c => c.id === id);
-    return { card, index: items.indexOf(card) };
-  }, [leftItems, rightItems]);
+  const findCard = useCallback(
+    (id, type) => {
+      const items = type === "left" ? leftItems : rightItems;
+      const card = items.find((c) => c.id === id);
+      return { card, index: items.indexOf(card) };
+    },
+    [leftItems, rightItems],
+  );
 
-  const moveCard = useCallback((id, atIndex, type) => {
-    const items = type === 'left' ? leftItems : rightItems;
-    const { card, index } = findCard(id, type);
-    if (!card) return;
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    newItems.splice(atIndex, 0, card);
-    if (type === 'left') setLeftItems(newItems);
-    else setRightItems(newItems);
-  }, [findCard, leftItems, rightItems]);
+  const moveCard = useCallback(
+    (id, atIndex, type) => {
+      const items = type === "left" ? leftItems : rightItems;
+      const { card, index } = findCard(id, type);
+      if (!card) return;
+      const newItems = [...items];
+      newItems.splice(index, 1);
+      newItems.splice(atIndex, 0, card);
+      if (type === "left") setLeftItems(newItems);
+      else setRightItems(newItems);
+    },
+    [findCard, leftItems, rightItems],
+  );
 
   if (loading) {
     return (

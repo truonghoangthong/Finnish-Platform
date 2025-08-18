@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import './part1-final.css';
+import { useLocation, useNavigate } from "react-router-dom";
+import "./part1-final.css";
 // import ResultPart1 from "../part1a/ResultPart1";
 // import { updateProgress } from '../../../utils/api';
 // import { calculateModule1Progress } from '../../../utils/calculateProgress';
@@ -41,7 +41,10 @@ const Part1Final = () => {
   return (
     <div className="final-container empty">
       <h2>🚧 Coming Soon</h2>
-      <p className="coming-text">This result page is under construction and will be available in a future update.</p>
+      <p className="coming-text">
+        This result page is under construction and will be available in a future
+        update.
+      </p>
       <button onClick={() => navigate(-1)}>🔙 Back to lesson</button>
     </div>
   );

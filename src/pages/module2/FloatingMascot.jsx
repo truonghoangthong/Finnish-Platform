@@ -10,8 +10,8 @@ const FloatingMascot = ({
   onRetry,
   autoPlay = false,
   externalScript = false,
-  isScriptVisible,          // optional controlled
-  onToggleScript,           // optional callback
+  isScriptVisible, // optional controlled
+  onToggleScript, // optional callback
 }) => {
   const [showScript, setShowScript] = useState(false); // local fallback
   const [isPlaying, setIsPlaying] = useState(false);
@@ -81,19 +81,21 @@ const FloatingMascot = ({
 
   const handleToggleScript = () => {
     if (externalScript && onToggleScript) {
-      onToggleScript();     // giao cho parent
+      onToggleScript(); // giao cho parent
     } else {
       setShowScript((v) => !v); // fallback nội bộ
     }
   };
 
-  const scriptVisible = externalScript
-    ? !!isScriptVisible
-    : showScript;
+  const scriptVisible = externalScript ? !!isScriptVisible : showScript;
 
   return (
     <div className="mascot-section">
-      <div className="mascot-img" onClick={handleMascotClick} style={{ cursor: "pointer" }}>
+      <div
+        className="mascot-img"
+        onClick={handleMascotClick}
+        style={{ cursor: "pointer" }}
+      >
         <Mascot />
       </div>
 
@@ -113,9 +115,14 @@ const FloatingMascot = ({
             ) : (
               <>
                 <span className="icon" aria-hidden>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                       viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z"/>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z" />
                   </svg>
                 </span>
                 <span className="label">Kuuntele</span>

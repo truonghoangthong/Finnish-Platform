@@ -68,10 +68,12 @@
   object-fit: contain;
   padding: 8px;
   background-color: white;
-  border: 2px dashed #00C2E5;
+  border: 2px dashed #00c2e5;
   border-radius: 12px;
   cursor: grab;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .vocab1b-drag-image:hover {
@@ -131,7 +133,7 @@
 
 .vocab1b-drop-box.is-playing {
   background-color: #e6f2f4;
-  box-shadow: 0 0 0 2px #00C2E5 inset;
+  box-shadow: 0 0 0 2px #00c2e5 inset;
   transition: background 0.3s ease;
 }
 
@@ -154,11 +156,11 @@
 }
 
 .vocab1b-feedback .tick {
-  color: #22C55E;
+  color: #22c55e;
 }
 
 .vocab1b-feedback .cross {
-  color: #EF4444;
+  color: #ef4444;
 }
 
 .vocab1b-feedback .script {
@@ -188,37 +190,38 @@
   color: #aaa;
   opacity: 0.6;
 }
-.vocab1b-drag-zone{
+.vocab1b-drag-zone {
   display: grid;
-  grid-template-columns: repeat(7, 100px);  
+  grid-template-columns: repeat(7, 100px);
   gap: 12px;
   justify-content: center;
 }
-.vocab1b-drag-image{
-  box-sizing: border-box;  
+.vocab1b-drag-image {
+  box-sizing: border-box;
   width: 100px;
   height: 80px;
   padding: 6px;
-  border: 2px dashed #00C2E5;
+  border: 2px dashed #00c2e5;
 }
 
-.vocab1b-drag-zone{
+.vocab1b-drag-zone {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: max-content;  
+  grid-auto-columns: max-content;
   gap: 12px;
   justify-content: center;
-  overflow-x: auto;                 /* thiếu chỗ thì scroll ngang */
-  padding-bottom: 6px;              /* chừa chỗ cho scrollbar */
+  overflow-x: auto; /* thiếu chỗ thì scroll ngang */
+  padding-bottom: 6px; /* chừa chỗ cho scrollbar */
 }
-.vocab1b-drag-image{
+.vocab1b-drag-image {
   box-sizing: border-box;
-  width: 100px; height: 80px;
+  width: 100px;
+  height: 80px;
   padding: 8px;
 }
 
-@media (max-width: 1024px){
-  .vocab1b-drag-zone{
+@media (max-width: 1024px) {
+  .vocab1b-drag-zone {
     grid-auto-flow: row;
     grid-template-columns: repeat(4, minmax(82px, 1fr));
     overflow-x: visible;
@@ -226,20 +229,21 @@
   }
 }
 
-@media (max-width: 768px){
-  .vocab1b-drag-zone{
+@media (max-width: 768px) {
+  .vocab1b-drag-zone {
     grid-template-columns: repeat(3, minmax(90px, 1fr));
     gap: 10px;
   }
-  .vocab1b-drag-image{
-    width: 96px; height: 84px;      
+  .vocab1b-drag-image {
+    width: 96px;
+    height: 84px;
     padding: 10px;
   }
 }
 
-@media (max-width: 480px){
+@media (max-width: 480px) {
   /* Option A: 2 cột */
-  .vocab1b-drag-zone{
+  .vocab1b-drag-zone {
     grid-template-columns: repeat(2, minmax(92px, 1fr));
     gap: 10px;
   }
@@ -251,11 +255,11 @@
     gap: 10px;
   } */
 
-  .vocab1b-drop-box{
+  .vocab1b-drop-box {
     max-width: 90px;
     min-height: 110px;
   }
-  .vocab1b-drop-image img{
+  .vocab1b-drop-image img {
     height: 64px;
   }
 }

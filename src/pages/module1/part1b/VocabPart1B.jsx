@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './vocab-part1b.css';
-import PopupScore from '../../../components/score/PopupScore';
-import AudioPlayer from '../../../components/audioPlayer/audioPlayer';
-import Title from '../../../components/title/Title'; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./vocab-part1b.css";
+import PopupScore from "../../../components/score/PopupScore";
+import AudioPlayer from "../../../components/audioPlayer/audioPlayer";
+import Title from "../../../components/title/Title";
 
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
@@ -28,9 +28,9 @@ const VocabPart1B = ({ data }) => {
     const shuffled = shuffleArray(questionList);
     setQuestions(shuffled);
     setAudioRefs(
-      shuffled.map(q => new Audio(`data:audio/mp3;base64,${q.audioBase64}`))
+      shuffled.map((q) => new Audio(`data:audio/mp3;base64,${q.audioBase64}`)),
     );
-    setDragImages(shuffleArray(shuffled.map(q => q.imageLink)));
+    setDragImages(shuffleArray(shuffled.map((q) => q.imageLink)));
   }, [data]);
 
   const handlePlayAudio = (index) => {
@@ -40,7 +40,8 @@ const VocabPart1B = ({ data }) => {
       audioRefs[index].pause();
       setPlayingIndex(null);
     } else {
-      if (playingIndex !== null && audioRefs[playingIndex]) audioRefs[playingIndex].pause();
+      if (playingIndex !== null && audioRefs[playingIndex])
+        audioRefs[playingIndex].pause();
       audioRefs[index].play();
       setPlayingIndex(index);
       audioRefs[index].onended = () => setPlayingIndex(null);
@@ -53,7 +54,7 @@ const VocabPart1B = ({ data }) => {
     if (isCorrect) {
       handlePlayAudio(i);
     } else {
-      setFlippedCards(prev => {
+      setFlippedCards((prev) => {
         const isNowFlipped = !prev[i];
         if (isNowFlipped) handlePlayAudio(i);
         return { ...prev, [i]: isNowFlipped };
@@ -66,7 +67,7 @@ const VocabPart1B = ({ data }) => {
   const handleDrop = (e, index) => {
     e.preventDefault();
     if (dragItem) {
-      setAnswers(prev => ({ ...prev, [index]: dragItem }));
+      setAnswers((prev) => ({ ...prev, [index]: dragItem }));
     }
   };
 
@@ -75,9 +76,11 @@ const VocabPart1B = ({ data }) => {
     const reshuffled = shuffleArray(questionList);
     setQuestions(reshuffled);
     setAudioRefs(
-      reshuffled.map(q => new Audio(`data:audio/mp3;base64,${q.audioBase64}`))
+      reshuffled.map(
+        (q) => new Audio(`data:audio/mp3;base64,${q.audioBase64}`),
+      ),
     );
-    setDragImages(shuffleArray(reshuffled.map(q => q.imageLink)));
+    setDragImages(shuffleArray(reshuffled.map((q) => q.imageLink)));
     setAnswers({});
     setShowResult(false);
     setScore(0);
@@ -103,25 +106,24 @@ const VocabPart1B = ({ data }) => {
 
   return (
     <div className="vocab1b-wrapper">
-      <Title
-        audioBase64={title?.audioBase64}
-        script={title?.script}
-      />
+      <Title audioBase64={title?.audioBase64} script={title?.script} />
 
       <div className="vocab1b-drop-area">
-        <div className={`vocab1b-image-options ${questions.length < 7 ? 'center-flex' : 'grid-7'}`}>
+        <div
+          className={`vocab1b-image-options ${questions.length < 7 ? "center-flex" : "grid-7"}`}
+        >
           {questions.map((q, i) => {
             const isCorrect = answers[i] === q.imageLink;
             const hasAnswered = answers[i];
             const isFlipped = flippedCards[i];
-            const playingClass = playingIndex === i ? 'is-playing' : '';
+            const playingClass = playingIndex === i ? "is-playing" : "";
 
             return (
               <div
                 key={i}
-                className={`vocab1b-drop-box ${hasReviewedAnswers ? (isCorrect ? 'correct' : 'incorrect') : ''} ${playingClass} ${isFlipped ? 'flipped' : ''}`}
-                onDragOver={e => e.preventDefault()}
-                onDrop={e => handleDrop(e, i)}
+                className={`vocab1b-drop-box ${hasReviewedAnswers ? (isCorrect ? "correct" : "incorrect") : ""} ${playingClass} ${isFlipped ? "flipped" : ""}`}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => handleDrop(e, i)}
                 onClick={() => handleCardClick(i, isCorrect)}
               >
                 <AudioPlayer src={`data:audio/mp3;base64,${q.audioBase64}`} />
@@ -132,8 +134,8 @@ const VocabPart1B = ({ data }) => {
                       hasReviewedAnswers && !isCorrect && isFlipped
                         ? q.imageLink
                         : hasAnswered
-                        ? answers[i]
-                        : '/question-box.png'
+                          ? answers[i]
+                          : "/question-box.png"
                     }
                     alt="option"
                   />
@@ -141,11 +143,33 @@ const VocabPart1B = ({ data }) => {
 
                 {hasReviewedAnswers && (
                   <div className="vocab1b-feedback">
-                    <span className={isCorrect ? 'tick' : isFlipped ? 'tick' : 'cross'}>
-                      {isCorrect || isFlipped ? <span style={{ color: "#4CAF50", fontWeight: "bold" }}>✔</span> : hasAnswered ? '❌' : ''}
+                    <span
+                      className={
+                        isCorrect ? "tick" : isFlipped ? "tick" : "cross"
+                      }
+                    >
+                      {isCorrect || isFlipped ? (
+                        <span style={{ color: "#4CAF50", fontWeight: "bold" }}>
+                          ✔
+                        </span>
+                      ) : hasAnswered ? (
+                        "❌"
+                      ) : (
+                        ""
+                      )}
                     </span>
-                    <p className={`script ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>{q.script}</p>
-                    {q.ipa && <p className={`ipa ${!isCorrect && !isFlipped ? 'dimmed' : ''}`}>[{q.ipa}]</p>}
+                    <p
+                      className={`script ${!isCorrect && !isFlipped ? "dimmed" : ""}`}
+                    >
+                      {q.script}
+                    </p>
+                    {q.ipa && (
+                      <p
+                        className={`ipa ${!isCorrect && !isFlipped ? "dimmed" : ""}`}
+                      >
+                        [{q.ipa}]
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -170,14 +194,23 @@ const VocabPart1B = ({ data }) => {
       </div>
 
       <div className="vocab1b-buttons">
-        <button className='shared-btn' onClick={handleReset}>Yritä uudelleen</button>
+        <button className="shared-btn" onClick={handleReset}>
+          Yritä uudelleen
+        </button>
 
         {!hasReviewedAnswers && isCompleted && (
-          <button className='shared-btn' onClick={handleSubmit}>Lähetä</button>
+          <button className="shared-btn" onClick={handleSubmit}>
+            Lähetä
+          </button>
         )}
 
         {hasReviewedAnswers && (
-          <button className='shared-btn' onClick={() => navigate("/course/a1/lesson-1/listening")}>Seuraava</button>
+          <button
+            className="shared-btn"
+            onClick={() => navigate("/course/a1/lesson-1/listening")}
+          >
+            Seuraava
+          </button>
         )}
       </div>
 

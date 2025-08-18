@@ -1,7 +1,7 @@
 .mascot-overlay-in-image {
   position: absolute;
-  bottom: 4%;          /* % để bám theo ảnh */
-  left: 3%;            /* % để bám theo ảnh */
+  bottom: 4%; /* % để bám theo ảnh */
+  left: 3%; /* % để bám theo ảnh */
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -9,35 +9,45 @@
   gap: 10px;
   pointer-events: auto;
 }
-.mascot-inner { width: 80px; height: 80px; cursor: pointer; }
-.mascot-inner img { width: 90%; height: 90%; object-fit: contain; }
+.mascot-inner {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+}
+.mascot-inner img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
 
 .chat-bubble {
   position: absolute;
   top: 30%;
   left: 100%;
   transform: translate(12px, -50%);
-  background: #e0f9ff;             /* nền xanh nhạt giống Part 2 */
-  border: 1px solid #00C2E5;       /* viền xanh giống Part 2 */
-  border-radius: 14px;             /* bo góc giống Part 2 */
+  background: #e0f9ff; /* nền xanh nhạt giống Part 2 */
+  border: 1px solid #00c2e5; /* viền xanh giống Part 2 */
+  border-radius: 14px; /* bo góc giống Part 2 */
   padding: 5px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   width: max-content;
   max-width: min(90vw, 360px);
 }
-.chat-bubble::after { display: none; }
+.chat-bubble::after {
+  display: none;
+}
 
 .transcript {
   margin-top: 16px;
   background: #e0f9ff;
   border: 1px solid #00c2e5;
-  box-shadow: 0 6px 20px rgba(0,194,229,.1);
+  box-shadow: 0 6px 20px rgba(0, 194, 229, 0.1);
   padding: 20px;
   font-size: 15px;
   color: #004466;
@@ -47,23 +57,73 @@
   text-align: left;
 }
 
-.audio-loading { display: inline-flex; align-items: center; gap: 6px; }
-.audio-wave { display: flex; align-items: flex-end; height: 18px; gap: 2px; margin-left: 6px; }
-.wave-bar { width: 3px; height: 6px; background: #fff; opacity: .9; animation: wave 1s infinite ease-in-out; border-radius: 2px; }
-.wave-bar:nth-child(1) { animation-delay: 0s; }
-.wave-bar:nth-child(2) { animation-delay: .1s; }
-.wave-bar:nth-child(3) { animation-delay: .2s; }
-.wave-bar:nth-child(4) { animation-delay: .3s; }
-@keyframes wave { 0%,100% { height: 6px; } 50% { height: 18px; } }
+.audio-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.audio-wave {
+  display: flex;
+  align-items: flex-end;
+  height: 18px;
+  gap: 2px;
+  margin-left: 6px;
+}
+.wave-bar {
+  width: 3px;
+  height: 6px;
+  background: #fff;
+  opacity: 0.9;
+  animation: wave 1s infinite ease-in-out;
+  border-radius: 2px;
+}
+.wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+@keyframes wave {
+  0%,
+  100% {
+    height: 6px;
+  }
+  50% {
+    height: 18px;
+  }
+}
 
-.loader-wrapper { display: flex; justify-content: center; align-items: center; min-height: 300px; }
-.glow { animation: glowPulse 2.5s infinite; filter: drop-shadow(0 0 6px #00c2e5); border-radius: 50%; }
-@keyframes glowPulse { 0%,100% { filter: drop-shadow(0 0 6px #00c2e5); } 50% { filter: drop-shadow(0 0 14px #00c2e5); } }
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+.glow {
+  animation: glowPulse 2.5s infinite;
+  filter: drop-shadow(0 0 6px #00c2e5);
+  border-radius: 50%;
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px #00c2e5);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px #00c2e5);
+  }
+}
 
 .intro-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   max-width: 700px;
   margin: 0 auto 24px;
@@ -72,8 +132,8 @@
 /* Ảnh trong card */
 .intro-card .lesson-image-wrapper {
   position: relative;
-  width: max-content;         /* ôm sát kích thước ảnh */
-  margin: 0 auto 14px;        /* căn giữa wrapper trong card */
+  width: max-content; /* ôm sát kích thước ảnh */
+  margin: 0 auto 14px; /* căn giữa wrapper trong card */
   border-radius: 10px;
   overflow: hidden;
 }
@@ -86,79 +146,109 @@
 }
 
 /* Responsive */
-@media (max-width:768px) {
-  .mascot-inner { width: 70px; height: 70px; }
-  .intro-card { max-width: 95vw; }
+@media (max-width: 768px) {
+  .mascot-inner {
+    width: 70px;
+    height: 70px;
+  }
+  .intro-card {
+    max-width: 95vw;
+  }
 }
-@media (max-width:640px) {
-  .chat-bubble { left: 50%; top: 0%; transform: translate(-50%, -110%); }
+@media (max-width: 640px) {
+  .chat-bubble {
+    left: 50%;
+    top: 0%;
+    transform: translate(-50%, -110%);
+  }
 }
-@media (max-width:480px) {
-  .chat-bubble { width: 95%; }
+@media (max-width: 480px) {
+  .chat-bubble {
+    width: 95%;
+  }
 }
 
 /* ===== Bỏ khung trắng LessonLayout (IntroPage) ===== */
-.intro-page .lesson-card { display: contents; }
-.intro-page .lesson-content { padding: 0; }
+.intro-page .lesson-card {
+  display: contents;
+}
+.intro-page .lesson-content {
+  padding: 0;
+}
 
-.action-button{
+.action-button {
   height: 25px;
   width: 90%;
   padding: 0 10px;
-  border: 1px solid #00C2E5;      
+  border: 1px solid #00c2e5;
   border-radius: 8px;
-  background: #00C2E5;
+  background: #00c2e5;
   color: #fff;
   font-weight: 600;
   font-size: 13px;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 2px 6px rgba(0,194,229,.25);
+  box-shadow: 0 2px 6px rgba(0, 194, 229, 0.25);
   white-space: nowrap;
   cursor: pointer;
-  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
-.action-button:hover { transform: translateY(-1px); }
+.action-button:hover {
+  transform: translateY(-1px);
+}
 
 /* Icon trong nút – kích thước cố định để thẳng hàng */
-.action-button .icon{
-  width: 18px; height: 18px;
+.action-button .icon {
+  width: 18px;
+  height: 18px;
   flex: 0 0 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.action-button .icon svg{
-  width: 18px; height: 18px;
+.action-button .icon svg {
+  width: 18px;
+  height: 18px;
   display: block;
 }
 
 /* Sóng audio trong trạng thái Pysäytä – thu gọn để không tăng chiều cao nút */
-.action-button .audio-loading{
+.action-button .audio-loading {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   height: 100%;
 }
-.action-button .audio-wave{
+.action-button .audio-wave {
   display: inline-flex;
   align-items: flex-end;
   gap: 2px;
   height: 10px;
   margin-left: 4px;
 }
-.action-button .audio-wave .wave-bar{
-  width: 2px; height: 5px;
-  background: rgba(255,255,255,.95);
+.action-button .audio-wave .wave-bar {
+  width: 2px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 1px;
   transform-origin: bottom;
   animation: waveMini 1s ease-in-out infinite;
 }
-@keyframes waveMini{
-  0%,100%{ height: 5px; opacity: .95; }
-  50%   { height: 10px; opacity: 1; }
+@keyframes waveMini {
+  0%,
+  100% {
+    height: 5px;
+    opacity: 0.95;
+  }
+  50% {
+    height: 10px;
+    opacity: 1;
+  }
 }

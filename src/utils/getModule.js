@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = ' https://finnish-platform-thong-truongs-projects.vercel.app/api';
+const BASE_URL =
+  " https://finnish-platform-thong-truongs-projects.vercel.app/api";
 
 export const fetchModuleData = async (level, moduleName, moduleNumber) => {
   try {
@@ -8,16 +9,16 @@ export const fetchModuleData = async (level, moduleName, moduleNumber) => {
     let partsToFetch = [];
     switch (moduleNumber) {
       case 1:
-        partsToFetch = ['part1a', 'part1b'];
+        partsToFetch = ["part1a", "part1b"];
         break;
       case 2:
-        partsToFetch = ['part2a', 'part2b'];
+        partsToFetch = ["part2a", "part2b"];
         break;
       case 3:
-        partsToFetch = ['part3a', 'part3b', 'part3c'];
+        partsToFetch = ["part3a", "part3b", "part3c"];
         break;
       case 4:
-        partsToFetch = ['part4a', 'part4b', 'part4c'];
+        partsToFetch = ["part4a", "part4b", "part4c"];
         break;
       default:
         throw new Error(`Invalid module number: ${moduleNumber}`);
@@ -25,9 +26,11 @@ export const fetchModuleData = async (level, moduleName, moduleNumber) => {
 
     // Gọi API cho các phần tương ứng
     const responses = await Promise.all(
-      partsToFetch.map(part => 
-        axios.get(`${BASE_URL}/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`)
-      )
+      partsToFetch.map((part) =>
+        axios.get(
+          `${BASE_URL}/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/${part}`,
+        ),
+      ),
     );
 
     // Tạo object kết quả với các phần tương ứng
@@ -38,7 +41,7 @@ export const fetchModuleData = async (level, moduleName, moduleNumber) => {
 
     return result;
   } catch (error) {
-    console.error('Error fetching module data:', error);
+    console.error("Error fetching module data:", error);
     throw error;
   }
 };
@@ -47,11 +50,11 @@ export const evaluateTranslation = async (finnishSentence, userTranslation) => {
   try {
     const response = await axios.post(`${BASE_URL}/evaluate`, {
       finnishSentence,
-      userTranslation
+      userTranslation,
     });
     return response.data;
   } catch (error) {
-    console.error('Error evaluating translation:', error);
+    console.error("Error evaluating translation:", error);
     throw error;
   }
 };

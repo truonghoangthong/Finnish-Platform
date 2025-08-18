@@ -16,18 +16,22 @@
   border-radius: 16px;
   padding: 1.1rem 0.9rem;
   text-align: center;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
   animation: scaleIn 0.3s ease both;
   transform-origin: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   position: relative;
-  color: #111
+  color: #111;
 }
 
-.popup-card.correct { border-top: 5px solid #22C55E; }
+.popup-card.correct {
+  border-top: 5px solid #22c55e;
+}
 .popup-card.wrong {
-  border-top: 5px solid #EF4444;
-  animation: scaleIn 0.3s ease both, shakeY 0.4s ease-in-out 0.3s both;
+  border-top: 5px solid #ef4444;
+  animation:
+    scaleIn 0.3s ease both,
+    shakeY 0.4s ease-in-out 0.3s both;
 }
 
 .popup-icon {
@@ -41,12 +45,11 @@
   font-weight: 700;
   margin-bottom: 0.4rem;
   .popup-title {
-  font-size: 1.12rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-  color: #111; /* 🔹 Màu chữ tiêu đề */
-}
-
+    font-size: 1.12rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: #111; /* 🔹 Màu chữ tiêu đề */
+  }
 }
 
 .popup-script {
@@ -73,11 +76,11 @@
 .popup-actions .popup-button {
   flex: 1 1 auto;
   min-width: 120px;
-  height: 40px;              /* đồng nhất */
-  line-height: 40px;         /* đồng nhất line-box */
-  margin: 0;                 /* reset margin phòng style global */
+  height: 40px; /* đồng nhất */
+  line-height: 40px; /* đồng nhất line-box */
+  margin: 0; /* reset margin phòng style global */
   padding: 0;
-  background: #00C2E5;
+  background: #00c2e5;
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -87,36 +90,84 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,194,229,0.22);
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 194, 229, 0.22);
 }
 
-.popup-actions .popup-btn::before{
+.popup-actions .popup-btn::before {
   content: "📜";
   margin-right: 6px;
   display: inline-block;
-  line-height: 1;            
+  line-height: 1;
 }
 
 .popup-actions .popup-btn:hover,
-.popup-actions .popup-button:hover { background: #08afd0; }
+.popup-actions .popup-button:hover {
+  background: #08afd0;
+}
 .popup-actions .popup-btn:active,
-.popup-actions .popup-button:active { transform: translateY(1px); }
+.popup-actions .popup-button:active {
+  transform: translateY(1px);
+}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleIn { from { transform: scale(0.97); } to { transform: scale(1); } }
-@keyframes popIn   { 0% { transform: scale(0.4); opacity: 0; } 80% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
-@keyframes shakeY  {
-  0% { transform: translateY(0); }
-  20% { transform: translateY(-6px); }
-  40% { transform: translateY(6px); }
-  60% { transform: translateY(-4px); }
-  80% { transform: translateY(4px); }
-  100% { transform: translateY(0); }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scaleIn {
+  from {
+    transform: scale(0.97);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes popIn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes shakeY {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-6px);
+  }
+  40% {
+    transform: translateY(6px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+  80% {
+    transform: translateY(4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 420px) {
-  .popup-card { width: 300px; padding: 1rem 0.85rem; }
+  .popup-card {
+    width: 300px;
+    padding: 1rem 0.85rem;
+  }
   .popup-actions {
     gap: 8px;
     flex-wrap: wrap;
