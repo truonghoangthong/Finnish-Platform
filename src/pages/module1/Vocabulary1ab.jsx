@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import LessonLayout from "../../components/layouts/LessonLayout";
-import VocabPart1A from './part1a/VocabPart1A';
-import VocabPart1B from './part1b/VocabPart1B';
+import VocabPart1A from "./part1a/VocabPart1A";
+import VocabPart1B from "./part1b/VocabPart1B";
 import Loader from "@/components/loader/loader";
 
 const Vocabulary1ab = () => {
@@ -11,11 +11,15 @@ const Vocabulary1ab = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/studying/A1/the_break_room/module1/part1a');
+        const res = await fetch(
+          "https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/A1/the_break_room/module1/part1a",
+        );
         const json = await res.json();
         setDataA(json.result.part1a);
 
-        const res2 = await fetch('http://localhost:3000/api/studying/A1/the_break_room/module1/part1b');
+        const res2 = await fetch(
+          "https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/A1/the_break_room/module1/part1b",
+        );
         const json2 = await res2.json();
         setDataB(json2.result.part1b);
       } catch (error) {
@@ -26,18 +30,8 @@ const Vocabulary1ab = () => {
     fetchData();
   }, []);
 
-  // ✅ Loader căn giữa màn hình
   if (!dataA || !dataB) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '60vh'
-      }}>
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

@@ -1,35 +1,39 @@
-import './main.css';
-import { useNavigate } from 'react-router-dom';
+import "./main.css";
+import { useNavigate } from "react-router-dom";
 
 function Main() {
   const navigate = useNavigate();
-  
+
   const coursesData = [
     {
       id: 1,
       level: "LEVEL A1",
       image: "course-a1.png",
-      description: "A1 Level – Start your Finnish journey with fun basics. Speak and understand the basics of Finnish – fast!",
-      path: "/course/a1"
+      description:
+        "A1 Level – Start your Finnish journey with fun basics. Speak and understand the basics of Finnish – fast!",
+      path: "/course/a1",
     },
     {
       id: 2,
       level: "LEVEL A2",
       image: "course-a2.png",
-      description: "A2 Level – Learn to speak confidently in daily life. Build fluency for real-life situations and simple conversations.",
+      description:
+        "A2 Level – Learn to speak confidently in daily life. Build fluency for real-life situations and simple conversations.",
     },
     {
       id: 3,
       level: "LEVEL B1",
       image: "course-b1.png",
-      description: "B1 Level – Share your ideas, tell stories, connect naturally. Master conversations in daily life, work, and social settings.",
+      description:
+        "B1 Level – Share your ideas, tell stories, connect naturally. Master conversations in daily life, work, and social settings.",
     },
     {
       id: 4,
       level: "LEVEL B2",
       image: "course-b2.png",
-      description: "B2 Level – Communicate fluently in real conversations. Communicate fluently in most situations — from work meetings to friendships.",
-    }
+      description:
+        "B2 Level – Communicate fluently in real conversations. Communicate fluently in most situations — from work meetings to friendships.",
+    },
   ];
 
   return (
@@ -46,11 +50,14 @@ function Main() {
             ></dotlottie-player>
           </div>
           <div className="home-content">
-            <h1><span className="highlight-text">Explore</span> Your Language Journey</h1>
+            <h1>
+              <span className="highlight-text">Explore</span> Your Language
+              Journey
+            </h1>
             <h2>with Online Finnish Language Courses</h2>
             <p>Learn with Us and Enhance Your Skills.</p>
             <img
-              src="labmain.png" 
+              src="labmain.png"
               alt="LAB University of Applied Sciences"
               className="home-image"
             />
@@ -71,7 +78,7 @@ function Main() {
       <section id="courses" className="courses-section">
         <h2>Our Courses</h2>
         <div className="courses-grid">
-          {coursesData.map(course => (
+          {coursesData.map((course) => (
             <div className="course-card" key={course.id}>
               <img src={course.image} alt={course.level} />
               <h3>{course.level}</h3>

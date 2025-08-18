@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { fetchModuleData, evaluateTranslation } from '../utils/getModule';
+import { create } from "zustand";
+import { fetchModuleData, evaluateTranslation } from "../utils/getModule";
 
 export const useModuleStore = create((set, get) => ({
   moduleData: null,
@@ -7,13 +7,13 @@ export const useModuleStore = create((set, get) => ({
   error: null,
   currentAudio: null,
   activeAudio: null,
-  
-  translations: {},  // part4b
-  answers: {},       // part4c
+
+  translations: {}, // part4b
+  answers: {}, // part4c
   feedbackModal: {
     show: false,
     part4b: [],
-    part4c: []
+    part4c: [],
   },
   checkingAnswers: false,
 
@@ -30,55 +30,58 @@ export const useModuleStore = create((set, get) => ({
   setCurrentAudio: (audio) => set({ currentAudio: audio }),
   setActiveAudio: (audio) => set({ activeAudio: audio }),
 
-  setTranslation: (id, value) => set((state) => ({
-    translations: { ...state.translations, [id]: value }
-  })),
+  setTranslation: (id, value) =>
+    set((state) => ({
+      translations: { ...state.translations, [id]: value },
+    })),
 
-  setAnswer: (id, isTrue) => set((state) => ({
-    answers: { ...state.answers, [id]: isTrue }
-  })),
+  setAnswer: (id, isTrue) =>
+    set((state) => ({
+      answers: { ...state.answers, [id]: isTrue },
+    })),
 
   checkAnswers: async () => {
     const { moduleData, translations, answers } = get();
     set({ checkingAnswers: true });
-    
+
     try {
-      const part4cResults = moduleData.part4c.questions?.map(item => ({
-        question: item.text,
-        userAnswer: answers[item.id],
-        correctAnswer: item.answer,
-        isCorrect: answers[item.id] === item.answer
-      })) || [];
+      const part4cResults =
+        moduleData.part4c.questions?.map((item) => ({
+          question: item.text,
+          userAnswer: answers[item.id],
+          correctAnswer: item.answer,
+          isCorrect: answers[item.id] === item.answer,
+        })) || [];
 
       const part4bEvaluations = await Promise.all(
         moduleData.part4b.questions?.map(async (item) => {
           try {
             const response = await evaluateTranslation(
               item.text,
-              translations[item.id] || ''
+              translations[item.id] || "",
             );
             return {
               question: item.text,
-              userTranslation: translations[item.id] || '',
-              feedback: response.feedback
+              userTranslation: translations[item.id] || "",
+              feedback: response.feedback,
             };
           } catch (error) {
             return {
               question: item.text,
-              userTranslation: translations[item.id] || '',
-              feedback: `Error evaluating translation: ${error.message}`
+              userTranslation: translations[item.id] || "",
+              feedback: `Error evaluating translation: ${error.message}`,
             };
           }
-        }) || []
+        }) || [],
       );
 
       set({
         feedbackModal: {
           show: true,
           part4b: part4bEvaluations,
-          part4c: part4cResults
+          part4c: part4cResults,
         },
-        checkingAnswers: false
+        checkingAnswers: false,
       });
     } catch (error) {
       console.error("Error checking answers:", error);
@@ -86,11 +89,12 @@ export const useModuleStore = create((set, get) => ({
     }
   },
 
-  closeFeedbackModal: () => set({
-    feedbackModal: {
-      show: false,
-      part4b: [],
-      part4c: []
-    }
-  })
+  closeFeedbackModal: () =>
+    set({
+      feedbackModal: {
+        show: false,
+        part4b: [],
+        part4c: [],
+      },
+    }),
 }));

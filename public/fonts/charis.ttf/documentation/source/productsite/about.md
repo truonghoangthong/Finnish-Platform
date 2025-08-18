@@ -1,7 +1,6 @@
-
 ## About this project
 
-This project is intended to provide a free and open font family for all current languages and writing systems that use Latin and Cyrillic scripts. It supports almost the complete range of Unicode characters for these scripts, including a comprehensive range of diacritics and a large set of symbols useful for linguistics and literacy work. Smart font routines automatically adjust the position of diacritics to support and optimize arbitrary base+diacritic combinations. 
+This project is intended to provide a free and open font family for all current languages and writing systems that use Latin and Cyrillic scripts. It supports almost the complete range of Unicode characters for these scripts, including a comprehensive range of diacritics and a large set of symbols useful for linguistics and literacy work. Smart font routines automatically adjust the position of diacritics to support and optimize arbitrary base+diacritic combinations.
 
 For more information on the visual characteristics of the font family see [Design](design).
 
@@ -35,15 +34,15 @@ Our font announcements are also available through X (formerly Twitter) [@silfont
 
 ## Supporting the project
 
-These fonts are provided at no cost; however, they are expensive to produce and maintain. Please consider donating to SIL’s font development efforts to support future development. Go to [SIL’s Give Direct page](https://give.sil.org/give/485238). **Thank you!** 
+These fonts are provided at no cost; however, they are expensive to produce and maintain. Please consider donating to SIL’s font development efforts to support future development. Go to [SIL’s Give Direct page](https://give.sil.org/give/485238). **Thank you!**
 
 ## About SIL Global
 
-[SIL Global](https://www.sil.org/) is a global, faith-based nonprofit that works with local communities around the world to develop language solutions that expand possibilities for a better life. 
+[SIL Global](https://www.sil.org/) is a global, faith-based nonprofit that works with local communities around the world to develop language solutions that expand possibilities for a better life.
 
 We are involved in approximately 1,350 active language projects in 104 countries. These projects impact more than 1.1 billion people within 1,600 local communities. SIL’s work brings together more than 4,300 staff from 89 countries who work alongside thousands more local partners and community volunteers worldwide. Our services are available without regard to religious belief, political ideology, gender, race or ethnic background.
 
-Our Vision: We long to see people flourishing in community using the languages they value most. 
+Our Vision: We long to see people flourishing in community using the languages they value most.
 
 Our Mission: Inspired by God’s love, we advocate, build capacity, and work with local communities to apply language expertise that advances meaningful development, education, and engagement with Scripture.
 

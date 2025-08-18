@@ -28,7 +28,7 @@ const QuestionBox = ({ data, allBoxes, index, onAnswer, isAnswered }) => {
       data.correctAudioBase64,
       data.incorrectAudioBase64,
       data.correctScript,
-      data.incorrectScript
+      data.incorrectScript,
     );
   };
 
@@ -42,8 +42,7 @@ const QuestionBox = ({ data, allBoxes, index, onAnswer, isAnswered }) => {
         const width = clamp(Number(box.width), 0, 100);
         const height = clamp(Number(box.height), 0, 100 - y);
 
-        const shouldShow =
-          hoveredIndex === i || (isSelected && isAnswered);
+        const shouldShow = hoveredIndex === i || (isSelected && isAnswered);
 
         return (
           <div
@@ -63,11 +62,7 @@ const QuestionBox = ({ data, allBoxes, index, onAnswer, isAnswered }) => {
           >
             <div
               className={`star-marker ${shouldShow ? "visible" : ""} ${
-                isSelected
-                  ? isCorrect
-                    ? "correct"
-                    : "incorrect"
-                  : ""
+                isSelected ? (isCorrect ? "correct" : "incorrect") : ""
               }`}
               style={{
                 position: "absolute",

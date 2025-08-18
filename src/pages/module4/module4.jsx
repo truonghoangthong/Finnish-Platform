@@ -5,17 +5,74 @@ import "./module4.css";
 import "../../components/loader/loader.css";
 import Mascot from "../../components/mascot/Mascot";
 import Menu from "../../components/menu/menu";
-import LessonLayout from "../../components/layouts/LessonLayout";
+import Title from "../../components/title/Title";
+
+const API = "https://finnish-platform-thong-truongs-projects.vercel.app/api";
+
+const parseFeedback = (feedback) => {
+  try {
+    const clean = feedback
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+    return JSON.parse(clean);
+  } catch {
+    return {
+      grammar_feedback: feedback,
+      vocabulary_feedback: "",
+      overall_feedback: "",
+      encouragement: "",
+    };
+  }
+};
+
+const extractQuestions = (data, part, count, hasAnswer = false) =>
+  Array.from({ length: count }, (_, i) => {
+    const q = data?.result?.[part]?.[`question${i + 1}`];
+    return q
+      ? {
+          id: `${part}-${i + 1}`,
+          text: q.script,
+          audio: q.audioBase64,
+          ...(hasAnswer ? { answer: q.answer } : {}),
+        }
+      : null;
+  }).filter(Boolean);
+
+const toggleAudio = (
+  part,
+  index,
+  questions,
+  activeAudio,
+  setActiveAudio,
+  currentAudio,
+  setCurrentAudio,
+) => {
+  if (
+    activeAudio?.part === part &&
+    activeAudio?.index === index &&
+    currentAudio
+  ) {
+    currentAudio.pause();
+    setCurrentAudio(null);
+    setActiveAudio(null);
+    return;
+  }
+  const base64 = questions[index]?.audio;
+  if (base64) {
+    const audio = new Audio(`data:audio/mp3;base64,${base64}`);
+    setCurrentAudio(audio);
+    setActiveAudio({ part, index });
+    audio.play();
+  }
+};
 
 const Module4 = () => {
   const location = useLocation();
   const [moduleData, setModuleData] = useState({
-    part4a: {
-      questions: [],
-      imgLink: ""
-    },
-    part4b: [],
-    part4c: []
+    part4a: {},
+    part4b: {},
+    part4c: {},
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,90 +80,51 @@ const Module4 = () => {
   const [answers, setAnswers] = useState({});
   const [currentAudio, setCurrentAudio] = useState(null);
   const [activeAudio, setActiveAudio] = useState(null);
-  const [current4aIndex, setCurrent4aIndex] = useState(0);
-  const [isPlayingSequence, setIsPlayingSequence] = useState(false);
   const [showFinnishInstruction, setShowFinnishInstruction] = useState(false);
   const [checkingAnswers, setCheckingAnswers] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState({
     show: false,
     part4b: [],
-    part4c: []
+    part4c: [],
   });
-
-  const parseFeedback = (feedback) => {
-    try {
-      const cleanFeedback = feedback.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleanFeedback);
-      return parsed;
-    } catch (e) {
-      return {
-        grammar_feedback: feedback,
-        vocabulary_feedback: '',
-        overall_feedback: '',
-        encouragement: ''
-      };
-    }
-  };
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const pathParts = location.pathname.split('/');
-        const level = pathParts[pathParts.indexOf('course') + 1] || 'a1';
-        const moduleName = location.pathname.includes('lesson-2') ? 'another_module' : 'the_break_room';
-        const moduleNumber = 4;
-        
-        const [part4aRes, part4bRes, part4cRes] = await Promise.all([
-          axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4a`),
-          axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4b`),
-          axios.get(`http://localhost:3000/api/studying/${level.toUpperCase()}/${moduleName}/module${moduleNumber}/part4c`)
+        const pathParts = location.pathname.split("/");
+        const level = pathParts[pathParts.indexOf("course") + 1] || "a1";
+        const moduleName = location.pathname.includes("lesson-2")
+          ? "another_module"
+          : "the_break_room";
+
+        const [a, b, c] = await Promise.all([
+          axios.get(
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4a`,
+          ),
+          axios.get(
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4b`,
+          ),
+          axios.get(
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4c`,
+          ),
         ]);
-
-        const part4aQuestions = [];
-        for (let i = 1; i <= 6; i++) {
-          const question = part4aRes.data.result.part4a[`question${i}`];
-          if (question) {
-            part4aQuestions.push({
-              id: `4a-${i}`,
-              text: question.script,
-              audio: question.audioBase64
-            });
-          }
-        }
-
-        const part4bQuestions = [];
-        for (let i = 1; i <= 3; i++) {
-          const question = part4bRes.data.result.part4b[`question${i}`];
-          if (question) {
-            part4bQuestions.push({
-              id: `4b-${i}`,
-              text: question.script,
-              audio: question.audioBase64
-            });
-          }
-        }
-
-        const part4cQuestions = [];
-        for (let i = 1; i <= 2; i++) {
-          const question = part4cRes.data.result.part4c[`question${i}`];
-          if (question) {
-            part4cQuestions.push({
-              id: `4c-${i}`,
-              text: question.script,
-              audio: question.audioBase64,
-              answer: question.answer
-            });
-          }
-        }
 
         setModuleData({
           part4a: {
-            questions: part4aQuestions,
-            imgLink: part4aRes.data.result.part4a.imageLink || ""
+            title: a.data.result.part4a.title,
+            imgLink: a.data.result.part4a.imageLink,
+            description: a.data.result.part4a.description,
+            questions: extractQuestions(a.data, "part4a", 6),
           },
-          part4b: part4bQuestions,
-          part4c: part4cQuestions
+          part4b: {
+            title: b.data.result.part4b.title,
+            questions: extractQuestions(b.data, "part4b", 3),
+          },
+          part4c: {
+            title: c.data.result.part4c.title,
+            questions: extractQuestions(c.data, "part4c", 5, true),
+          },
         });
 
         setLoading(false);
@@ -115,175 +133,69 @@ const Module4 = () => {
         setLoading(false);
       }
     };
-
     loadData();
   }, [location.pathname]);
 
   useEffect(() => {
     if (showFinnishInstruction) {
-      const timer = setTimeout(() => {
-        setShowFinnishInstruction(false);
-      }, 15000);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => setShowFinnishInstruction(false), 15000);
+      return () => clearTimeout(t);
     }
   }, [showFinnishInstruction]);
 
-  const playAudio = (audioBase64) => {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.onended = null;
-      setIsPlayingSequence(false);
-    }
-    const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
-    setCurrentAudio(audio);
-    audio.play();
-    return audio;
-  };
-
-  const playNext4aAudio = (index) => {
-    if (index >= moduleData.part4a.questions.length) {
-      setIsPlayingSequence(false);
-      return;
-    }
-    
-    const audioToPlay = moduleData.part4a.questions[index]?.audio;
-    if (audioToPlay) {
-      setActiveAudio({ part: '4a', index });
-      setCurrent4aIndex(index);
-      
-      const audio = new Audio(`data:audio/mp3;base64,${audioToPlay}`);
-      audio.play();
-      
-      audio.onended = () => {
-        playNext4aAudio(index + 1);
-      };
-      
-      setCurrentAudio(audio);
-    }
-  };
-
-  const playPartAudio = (part, index = null) => {
-    if (activeAudio?.part === part && activeAudio?.index === index && currentAudio) {
-      currentAudio.pause();
-      setCurrentAudio(null);
-      setActiveAudio(null);
-      setIsPlayingSequence(false);
-      return;
-    }
-
-    let audioToPlay;
-    
-    switch (part) {
-      case '4a':
-        if (index === null) {
-          setIsPlayingSequence(true);
-          setCurrent4aIndex(0);
-          playNext4aAudio(0);
-          return;
-        }
-        audioToPlay = moduleData.part4a.questions[index]?.audio;
-        setActiveAudio({ part: '4a', index });
-        setIsPlayingSequence(false);
-        break;
-      case '4b':
-        audioToPlay = moduleData.part4b[index]?.audio;
-        setActiveAudio({ part: '4b', index });
-        setIsPlayingSequence(false);
-        break;
-      case '4c':
-        audioToPlay = moduleData.part4c[index]?.audio;
-        setActiveAudio({ part: '4c', index });
-        setIsPlayingSequence(false);
-        break;
-      default:
-        return;
-    }
-    
-    if (audioToPlay) {
-      playAudio(audioToPlay);
-    }
-  };
-
-  const handleTranslationChange = (id, value) => {
-    setTranslations(prev => ({
-      ...prev,
-      [id]: value
-    }));
-  };
-
-  const handleAnswerSelect = (id, isTrue) => {
-    setAnswers(prev => ({
-      ...prev,
-      [id]: isTrue
-    }));
-  };
-
-  const toggleFinnishInstruction = () => {
-    setShowFinnishInstruction(!showFinnishInstruction);
-  };
+  const handleTranslationChange = (id, v) =>
+    setTranslations((p) => ({ ...p, [id]: v }));
+  const handleAnswerSelect = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
 
   const checkAnswers = async () => {
     try {
       setCheckingAnswers(true);
-      
-      const part4cResults = moduleData.part4c.map(item => {
-        const userAnswer = answers[item.id];
-        const correctAnswer = item.answer;
-        return {
-          question: item.text,
-          userAnswer,
-          correctAnswer,
-          isCorrect: userAnswer === correctAnswer
-        };
-      });
+      const part4cResults = moduleData.part4c.questions.map((q) => ({
+        question: q.text,
+        userAnswer: answers[q.id],
+        correctAnswer: q.answer,
+        isCorrect: answers[q.id] === q.answer,
+      }));
 
-      const translationEvaluations = await Promise.all(
-        moduleData.part4b.map(async (item) => {
+      const part4bResults = await Promise.all(
+        moduleData.part4b.questions.map(async (q) => {
           try {
-            const response = await axios.post('http://localhost:3000/api/evaluate', {
-              finnishSentence: item.text,
-              userTranslation: translations[item.id] || ''
+            const res = await axios.post(`${API}/evaluate`, {
+              finnishSentence: q.text,
+              userTranslation: translations[q.id] || "",
             });
             return {
-              question: item.text,
-              userTranslation: translations[item.id] || '',
-              feedback: response.data.feedback
+              question: q.text,
+              userTranslation: translations[q.id] || "",
+              feedback: res.data.feedback,
             };
-          } catch (error) {
+          } catch (e) {
             return {
-              question: item.text,
-              userTranslation: translations[item.id] || '',
-              feedback: `Error evaluating translation: ${error.message}`
+              question: q.text,
+              userTranslation: translations[q.id] || "",
+              feedback: `Error: ${e.message}`,
             };
           }
-        })
+        }),
       );
 
       setFeedbackModal({
         show: true,
-        part4b: translationEvaluations,
-        part4c: part4cResults
+        part4b: part4bResults,
+        part4c: part4cResults,
       });
-      
-    } catch (error) {
-      console.error("Error checking answers:", error);
-      alert("Error checking answers. Please try again.");
     } finally {
       setCheckingAnswers(false);
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="loader-container">
         <div className="loader"></div>
       </div>
     );
-  }
-
-  if (error) {
-    return <div className="module4-error">{error}</div>;
-  }
+  if (error) return <div className="module4-error">{error}</div>;
 
   return (
     <div className="module4-wrapper">
@@ -293,15 +205,15 @@ const Module4 = () => {
             src={moduleData.part4a.imgLink}
             alt="Module 4 Listening"
             className="module4-fixed-image"
-            onError={(e) => {
-              e.target.src = '/path-to-default-image/default-image.jpg';
-            }}
+            onError={(e) =>
+              (e.target.src = "/path-to-default-image/default-image.jpg")
+            }
           />
         )}
         <div className="module4-mascot-container">
-          <div 
+          <div
             className="module4-mascot"
-            onClick={toggleFinnishInstruction}
+            onClick={() => setShowFinnishInstruction(!showFinnishInstruction)}
           >
             <Mascot />
           </div>
@@ -314,59 +226,70 @@ const Module4 = () => {
           )}
         </div>
       </div>
+
       <div className="module4-content-section">
-        <Menu 
-          lessonNumber={1}
-        />
+        <Menu lessonNumber={1} />
         <div className="module4-scroll-container">
-          <h2 className="module4-section-title">Tehtävä 4a. Tekstin ymmärtäminen.</h2>
-          
+          <Title
+            script={moduleData.part4a.title?.script}
+            audioBase64={moduleData.part4a.title?.audioBase64}
+          />
+          {moduleData.part4a.description?.script && (
+            <p className="module4-description">
+              {moduleData.part4a.description.script}
+            </p>
+          )}
           <div className="module4-audio-list">
-            {moduleData.part4a.questions.map((item, index) => (
-              <div 
-                key={item.id} 
-                className={`module4-audio-item ${activeAudio?.part === '4a' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
-                onClick={() => {
-                  if (activeAudio?.part === '4a' && activeAudio?.index === index && currentAudio) {
-                    currentAudio.pause();
-                    setCurrentAudio(null);
-                    setActiveAudio(null);
-                    setIsPlayingSequence(false);
-                  } else {
-                    playPartAudio('4a', index);
-                    setActiveAudio({ part: '4a', index });
-                  }
-                }}
+            {moduleData.part4a.questions?.map((q, i) => (
+              <div
+                key={q.id}
+                className={`module4-audio-item ${activeAudio?.part === "4a" && activeAudio?.index === i ? "module4-active-audio" : ""}`}
+                onClick={() =>
+                  toggleAudio(
+                    "4a",
+                    i,
+                    moduleData.part4a.questions,
+                    activeAudio,
+                    setActiveAudio,
+                    currentAudio,
+                    setCurrentAudio,
+                  )
+                }
               >
-                <span>{item.text}</span>
+                <span>{q.text}</span>
               </div>
             ))}
           </div>
 
-          <h2 className="module4-section-title">Tehtävä 4b. Lue teksti uudelleen.</h2>
+          <Title
+            script={moduleData.part4b.title?.script}
+            audioBase64={moduleData.part4b.title?.audioBase64}
+          />
           <p>Kirjoita jokaisen lauseen käännös alla olevaan kenttään:</p>
-          
           <div className="module4-translation-exercise">
-            {moduleData.part4b.map((item, index) => (
-              <div 
-                key={item.id} 
-                className={`module4-translation-item ${activeAudio?.part === '4b' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
-                onClick={() => {
-                  if (activeAudio?.part === '4b' && activeAudio?.index === index && currentAudio) {
-                    currentAudio.pause();
-                    setCurrentAudio(null);
-                    setActiveAudio(null);
-                  } else {
-                    playPartAudio('4b', index);
-                    setActiveAudio({ part: '4b', index });
-                  }
-                }}
+            {moduleData.part4b.questions?.map((q, i) => (
+              <div
+                key={q.id}
+                className={`module4-translation-item ${activeAudio?.part === "4b" && activeAudio?.index === i ? "module4-active-audio" : ""}`}
+                onClick={() =>
+                  toggleAudio(
+                    "4b",
+                    i,
+                    moduleData.part4b.questions,
+                    activeAudio,
+                    setActiveAudio,
+                    currentAudio,
+                    setCurrentAudio,
+                  )
+                }
               >
-                <p className="module4-clickable-text">{item.text}</p>
+                <p className="module4-clickable-text">{q.text}</p>
                 <input
                   type="text"
-                  value={translations[item.id] || ''}
-                  onChange={(e) => handleTranslationChange(item.id, e.target.value)}
+                  value={translations[q.id] || ""}
+                  onChange={(e) =>
+                    handleTranslationChange(q.id, e.target.value)
+                  }
                   placeholder="Kirjoita käännös tähän..."
                   className="module4-translation-input"
                   onClick={(e) => e.stopPropagation()}
@@ -375,36 +298,42 @@ const Module4 = () => {
             ))}
           </div>
 
-          <h2 className="module4-section-title">Tehtävä 4c. Tekstin ymmärtäminen.</h2>
+          <Title
+            script={moduleData.part4c.title?.script}
+            audioBase64={moduleData.part4c.title?.audioBase64}
+          />
           <p>Valitse onko väite oikein vai väärin:</p>
-          
           <div className="module4-quiz-section">
-            {moduleData.part4c.map((item, index) => (
-              <div 
-                key={item.id} 
-                className={`module4-question-item ${activeAudio?.part === '4c' && activeAudio?.index === index ? 'module4-active-audio' : ''}`}
-                onClick={() => {
-                  if (activeAudio?.part === '4c' && activeAudio?.index === index && currentAudio) {
-                    currentAudio.pause();
-                    setCurrentAudio(null);
-                    setActiveAudio(null);
-                  } else {
-                    playPartAudio('4c', index);
-                    setActiveAudio({ part: '4c', index });
-                  }
-                }}
+            {moduleData.part4c.questions?.map((q, i) => (
+              <div
+                key={q.id}
+                className={`module4-question-item ${activeAudio?.part === "4c" && activeAudio?.index === i ? "module4-active-audio" : ""}`}
+                onClick={() =>
+                  toggleAudio(
+                    "4c",
+                    i,
+                    moduleData.part4c.questions,
+                    activeAudio,
+                    setActiveAudio,
+                    currentAudio,
+                    setCurrentAudio,
+                  )
+                }
               >
-                <p className="module4-clickable-text">{item.text}</p>
-                <div className="module4-answer-buttons" onClick={(e) => e.stopPropagation()}>
+                <p className="module4-clickable-text">{q.text}</p>
+                <div
+                  className="module4-answer-buttons"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
-                    onClick={() => handleAnswerSelect(item.id, true)}
-                    className={`module4-answer-button module4-true-button ${answers[item.id] === true ? 'module4-selected-true' : ''}`}
+                    onClick={() => handleAnswerSelect(q.id, true)}
+                    className={`module4-answer-button module4-true-button ${answers[q.id] === true ? "module4-selected-true" : ""}`}
                   >
                     Oikein
                   </button>
                   <button
-                    onClick={() => handleAnswerSelect(item.id, false)}
-                    className={`module4-answer-button module4-false-button ${answers[item.id] === false ? 'module4-selected-false' : ''}`}
+                    onClick={() => handleAnswerSelect(q.id, false)}
+                    className={`module4-answer-button module4-false-button ${answers[q.id] === false ? "module4-selected-false" : ""}`}
                   >
                     Väärin
                   </button>
@@ -413,15 +342,14 @@ const Module4 = () => {
             ))}
           </div>
 
-          <button 
+          <button
             className="module4-check-button"
             onClick={checkAnswers}
             disabled={checkingAnswers}
           >
             {checkingAnswers ? (
               <>
-                <span className="module4-spinner"></span>
-                Tarkistetaan...
+                <span className="module4-spinner"></span> Tarkistetaan...
               </>
             ) : (
               "Tarkista vastaukset"
@@ -434,56 +362,75 @@ const Module4 = () => {
         <div className="module4-feedback-modal">
           <div className="module4-feedback-content">
             <h2>Vastauksesi tulokset</h2>
-            
+
             <div className="module4-feedback-section">
               <h3>Task 4b. Translations</h3>
-              {feedbackModal.part4b.map((item, index) => {
-                const parsedFeedback = parseFeedback(item.feedback);
+              {feedbackModal.part4b.map((q, i) => {
+                const fb = parseFeedback(q.feedback);
                 return (
-                  <div key={`fb-4b-${index}`} className="module4-feedback-item">
-                    <p><strong>Lause:</strong> {item.question}</p>
-                    <p><strong>Sinun käännöksesi:</strong> {item.userTranslation || '(ei vastausta)'}</p>
-                    <div className="module4-feedback-text">
-                      {parsedFeedback.grammar_feedback && (
-                        <p><strong>Grammar Feedback:</strong> {parsedFeedback.grammar_feedback}</p>
-                      )}
-                      {parsedFeedback.vocabulary_feedback && (
-                        <p><strong>Vocabulary Feedback:</strong> {parsedFeedback.vocabulary_feedback}</p>
-                      )}
-                      {parsedFeedback.overall_feedback && (
-                        <p><strong>Overall Feedback:</strong> {parsedFeedback.overall_feedback}</p>
-                      )}
-                      {parsedFeedback.encouragement && (
-                        <p className="module4-encouragement">{parsedFeedback.encouragement}</p>
-                      )}
-                    </div>
+                  <div key={`fb-4b-${i}`} className="module4-feedback-item">
+                    <p>
+                      <strong>Lause:</strong> {q.question}
+                    </p>
+                    <p>
+                      <strong>Sinun käännöksesi:</strong>{" "}
+                      {q.userTranslation || "(ei vastausta)"}
+                    </p>
+                    {fb.grammar_feedback && (
+                      <p>
+                        <strong>Grammar:</strong> {fb.grammar_feedback}
+                      </p>
+                    )}
+                    {fb.vocabulary_feedback && (
+                      <p>
+                        <strong>Vocabulary:</strong> {fb.vocabulary_feedback}
+                      </p>
+                    )}
+                    {fb.overall_feedback && (
+                      <p>
+                        <strong>Overall:</strong> {fb.overall_feedback}
+                      </p>
+                    )}
+                    {fb.encouragement && (
+                      <p className="module4-encouragement">
+                        {fb.encouragement}
+                      </p>
+                    )}
                   </div>
                 );
               })}
             </div>
-            
+
             <div className="module4-feedback-section">
               <h3>Task 4c. True/False</h3>
               <p className="module4-score">
-                Your score: {feedbackModal.part4c.filter(r => r.isCorrect).length}/{feedbackModal.part4c.length} correct
+                Your score:{" "}
+                {feedbackModal.part4c.filter((r) => r.isCorrect).length}/
+                {feedbackModal.part4c.length}
               </p>
-              {feedbackModal.part4c.map((item, index) => (
-                <div 
-                  key={`fb-4c-${index}`} 
-                  className={`module4-feedback-item ${item.isCorrect ? 'module4-correct' : 'module4-incorrect'}`}
+              {feedbackModal.part4c.map((q, i) => (
+                <div
+                  key={`fb-4c-${i}`}
+                  className={`module4-feedback-item ${q.isCorrect ? "module4-correct" : "module4-incorrect"}`}
                 >
-                  <p><strong>Question:</strong> {item.question}</p>
                   <p>
-                    <strong>Your answer:</strong> {item.userAnswer ? 'True' : 'False'} | 
-                    <strong> Correct answer:</strong> {item.correctAnswer ? 'True' : 'False'}
+                    <strong>Question:</strong> {q.question}
+                  </p>
+                  <p>
+                    <strong>Your answer:</strong>{" "}
+                    {q.userAnswer ? "True" : "False"} |{" "}
+                    <strong>Correct:</strong>{" "}
+                    {q.correctAnswer ? "True" : "False"}
                   </p>
                 </div>
               ))}
             </div>
-            
-            <button 
+
+            <button
               className="module4-close-feedback"
-              onClick={() => setFeedbackModal({ show: false, part4b: [], part4c: [] })}
+              onClick={() =>
+                setFeedbackModal({ show: false, part4b: [], part4c: [] })
+              }
             >
               Sulje
             </button>

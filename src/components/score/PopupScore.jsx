@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import './popup-score.css';
-import confetti from 'canvas-confetti';
+import React, { useEffect } from "react";
+import "./popup-score.css";
+import confetti from "canvas-confetti";
 
 const PopupScore = ({ score, total, onAnswersReviewed }) => {
   const getEmoji = () => {
-    if (score === total) return '🎯';
-    if (score >= total * 0.7) return '🎉';
-    if (score >= total * 0.4) return '👍';
-    return '💪';
+    if (score === total) return "🎯";
+    if (score >= total * 0.7) return "🎉";
+    if (score >= total * 0.4) return "👍";
+    return "💪";
   };
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const PopupScore = ({ score, total, onAnswersReviewed }) => {
         origin: { y: 0.6 },
       });
 
-      const sound = new Audio('/sounds/celebration.mp3');
+      const sound = new Audio("/sounds/celebration.mp3");
       sound.play();
     }
   }, []);
@@ -26,11 +26,13 @@ const PopupScore = ({ score, total, onAnswersReviewed }) => {
   return (
     <div className="popup-score-overlay">
       <div className="popup-score-box">
-        <h2>{getEmoji()} Pisteesi: {score} / {total}</h2>
+        <h2>
+          {getEmoji()} Pisteesi: {score} / {total}
+        </h2>
         <p>
           {score === total
-            ? 'Täydellistä työtä!'
-            : 'Katso oikeat vastaukset ja opi virheistäsi.'}
+            ? "Täydellistä työtä!"
+            : "Katso oikeat vastaukset ja opi virheistäsi."}
         </p>
 
         <div className="popup-score-actions">

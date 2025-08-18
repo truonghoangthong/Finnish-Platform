@@ -1,16 +1,30 @@
-// src/components/title/Title.jsx
-import React from "react";
-import AudioPlayer from "@/components/audioPlayer/AudioPlayer"; // hoặc ../ tùy cấu hình
-import "./title.css"; // ✅ import CSS riêng bạn vừa tạo
+import React, { useMemo } from "react";
+import AudioPlayer from "@/components/audioPlayer/AudioPlayer";
+import "./title.css";
 
-const Title = ({ audioBase64, taskLabel, script }) => {
+const Title = ({ audioBase64, script }) => {
+  const { taskLabel, description } = useMemo(() => {
+    if (!script) return { taskLabel: "", description: "" };
+
+    // Regex mới: match cả xuống dòng (\n)
+    const match = script.match(/^([^.]*)\.\s*([\s\S]*)$/);
+    if (match) {
+      return { taskLabel: match[1], description: match[2] };
+    }
+    return { taskLabel: script, description: "" };
+  }, [script]);
+
   return (
-    <div className="title-wrapper">
+    <div className="title-wrapper" role="group" aria-label="Task title">
       <div className="title-audio">
-        <AudioPlayer src={`data:audio/mp3;base64,${audioBase64}`} size="small" />
+        <AudioPlayer
+          src={`data:audio/mp3;base64,${audioBase64}`}
+          size="small"
+        />
       </div>
-      <span className="title-label">{taskLabel}</span>
-      <span className="title-description">{script}</span>
+
+      {taskLabel && <span className="title-label">{taskLabel}</span>}
+      {description && <span className="title-description">{description}</span>}
     </div>
   );
 };

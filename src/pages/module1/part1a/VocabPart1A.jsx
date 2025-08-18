@@ -1,18 +1,20 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import AnswerPopup from './AnswerPopup';
-import './vocab-part1a.css';
-import { updateProgress } from '../../../utils/api';
-import { calculateModule1Progress } from '../../../utils/calculateProgress';
-import confetti from 'canvas-confetti';
-import AudioPlayer from '../../../components/audioPlayer/AudioPlayer';
-import '../../../components/title/Title.css';
+import React, { useEffect, useState, useMemo } from "react";
+import AnswerPopup from "./AnswerPopup";
+import "./vocab-part1a.css";
+import { updateProgress } from "../../../utils/api";
+import { calculateModule1Progress } from "../../../utils/calculateProgress";
+import confetti from "canvas-confetti";
+import AudioPlayer from "../../../components/audioPlayer/audioPlayer";
+import Title from "../../../components/title/Title";
 
 const VocabPart1A = ({ data }) => {
   const { title, ...questionsRaw } = data;
   const allQuestions = Object.values(questionsRaw);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [remainingIndexes, setRemainingIndexes] = useState(allQuestions.map((_, idx) => idx));
+  const [remainingIndexes, setRemainingIndexes] = useState(
+    allQuestions.map((_, idx) => idx),
+  );
   const [audio, setAudio] = useState(null);
   const [titleAudio, setTitleAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,7 +36,9 @@ const VocabPart1A = ({ data }) => {
   const currentQuestion = allQuestions[remainingIndexes[currentIndex]];
 
   useEffect(() => {
-    const shuffled = allQuestions.map((_, idx) => idx).sort(() => Math.random() - 0.5);
+    const shuffled = allQuestions
+      .map((_, idx) => idx)
+      .sort(() => Math.random() - 0.5);
     setRemainingIndexes(shuffled);
     setCurrentIndex(0);
     setQuestionChangeKey(0);
@@ -45,10 +49,11 @@ const VocabPart1A = ({ data }) => {
     setShuffledImages(shuffled);
   }, [questionChangeKey]);
 
-  // ✅ ĐÃ CHỈNH – không autoplay câu đầu tiên
   useEffect(() => {
     if (!currentQuestion?.audioBase64) return;
-    const audioEl = new Audio(`data:audio/mp3;base64,${currentQuestion.audioBase64}`);
+    const audioEl = new Audio(
+      `data:audio/mp3;base64,${currentQuestion.audioBase64}`,
+    );
     setAudio(audioEl);
 
     const tryPlay = async () => {
@@ -100,7 +105,7 @@ const VocabPart1A = ({ data }) => {
 
     setAnswerStatus((prev) => ({
       ...prev,
-      [remainingIndexes[currentIndex]]: correct ? 'correct' : 'wrong',
+      [remainingIndexes[currentIndex]]: correct ? "correct" : "wrong",
     }));
   };
 
@@ -120,11 +125,13 @@ const VocabPart1A = ({ data }) => {
     setIsPlaying(false);
 
     setTimeout(() => {
-      const remaining = remainingIndexes.filter((idx) => !answeredCorrectly.includes(idx));
+      const remaining = remainingIndexes.filter(
+        (idx) => !answeredCorrectly.includes(idx),
+      );
 
       if (remaining.length === 0) {
         setIsDone(true);
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem("userId");
         const progress = calculateModule1Progress({
           part1aViewed: true,
           part1aCorrect: true,
@@ -134,9 +141,9 @@ const VocabPart1A = ({ data }) => {
 
         updateProgress({
           userId,
-          level: 'A1',
-          lesson: 'the_break_room',
-          module: 'module1',
+          level: "A1",
+          lesson: "the_break_room",
+          module: "module1",
           progress: progress.toString(),
         });
 
@@ -155,7 +162,7 @@ const VocabPart1A = ({ data }) => {
   useEffect(() => {
     if (isDone && answeredCorrectly.length === allQuestions.length) {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      const celebration = new Audio('/sounds/celebration.mp3');
+      const celebration = new Audio("/sounds/celebration.mp3");
       celebration.play();
       setShowFinalPopup(true);
     }
@@ -163,8 +170,8 @@ const VocabPart1A = ({ data }) => {
 
   const handleGoToPart1B = () => {
     setShowFinalPopup(false);
-    const bSection = document.getElementById('part1b');
-    if (bSection) bSection.scrollIntoView({ behavior: 'smooth' });
+    const bSection = document.getElementById("part1b");
+    if (bSection) bSection.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleResetPractice = () => {
@@ -187,14 +194,7 @@ const VocabPart1A = ({ data }) => {
         </div>
       )}
 
-      {/* ✅ Đã chỉnh sửa để sử dụng class giống component Title */}
-      <div className="title-wrapper">
-        <div className="title-audio">
-          <AudioPlayer src={`data:audio/mp3;base64,${title?.audioBase64}`} size="small" />
-        </div>
-        <span className="title-label">Tehtävä 1A</span>
-        <span className="title-description">{title?.script}</span>
-      </div>
+      <Title audioBase64={title?.audioBase64} script={title?.script} />
 
       <div className="question-tabs">
         {allQuestions.map((_, idx) => (
@@ -210,18 +210,21 @@ const VocabPart1A = ({ data }) => {
               }
             }}
             className={`tab 
-              ${remainingIndexes[currentIndex] === idx ? 'active' : ''} 
-              ${answerStatus[idx] === 'correct' ? 'correct' : ''} 
-              ${answerStatus[idx] === 'wrong' ? 'wrong' : ''}`}
-            style={{ cursor: isPracticeMode ? 'pointer' : 'default' }}
+              ${remainingIndexes[currentIndex] === idx ? "active" : ""} 
+              ${answerStatus[idx] === "correct" ? "correct" : ""} 
+              ${answerStatus[idx] === "wrong" ? "wrong" : ""}`}
+            style={{ cursor: isPracticeMode ? "pointer" : "default" }}
           >
-            {String(idx + 1).padStart(2, '0')}
+            {String(idx + 1).padStart(2, "0")}
           </div>
         ))}
       </div>
 
       <div className="question-audio">
-        <AudioPlayer src={`data:audio/mp3;base64,${currentQuestion?.audioBase64}`} size="medium" />
+        <AudioPlayer
+          src={`data:audio/mp3;base64,${currentQuestion?.audioBase64}`}
+          size="medium"
+        />
       </div>
 
       <div className="image-container">

@@ -1,10 +1,8 @@
-/* Menu Container */
 .menu-container {
   padding: 12px 8px;
   margin: 0 auto;
 }
 
-/* Header Container */
 .menu-header {
   display: flex;
   align-items: center;
@@ -17,11 +15,10 @@
 .menu-header-title {
   font-size: 20px;
   font-weight: 800;
-  color: #06ACFF;
+  color: #06acff;
   margin: 0;
 }
 
-/* Tabs Container */
 .menu-tabs {
   display: flex;
   justify-content: center;
@@ -49,7 +46,7 @@
 }
 
 .menu-active .menu-tab-number {
-  background: linear-gradient(to right, #06ACFF, #00C2E5);
+  background: linear-gradient(to right, #06acff, #00c2e5);
   color: white;
   border: none;
 }
@@ -57,25 +54,24 @@
 .menu-tab-number {
   width: 30px;
   height: 30px;
-  border: 2px solid #06ACFF;
+  border: 2px solid #06acff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: #06ACFF;
+  color: #06acff;
   margin-bottom: 2px;
   font-size: 12px;
 }
 
 .menu-tab-label {
   font-size: 11px;
-  color: #06ACFF;
+  color: #06acff;
   font-weight: 500;
   word-break: keep-all;
 }
 
-/* Title Section Container */
 .menu-title-section {
   margin: 0px auto;
   text-align: center;
@@ -96,12 +92,11 @@
   margin-bottom: 14px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .menu-main-title {
     font-size: 16px;
   }
-  
+
   .menu-sub-title {
     font-size: 13px;
   }

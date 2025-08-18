@@ -83,9 +83,10 @@ const CoursePage = () => {
     <div className="course-container">
       <h2 className="course-heading">LEVEL A1</h2>
       <p className="course-slogan">
-        Discover Finnish from day one – greet, introduce yourself, and fall in love with a new language!
+        Discover Finnish from day one – greet, introduce yourself, and fall in
+        love with a new language!
       </p>
-    
+
       <div className="lesson-tabs">
         {lessons.map((lesson) => (
           <button
@@ -98,20 +99,20 @@ const CoursePage = () => {
           </button>
         ))}
       </div>
-      
+
       <div className="lesson-preview" data-aos="fade-up">
         <img
           src={activeLesson.image}
           alt={activeLesson.fullTitle}
           className="lesson-image"
         />
-        
+
         <div className="lesson-card">
           <div className="lesson-header">
             <h3 className="lesson-title">Lesson {activeLesson.id}</h3>
             <div className="lesson-sub">{activeLesson.shortTitle}</div>
           </div>
-      
+
           <div className="progress-bar">
             <div
               className="progress-bar-inner"
@@ -119,12 +120,12 @@ const CoursePage = () => {
             ></div>
           </div>
           <p className="progress-text">{progressPercent}% completed</p>
-      
+
           <div className="skill-buttons">
             {["vocabulary", "listening", "writing", "reading"].map((skill) => {
               const isActive = activeSkill === skill;
               const isReady = readyToStartSkill === skill;
-            
+
               return (
                 <button
                   key={skill}
@@ -132,7 +133,9 @@ const CoursePage = () => {
                   onClick={() => handleSkillClick(skill)}
                 >
                   {skillIcons[skill]}{" "}
-                  {isActive && isReady ? "Start Now" : skill.charAt(0).toUpperCase() + skill.slice(1)}
+                  {isActive && isReady
+                    ? "Start Now"
+                    : skill.charAt(0).toUpperCase() + skill.slice(1)}
                 </button>
               );
             })}

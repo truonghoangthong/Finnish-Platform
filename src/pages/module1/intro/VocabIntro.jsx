@@ -76,7 +76,6 @@ const VocabIntro = () => {
   };
 
   const goToNext = () => {
-    // giữ nguyên route bạn đang dùng
     navigate("/course/a1/lesson-1/vocabulary/1a");
   };
 
@@ -96,22 +95,23 @@ const VocabIntro = () => {
         level="A1"
         lessonNumber={1}
         title="The Break Room"
-        showImage={false}              // không dùng ảnh mặc định của layout
+        showImage={false}
         imageSrc={lesson.imageLink}
       >
-        {/* Card trắng bao trọn ảnh + popup + transcript */}
         <div className="intro-card">
           <div className="lesson-image-wrapper">
             <img src={lesson.imageLink} className="lesson-image" alt="lesson" />
 
-            {/* giữ nguyên popup 3 nút & class cũ */}
             <div className="mascot-overlay-in-image">
               <div className="mascot-inner glow" onClick={handleMascotClick}>
                 <Mascot />
               </div>
 
               {isBubbleOpen && (
-                <div className="chat-bubble" onClick={(e) => e.stopPropagation()}>
+                <div
+                  className="chat-bubble"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button className="action-button" onClick={toggleAudio}>
                     {isPlaying ? (
                       <span className="audio-loading">
@@ -124,22 +124,44 @@ const VocabIntro = () => {
                         </div>
                       </span>
                     ) : (
-                      "🔊 Kuuntele uudelleen"
+                      <>
+                        <span className="icon" aria-hidden>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z" />
+                          </svg>
+                        </span>
+                        <span>Kuuntele</span>
+                      </>
                     )}
                   </button>
 
-                  <button className="action-button" onClick={handleToggleScript}>
+                  <button
+                    className="action-button"
+                    onClick={handleToggleScript}
+                  >
                     {showScript ? "📜 Piilota Teksti" : "📜 Näytä Teksti"}
                   </button>
 
-                  <button className="action-button" onClick={goToNext}>⏭️ Seuraava</button>
+                  <button className="action-button" onClick={goToNext}>
+                    ▶️ Aloita
+                  </button>
                 </div>
               )}
             </div>
           </div>
 
           {showScript && (
-            <section className="transcript" data-aos="fade-up" ref={transcriptRef}>
+            <section
+              className="transcript"
+              data-aos="fade-up"
+              ref={transcriptRef}
+            >
               <p>📜 {lesson.description}</p>
             </section>
           )}

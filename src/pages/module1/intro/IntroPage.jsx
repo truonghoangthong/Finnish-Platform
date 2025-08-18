@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchLessonIntro } from "@/utils/api";
 import Loader from "@/components/loader/loader";
 import VocabIntro from "./VocabIntro";
-import './vocab-intro.css';
+import "./vocab-intro.css";
 
 const IntroPage = () => {
   const [lesson, setLesson] = useState(null);
@@ -18,12 +18,12 @@ const IntroPage = () => {
   }, []);
 
   if (loading) {
-  return (
-    <div className="loader-wrapper">
-      <Loader />
-    </div>
-  );
-}
+    return (
+      <div className="loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
   if (!lesson) return null;
 
   return <VocabIntro lesson={lesson} />;
