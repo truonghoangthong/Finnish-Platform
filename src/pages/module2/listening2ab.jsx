@@ -17,12 +17,12 @@ const Listening2AB = () => {
       try {
         const [resA, resB, resLesson] = await Promise.all([
           fetch(
-            "http://localhost:3000/api/studying/A1/the_break_room/module2/part2a",
+            "https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/A1/the_break_room/module2/part2a",
           ),
           fetch(
-            "http://localhost:3000/api/studying/A1/the_break_room/module2/part2b",
+            "https://finnish-platform-thong-truongs-projects.vercel.app/api/studying/A1/the_break_room/module2/part2b",
           ),
-          fetch("http://localhost:3000/api/learning/A1"),
+          fetch("https://finnish-platform-thong-truongs-projects.vercel.app/api/learning/A1"),
         ]);
 
         const jsonA = await resA.json();
