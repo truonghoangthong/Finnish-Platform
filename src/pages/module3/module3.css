@@ -41,10 +41,17 @@
   margin-bottom: 10px;
   cursor: move;
   transition: all 0.2s ease;
-  min-height: 50px;
   display: flex;
   align-items: center;
+  justify-content: center;
   box-sizing: border-box;
+
+  /* responsive square */
+  width: 100%;
+  min-height: auto;
+  overflow: hidden;
+  text-align: center;
+  word-wrap: break-word;
 }
 
 .module3-card::before {

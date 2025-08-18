@@ -87,6 +87,38 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     [findCard, leftItems, rightItems],
   );
 
+  // ============= Equalize height giữa 2 cột =============
+  const equalizeRowHeights = useCallback(() => {
+    const section = document.querySelector(".module3-matching-section");
+    if (!section) return;
+
+    const leftCards = section.querySelectorAll(".module3-column.left .module3-card");
+    const rightCards = section.querySelectorAll(".module3-column.right .module3-card");
+
+    [...leftCards, ...rightCards].forEach((el) => (el.style.height = ""));
+
+    const len = Math.max(leftCards.length, rightCards.length);
+    for (let i = 0; i < len; i++) {
+      const lh = leftCards[i]?.getBoundingClientRect().height || 0;
+      const rh = rightCards[i]?.getBoundingClientRect().height || 0;
+      const h = Math.max(lh, rh);
+      if (leftCards[i]) leftCards[i].style.height = `${h}px`;
+      if (rightCards[i]) rightCards[i].style.height = `${h}px`;
+    }
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(equalizeRowHeights, 0);
+    return () => clearTimeout(t);
+  }, [leftItems, rightItems, showResults, equalizeRowHeights]);
+
+  useEffect(() => {
+    const onResize = () => equalizeRowHeights();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [equalizeRowHeights]);
+  // ======================================================
+
   if (loading) {
     return (
       <div className="loader-container">
