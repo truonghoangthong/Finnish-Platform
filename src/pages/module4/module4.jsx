@@ -100,13 +100,13 @@ const Module4 = () => {
 
         const [a, b, c] = await Promise.all([
           axios.get(
-            `/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4a`,
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4a`,
           ),
           axios.get(
-            `/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4b`,
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4b`,
           ),
           axios.get(
-            `/studying/${API}/${level.toUpperCase()}/${moduleName}/module4/part4c`,
+            `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4c`,
           ),
         ]);
 
