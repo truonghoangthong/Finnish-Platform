@@ -1,58 +1,26 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./module3.css";
 import "../../components/loader/loader.css";
-import Column from "./Column";
+import Loader from "../../components/loader/loader";
 
-const VerbMatchingGame = ({
-  questions,
-  verbs,
-  showResults,
-  results,
-  onStateChange,
-}) => {
-  const [leftItems, setLeftItems] = useState([]);
-  const [rightItems, setRightItems] = useState([]);
+const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange }) => {
   const [userInputs, setUserInputs] = useState({});
-  const [matches, setMatches] = useState([]);
   const [statusMap, setStatusMap] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const inputRefs = useRef([]);
+
   useEffect(() => {
-    if (questions.length > 0 && verbs.length > 0) {
-      setRightItems(
-        questions.map((q) => ({
-          id: `right-${q.pairId}`,
-          text: q.sentence,
-          pairId: q.pairId,
-          conjugatedVerb: q.conjugatedVerb,
-          audioBase64: q.audioBase64,
-        })),
-      );
-
-      setLeftItems(
-        verbs.map((v) => ({
-          id: `left-${v.id}`,
-          text: "",
-          pairId: v.id.replace("vocabulary", "question"),
-          meaning: v.meaning,
-          audioBase64: v.audioBase64,
-        })),
-      );
-
-      setLoading(false);
-    } else {
+    if (questions && questions.length > 0) {
       setLoading(false);
     }
-  }, [questions, verbs]);
+  }, [questions]);
 
-  // Update statusMap when showResults changes
   useEffect(() => {
     if (showResults && results) {
       const newStatusMap = {};
       Object.keys(results).forEach((pairId) => {
-        const isCorrect = results[pairId];
-        newStatusMap[`left-${pairId}`] = isCorrect ? "correct" : "incorrect";
-        newStatusMap[`right-${pairId}`] = isCorrect ? "correct" : "incorrect";
+        newStatusMap[pairId] = results[pairId] ? "correct" : "incorrect";
       });
       setStatusMap(newStatusMap);
     } else {
@@ -63,120 +31,96 @@ const VerbMatchingGame = ({
   useEffect(() => {
     onStateChange({
       userInputs,
-      matches,
-      leftItems,
-      rightItems,
-      questions,
-      verbs,
+      questions
     });
-  }, [
-    userInputs,
-    matches,
-    leftItems,
-    rightItems,
-    questions,
-    verbs,
-    onStateChange,
-  ]);
-
-  const playAudio = (audioBase64) => {
-    if (audioBase64) {
-      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
-      audio.play().catch((e) => console.error("Audio playback failed:", e));
-    }
-  };
-
-  const findCard = useCallback(
-    (id, type) => {
-      const items = type === "left" ? leftItems : rightItems;
-      const card = items.find((c) => c.id === id);
-      return { card, index: items.indexOf(card) };
-    },
-    [leftItems, rightItems],
-  );
-
-  const moveCard = useCallback(() => {
-    return; // Vô hiệu hóa chức năng di chuyển
-  }, []);
+  }, [userInputs, questions, onStateChange]);
 
   const handleInputChange = (pairId, value) => {
     setUserInputs((prev) => ({
       ...prev,
-      [pairId]: value,
+      [pairId]: value
     }));
     setStatusMap((prev) => {
       const newStatus = { ...prev };
-      delete newStatus[`left-${pairId}`];
-      delete newStatus[`right-${pairId}`];
+      delete newStatus[pairId];
       return newStatus;
     });
   };
 
-  const handleMatch = (questionId, verbId) => {
-    setMatches((prev) => {
-      const existing = prev.filter((m) => m.questionId !== questionId);
-      return [...existing, { questionId, verbId }];
-    });
-    setStatusMap((prev) => {
-      const newStatus = { ...prev };
-      delete newStatus[`right-${verbId}`];
-      return newStatus;
-    });
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const nextInput = inputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+  };
+
+  const playAudio = (audioBase64) => {
+    if (audioBase64) {
+      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+      audio.play().catch((e) => console.error("Audio play failed:", e));
+    }
   };
 
   if (loading) {
     return (
-      <div className="loader-container">
-        <div className="loader"></div>
-      </div>
+      <Loader />
     );
   }
 
-  if (questions.length === 0 || verbs.length === 0) {
-    return <div>No verb matching data available</div>;
-  }
-
   return (
-    <div>
-      <div className="module3-verbs-list">
-        <div className="module3-verbs-container">
-          {verbs.map((verb) => (
+    <div className="module3-wrapper">
+      <div className="module3-matching-section">
+        <div className="module3-input-column">
+          {questions.map((q, index) => (
             <div
-              key={verb.id}
-              className="module3-verb-tag"
-              onClick={() => playAudio(verb.audioBase64)}
-              style={{ cursor: verb.audioBase64 ? "pointer" : "default" }}
+              key={`left-${q.pairId}`}
+              className={`module3-input-card ${statusMap[q.pairId] || ""}`}
             >
-              {verb.text} - {verb.meaning}
+              <input
+                ref={(el) => (inputRefs.current[index] = el)}
+                type="text"
+                value={userInputs[q.pairId] || ""}
+                onChange={(e) => handleInputChange(q.pairId, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                placeholder="Type verb..."
+                className="module3-verb-input"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="module3-matching-column">
+          {questions.map((q) => (
+            <div
+              key={`right-${q.pairId}`}
+              className="module3-matching-card"
+              onClick={() => playAudio(q.audioBase64)}
+            >
+              {q.sentence}
             </div>
           ))}
         </div>
       </div>
 
-      <div className="module3-matching-section">
-        <Column
-          items={leftItems}
-          type="left"
-          findCard={findCard}
-          moveCard={moveCard}
-          statusMap={statusMap}
-          userInputs={userInputs}
-          onInputChange={handleInputChange}
-          onMatch={handleMatch}
-          disableDrag={true}
-        />
-        <Column
-          items={rightItems}
-          type="right"
-          findCard={findCard}
-          moveCard={moveCard}
-          statusMap={statusMap}
-          onMatch={handleMatch}
-          disableDrag={true}
-        />
+      <div className="module3-verbs-list">
+        <div className="module3-verbs-container">
+          {verbs.map((v) => (
+            <div
+              key={v.id}
+              className="module3-verb-tag"
+              onClick={() => playAudio(v.audioBase64)}
+              style={{ cursor: v.audioBase64 ? "pointer" : "default" }}
+            >
+              {v.script} – {v.meaning}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default VerbMatchingGame;
+export default VerbMatching3C;

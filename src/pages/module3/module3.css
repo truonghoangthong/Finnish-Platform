@@ -276,3 +276,59 @@
 .module3-verb-input {
   cursor: text !important;
 }
+.module3-matching-columns {
+  display: flex;
+  gap: 20px;
+}
+
+.module3-input-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.module3-input-card {
+  background: #fff;
+  border: 2px dashed #bbb;   
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: 0.2s;
+}
+
+.module3-verb-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.module3-input-card.correct {
+  border: 2px dashed #4CAF50;
+}
+
+.module3-input-card.incorrect {
+  border: 2px dashed #F44336;
+}
+
+.module3-matching-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.module3-matching-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: 0.2s;
+  margin-bottom: 12px;
+}
+
+.module3-matching-card:hover {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
