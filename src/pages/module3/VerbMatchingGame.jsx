@@ -3,7 +3,7 @@ import "./module3.css";
 import "../../components/loader/loader.css";
 import Loader from "../../components/loader/loader";
 
-const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange }) => {
+const VerbMatchingGame = ({ questions, verbs, showResults, results, onStateChange }) => {
   const [userInputs, setUserInputs] = useState({});
   const [statusMap, setStatusMap] = useState({});
   const [loading, setLoading] = useState(true);
@@ -65,9 +65,7 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
   };
 
   if (loading) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -78,15 +76,25 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
             <div
               key={v.id}
               className="module3-verb-tag"
-              onClick={() => playAudio(v.audioBase64)}
-              style={{ cursor: v.audioBase64 ? "pointer" : "default" }}
+              onClick={() => {
+                if (!showResults || statusMap[v.id] === "correct") {
+                  playAudio(v.audioBase64);
+                }
+              }}
+              style={{
+                cursor:
+                  (!showResults || statusMap[v.id] === "correct") && v.audioBase64
+                    ? "pointer"
+                    : "default",
+              }}
             >
               {v.script} – {v.meaning}
             </div>
           ))}
         </div>
       </div>
-      
+
+      {/* MATCHING SECTION */}
       <div className="module3-matching-section part3c">
         <div className="module3-input-column">
           {questions.map((q, index) => (
@@ -112,7 +120,17 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
             <div
               key={`right-${q.pairId}`}
               className="module3-matching-card"
-              onClick={() => playAudio(q.audioBase64)}
+              onClick={() => {
+                if (!showResults || statusMap[q.pairId] === "correct") {
+                  playAudio(q.audioBase64);
+                }
+              }}
+              style={{
+                cursor:
+                  (!showResults || statusMap[q.pairId] === "correct") && q.audioBase64
+                    ? "pointer"
+                    : "default",
+              }}
             >
               {q.sentence}
             </div>
@@ -123,4 +141,4 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
   );
 };
 
-export default VerbMatching3C;
+export default VerbMatchingGame;
