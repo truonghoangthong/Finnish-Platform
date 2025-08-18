@@ -1,6 +1,6 @@
 .course-container {
-  --main-color: #06ACFF;
-  --accent-color: #00C2E5;
+  --main-color: #06acff;
+  --accent-color: #00c2e5;
   --text-dark: #222;
   --text-light: #fff;
   --bg-light: rgba(255, 255, 255, 0.92);
@@ -156,7 +156,7 @@
   .lesson-preview {
     flex-direction: column;
   }
-  
+
   .lesson-image {
     max-width: 100%;
     margin-bottom: 20px;

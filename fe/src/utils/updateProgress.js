@@ -9,7 +9,13 @@ import api from "./api";
  * @param {string} module - Ví dụ: "module2"
  * @param {number|string} progress - Tiến độ: 25, 50, 75, 100
  */
-export const updateProgress = async (userId, level, lesson, module, progress) => {
+export const updateProgress = async (
+  userId,
+  level,
+  lesson,
+  module,
+  progress,
+) => {
   try {
     const response = await api.post("/api/progress", {
       userId,

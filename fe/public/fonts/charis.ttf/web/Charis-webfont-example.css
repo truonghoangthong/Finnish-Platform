@@ -25,9 +25,9 @@ Open Font License, Version 1.1 (https://openfontlicense.org).
 }
 /* use Charis - Bold in .woff2 format */
 @font-face {
-	font-family: CharisW;
+  font-family: CharisW;
   font-weight: 700;
-	src: url(Charis-Bold.woff2);
+  src: url(Charis-Bold.woff2);
 }
 /* use Charis - Italic in .woff2 format */
 @font-face {
@@ -52,18 +52,18 @@ Open Font License, Version 1.1 (https://openfontlicense.org).
 }
 /* use Charis - BoldItalic in .woff2 format */
 @font-face {
-	font-family: CharisW;
+  font-family: CharisW;
   font-weight: 700;
   font-style: italic;
-	src: url(Charis-BoldItalic.woff2);
+  src: url(Charis-BoldItalic.woff2);
 }
 
 /* set body to use Charis */
 body {
   font-family: CharisW, sans-serif;
-    /* fall back to sans serif so that it's really obvious if the fonts don't load */
+  /* fall back to sans serif so that it's really obvious if the fonts don't load */
 }
 /* remove bold styling from heading */
 h1 {
-  font-weight: normal;	
+  font-weight: normal;
 }

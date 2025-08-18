@@ -1,6 +1,15 @@
 import React from "react";
 import "./AnswerPopup2.css";
 
+/**
+ * Giữ nguyên props & logic của Part 2:
+ * - isCorrect
+ * - popupScript
+ * - showScript
+ * - onShowScript (toggle)
+ * - onNext (khi đúng)
+ * - onRetry (khi sai)
+ */
 const AnswerPopup2 = ({
   isCorrect,
   popupScript,
@@ -10,39 +19,40 @@ const AnswerPopup2 = ({
   onRetry,
 }) => {
   return (
-    <div className={`popup ${!isCorrect ? "shake" : ""}`}>
-      <div className="popup-title">
-        {isCorrect ? (
-          <>
-            <span style={{ color: "#4CAF50", fontWeight: "bold" }}>✔</span> Oikein!
-          </>
-        ) : (
-          <>
-            <span style={{ fontSize: "2rem" }}>❌</span> Väärin!
-          </>
-        )}
-      </div>
-
-      {showScript && (
-        <div className="popup-script">
-          <p>{popupScript}</p>
+    <div className="answer-popup">
+      <div className={`popup-card ${isCorrect ? "correct" : "wrong"}`}>
+        <span className="popup-icon">{isCorrect ? "🎉" : "❌"}</span>
+        <div className="popup-title">
+          {isCorrect ? (
+            <>
+              <span style={{ color: "#22C55E" }}>✔</span> Oikein!
+            </>
+          ) : (
+            <>Väärin!</>
+          )}
         </div>
-      )}
 
-      <div className="popup-buttons">
-        <button className="popup-btn" onClick={onShowScript}>
-          📜 {showScript ? "Piilota Teksti" : "Näytä Teksti"}
-        </button>
-
-        {isCorrect ? (
-          <button className="popup-btn" onClick={onNext}>
-            ➡️ Seuraava
-          </button>
-        ) : (
-          <button className="popup-btn" onClick={onRetry}>
-            🔁 Yritä uudelleen
-          </button>
+        {showScript && popupScript && (
+          <div className="popup-script">
+            <p>{popupScript}</p>
+          </div>
         )}
+
+        <div className="popup-actions">
+          <button className="popup-btn" onClick={onShowScript}>
+            {showScript ? "Piilota Teksti" : "Näytä Teksti"}
+          </button>
+
+          {isCorrect ? (
+            <button className="popup-button" onClick={onNext}>
+              Jatka →
+            </button>
+          ) : (
+            <button className="popup-button" onClick={onRetry}>
+              🔁 Yritä uudelleen
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

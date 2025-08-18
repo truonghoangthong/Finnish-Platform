@@ -1,101 +1,111 @@
-import { useState, useCallback, useEffect } from 'react';
-import './module3.css';
-import '../../components/loader/loader.css';
-import Column from './Column';
+import { useState, useCallback, useEffect } from "react";
+import "./module3.css";
+import "../../components/loader/loader.css";
+import Column from "./Column";
 
-const VerbMatchingGame = ({ questions, verbs, onCheckAnswers, showResults }) => {
+const VerbMatchingGame = ({
+  questions,
+  verbs,
+  showResults,
+  results,
+  onStateChange,
+}) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [userInputs, setUserInputs] = useState({});
-  const [statusMap, setStatusMap] = useState({});
   const [matches, setMatches] = useState([]);
+  const [statusMap, setStatusMap] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (questions.length > 0 && verbs.length > 0) {
-      setRightItems(questions.map(q => ({
-        id: `right-${q.pairId}`,
-        text: q.sentence,
-        pairId: q.pairId,
-        conjugatedVerb: q.conjugatedVerb,
-        audioBase64: q.audioBase64
-      })));
+      setRightItems(
+        questions.map((q) => ({
+          id: `right-${q.pairId}`,
+          text: q.sentence,
+          pairId: q.pairId,
+          conjugatedVerb: q.conjugatedVerb,
+          audioBase64: q.audioBase64,
+        })),
+      );
 
-      setLeftItems(verbs.map(v => ({
-        id: `left-${v.id}`,
-        text: v.text,
-        pairId: v.id.replace('vocabulary', 'question'),
-        meaning: v.meaning,
-        audioBase64: v.audioBase64
-      })));
+      setLeftItems(
+        verbs.map((v) => ({
+          id: `left-${v.id}`,
+          text: "",
+          pairId: v.id.replace("vocabulary", "question"),
+          meaning: v.meaning,
+          audioBase64: v.audioBase64,
+        })),
+      );
 
       setLoading(false);
-    } else if (questions.length === 0 || verbs.length === 0) {
+    } else {
       setLoading(false);
     }
   }, [questions, verbs]);
 
+  // Update statusMap when showResults changes
   useEffect(() => {
-    if (showResults) {
-      const results = {};
+    if (showResults && results) {
       const newStatusMap = {};
-      
-      const correctAnswers = {};
-      questions.forEach(q => {
-        const conjugatedVerb = q.conjugatedVerb.replace(/[\[\]]/g, '');
-        correctAnswers[q.pairId] = conjugatedVerb;
+      Object.keys(results).forEach((pairId) => {
+        const isCorrect = results[pairId];
+        newStatusMap[`left-${pairId}`] = isCorrect ? "correct" : "incorrect";
+        newStatusMap[`right-${pairId}`] = isCorrect ? "correct" : "incorrect";
       });
-
-      rightItems.forEach(question => {
-        const userInput = userInputs[question.pairId];
-        if (userInput) {
-          const isCorrect = normalizeText(userInput) === normalizeText(correctAnswers[question.pairId]);
-          results[question.pairId] = isCorrect;
-          
-          const leftCard = leftItems.find(card => card.pairId === question.pairId);
-          if (leftCard) {
-            newStatusMap[leftCard.id] = isCorrect ? 'correct' : 'incorrect';
-          }
-          newStatusMap[question.id] = isCorrect ? 'correct' : 'incorrect';
-        }
-      });
-
       setStatusMap(newStatusMap);
-      onCheckAnswers(results);
+    } else {
+      setStatusMap({});
     }
-  }, [showResults, userInputs, rightItems, leftItems, questions, onCheckAnswers]);
+  }, [showResults, results]);
+
+  useEffect(() => {
+    onStateChange({
+      userInputs,
+      matches,
+      leftItems,
+      rightItems,
+      questions,
+      verbs,
+    });
+  }, [
+    userInputs,
+    matches,
+    leftItems,
+    rightItems,
+    questions,
+    verbs,
+    onStateChange,
+  ]);
 
   const playAudio = (audioBase64) => {
     if (audioBase64) {
       const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
-      audio.play().catch(e => console.error("Audio playback failed:", e));
+      audio.play().catch((e) => console.error("Audio playback failed:", e));
     }
   };
 
-  const findCard = useCallback((id, type) => {
-    const items = type === 'left' ? leftItems : rightItems;
-    const card = items.find(c => c.id === id);
-    return { card, index: items.indexOf(card) };
-  }, [leftItems, rightItems]);
+  const findCard = useCallback(
+    (id, type) => {
+      const items = type === "left" ? leftItems : rightItems;
+      const card = items.find((c) => c.id === id);
+      return { card, index: items.indexOf(card) };
+    },
+    [leftItems, rightItems],
+  );
 
-  const moveCard = useCallback((id, atIndex, type) => {
-    const items = type === 'left' ? leftItems : rightItems;
-    const { card, index } = findCard(id, type);
-    if (!card) return;
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    newItems.splice(atIndex, 0, card);
-    if (type === 'left') setLeftItems(newItems);
-    else setRightItems(newItems);
-  }, [findCard, leftItems, rightItems]);
+  const moveCard = useCallback(() => {
+    return; // Vô hiệu hóa chức năng di chuyển
+  }, []);
 
   const handleInputChange = (pairId, value) => {
-    setUserInputs(prev => ({
+    setUserInputs((prev) => ({
       ...prev,
-      [pairId]: value
+      [pairId]: value,
     }));
-    setStatusMap(prev => {
-      const newStatus = {...prev};
+    setStatusMap((prev) => {
+      const newStatus = { ...prev };
       delete newStatus[`left-${pairId}`];
       delete newStatus[`right-${pairId}`];
       return newStatus;
@@ -103,20 +113,15 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers, showResults }) => 
   };
 
   const handleMatch = (questionId, verbId) => {
-    setMatches(prev => {
-      const existing = prev.filter(m => m.questionId !== questionId);
+    setMatches((prev) => {
+      const existing = prev.filter((m) => m.questionId !== questionId);
       return [...existing, { questionId, verbId }];
     });
-    setStatusMap(prev => {
-      const newStatus = {...prev};
+    setStatusMap((prev) => {
+      const newStatus = { ...prev };
       delete newStatus[`right-${verbId}`];
       return newStatus;
     });
-  };
-
-  const normalizeText = (text) => {
-    if (!text) return '';
-    return text.trim().toLowerCase();
   };
 
   if (loading) {
@@ -135,12 +140,12 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers, showResults }) => 
     <div>
       <div className="module3-verbs-list">
         <div className="module3-verbs-container">
-          {verbs.map(verb => (
-            <div 
-              key={verb.id} 
+          {verbs.map((verb) => (
+            <div
+              key={verb.id}
               className="module3-verb-tag"
               onClick={() => playAudio(verb.audioBase64)}
-              style={{ cursor: verb.audioBase64 ? 'pointer' : 'default' }}
+              style={{ cursor: verb.audioBase64 ? "pointer" : "default" }}
             >
               {verb.text} - {verb.meaning}
             </div>
@@ -149,23 +154,25 @@ const VerbMatchingGame = ({ questions, verbs, onCheckAnswers, showResults }) => 
       </div>
 
       <div className="module3-matching-section">
-        <Column 
-          items={leftItems} 
-          type="left" 
-          findCard={findCard} 
-          moveCard={moveCard} 
+        <Column
+          items={leftItems}
+          type="left"
+          findCard={findCard}
+          moveCard={moveCard}
           statusMap={statusMap}
           userInputs={userInputs}
           onInputChange={handleInputChange}
           onMatch={handleMatch}
+          disableDrag={true}
         />
-        <Column 
-          items={rightItems} 
-          type="right" 
-          findCard={findCard} 
-          moveCard={moveCard} 
+        <Column
+          items={rightItems}
+          type="right"
+          findCard={findCard}
+          moveCard={moveCard}
           statusMap={statusMap}
           onMatch={handleMatch}
+          disableDrag={true}
         />
       </div>
     </div>

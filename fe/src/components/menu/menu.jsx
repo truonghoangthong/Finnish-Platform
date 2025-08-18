@@ -22,12 +22,10 @@ const Menu = ({ lessonNumber }) => {
 
   return (
     <div className="menu-container">
-      {/* Header Container */}
       <div className="menu-header">
         <h2 className="menu-header-title">LEVEL A1</h2>
       </div>
 
-      {/* Tabs Container */}
       <div className="menu-tabs">
         {skillOrder.map((skill, index) => (
           <div
@@ -41,7 +39,6 @@ const Menu = ({ lessonNumber }) => {
         ))}
       </div>
 
-      {/* Title Section Container */}
       <div className="menu-title-section">
         <h3 className="menu-main-title">Lesson {lessonNumber}</h3>
         <div className="menu-sub-title">The Break Room</div>

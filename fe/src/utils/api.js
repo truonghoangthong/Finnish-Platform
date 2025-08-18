@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api", 
+  baseURL: "https://finnish-platform-thong-truongs-projects.vercel.app/api",
   timeout: 10000,
 });
 
@@ -20,14 +20,20 @@ export const fetchLessonIntro = async (level, lesson) => {
 };
 
 // ✅ Gửi tiến độ học (progress) cho từng module
-export const updateProgress = async ({ userId, level, lesson, module, progress }) => {
+export const updateProgress = async ({
+  userId,
+  level,
+  lesson,
+  module,
+  progress,
+}) => {
   try {
-    const response = await api.post('/progress', {
+    const response = await api.post("/progress", {
       userId,
       level,
       lesson,
       module,
-      progress
+      progress,
     });
     return response.data;
   } catch (error) {

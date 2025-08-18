@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   background-color: #f9f9f9;
-  color: #1A1A1A;
+  color: #1a1a1a;
   scroll-margin-top: 30px;
 }
 
@@ -49,7 +49,7 @@
 .home-section button {
   padding: 10px 20px;
   border: none;
-  background-color: #06ACFF;
+  background-color: #06acff;
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
@@ -59,9 +59,9 @@
 
 .home-image {
   margin-top: 20px;
-  width: 55%; 
-  max-width: 600px; 
-  height: auto; 
+  width: 55%;
+  max-width: 600px;
+  height: auto;
   border-radius: 10px;
   display: block;
   margin-left: auto;
@@ -72,7 +72,7 @@
 .courses-section {
   padding: 100px 40px;
   background-color: #f9f9f9;
-  color: #1A1A1A;
+  color: #1a1a1a;
   scroll-margin-top: 30px;
 }
 
@@ -112,7 +112,7 @@
   font-size: 0.95em;
   margin: 5px 0 10px 0;
   text-align: left;
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .course-card button {
@@ -124,23 +124,23 @@
   cursor: pointer;
   font-size: 0.95em;
   width: 100%;
-  margin-top: auto; 
+  margin-top: auto;
 }
 
 .course-card button:hover {
-  background-color: #06ACFF;
+  background-color: #06acff;
   color: white;
 }
 
 .highlight-text {
-  color: #06ACFF;
+  color: #06acff;
 }
 
 @media (max-width: 768px) {
   .home-container {
     flex-direction: column;
   }
-  
+
   .lottie-animation {
     width: 150px;
     height: 150px;
