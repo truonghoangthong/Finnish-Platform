@@ -72,7 +72,22 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
 
   return (
     <div className="module3-wrapper">
-      <div className="module3-matching-section">
+      <div className="module3-verbs-list">
+        <div className="module3-verbs-container">
+          {verbs.map((v) => (
+            <div
+              key={v.id}
+              className="module3-verb-tag"
+              onClick={() => playAudio(v.audioBase64)}
+              style={{ cursor: v.audioBase64 ? "pointer" : "default" }}
+            >
+              {v.script} – {v.meaning}
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <div className="module3-matching-section part3c">
         <div className="module3-input-column">
           {questions.map((q, index) => (
             <div
@@ -100,21 +115,6 @@ const VerbMatching3C = ({ questions, verbs, showResults, results, onStateChange 
               onClick={() => playAudio(q.audioBase64)}
             >
               {q.sentence}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="module3-verbs-list">
-        <div className="module3-verbs-container">
-          {verbs.map((v) => (
-            <div
-              key={v.id}
-              className="module3-verb-tag"
-              onClick={() => playAudio(v.audioBase64)}
-              style={{ cursor: v.audioBase64 ? "pointer" : "default" }}
-            >
-              {v.script} – {v.meaning}
             </div>
           ))}
         </div>

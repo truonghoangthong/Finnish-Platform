@@ -43,7 +43,6 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     }
   }, [pairs]);
 
-  // cập nhật statusMap khi showResults thay đổi
   useEffect(() => {
     if (showResults && results) {
       const newStatusMap = {};
@@ -87,7 +86,6 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     [findCard, leftItems, rightItems],
   );
 
-  // ============= Equalize height giữa 2 cột =============
   const equalizeRowHeights = useCallback(() => {
     const section = document.querySelector(".module3-matching-section");
     if (!section) return;
@@ -117,7 +115,6 @@ const MatchingGame = ({ pairs, showResults, results, onStateChange }) => {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, [equalizeRowHeights]);
-  // ======================================================
 
   if (loading) {
     return (

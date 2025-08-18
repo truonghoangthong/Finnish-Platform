@@ -339,3 +339,32 @@
 .module3-matching-card:hover {
   box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
+
+.module3-matching-section.part3c {
+  display: flex;
+  gap: 10px;             
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+.module3-matching-section.part3c .module3-input-column {
+  flex: 0 0 40%;        
+  display: flex;
+  flex-direction: column;
+}
+
+.module3-matching-section.part3c .module3-matching-column {
+  flex: 0 0 60%;         
+  display: flex;
+  flex-direction: column;
+}
+
+.module3-matching-section.part3c .module3-input-card,
+.module3-matching-section.part3c .module3-matching-card {
+  margin-bottom: 15px;   
+  padding: 14px;         
+  height: 50px;          
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
