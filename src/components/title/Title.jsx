@@ -5,7 +5,9 @@ import "./title.css";
 const Title = ({ audioBase64, script }) => {
   const { taskLabel, description } = useMemo(() => {
     if (!script) return { taskLabel: "", description: "" };
-    const match = script.match(/^([^.]*)\.\s*(.*)$/);
+
+    // Regex mới: match cả xuống dòng (\n)
+    const match = script.match(/^([^.]*)\.\s*([\s\S]*)$/);
     if (match) {
       return { taskLabel: match[1], description: match[2] };
     }
@@ -22,7 +24,9 @@ const Title = ({ audioBase64, script }) => {
       </div>
 
       {taskLabel && <span className="title-label">{taskLabel}</span>}
-      {description && <span className="title-description">{description}</span>}
+      {description && (
+        <span className="title-description">{description}</span>
+      )}
     </div>
   );
 };

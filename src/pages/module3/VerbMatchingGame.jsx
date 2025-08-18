@@ -3,7 +3,7 @@ import './module3.css';
 import '../../components/loader/loader.css';
 import Column from './Column';
 
-const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
+const VerbMatchingGame = ({ questions, verbs, showResults, results, onStateChange }) => {
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [userInputs, setUserInputs] = useState({});
@@ -38,6 +38,21 @@ const VerbMatchingGame = ({ questions, verbs, showResults, onStateChange }) => {
       setLoading(false);
     }
   }, [questions, verbs]);
+
+  // Update statusMap when showResults changes
+  useEffect(() => {
+    if (showResults && results) {
+      const newStatusMap = {};
+      Object.keys(results).forEach(pairId => {
+        const isCorrect = results[pairId];
+        newStatusMap[`left-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
+        newStatusMap[`right-${pairId}`] = isCorrect ? 'correct' : 'incorrect';
+      });
+      setStatusMap(newStatusMap);
+    } else {
+      setStatusMap({});
+    }
+  }, [showResults, results]);
 
   useEffect(() => {
     onStateChange({

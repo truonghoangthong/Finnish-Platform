@@ -13,7 +13,7 @@
 }
 
 .title-label {
-  font-weight: 700; 
+  font-weight: 700;
   font-size: 1.125rem;
   color: #111;
   white-space: nowrap;
@@ -24,7 +24,7 @@
   font-weight: 500;
   color: #111;
   line-height: 1.4;
-  white-space: normal;
+  white-space: pre-line; 
   overflow: visible;
   text-overflow: unset;
   flex: 1;
