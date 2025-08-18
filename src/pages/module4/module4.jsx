@@ -160,7 +160,7 @@ const Module4 = () => {
       const part4bResults = await Promise.all(
         moduleData.part4b.questions.map(async (q) => {
           try {
-            const res = await axios.post(`${API}evaluate`, {
+            const res = await axios.post(`${API}/evaluate`, {
               finnishSentence: q.text,
               userTranslation: translations[q.id] || "",
             });
