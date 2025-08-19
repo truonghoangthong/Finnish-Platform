@@ -7,7 +7,7 @@ import Vocabulary1ab from "./pages/module1/Vocabulary1ab";
 import Listening2AB from "./pages/module2/listening2ab";
 import Module3 from "./pages/module3/module3";
 import Module4 from "./pages/module4/module4";
-import Part1Final from "./pages/module1/part1b/part1Final";
+import Part1Final from "./pages/module1/part1b/Part1Final.jsx";
 
 function App() {
   return (
