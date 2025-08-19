@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import AudioPlayer from "@/components/audioPlayer/AudioPlayer";
+import AudioPlayer from "@/components/audioPlayer/audioPlayer.jsx";
 import "./title.css";
 
 const Title = ({ audioBase64, script }) => {
