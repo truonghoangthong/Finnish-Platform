@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AnswerPopup2 from "./AnswerPopup2";
 import QuestionBox from "./QuestionBox";
 import FloatingMascot from "./FloatingMascot";
-import AudioPlayer from "@/components/audioPlayer/AudioPlayer";
+import AudioPlayer from "@/components/audioPlayer/audioPlayer.jsx";
 import confetti from "canvas-confetti";
 import { updateProgress } from "@/utils/updateProgress";
 import { calculateModule2Progress } from "@/utils/calculateProgress";
