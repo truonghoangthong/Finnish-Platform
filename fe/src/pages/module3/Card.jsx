@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useRef, useEffect } from "react";
+import { useState, memo, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
 const ItemTypes = { CARD: "card" };
