@@ -119,7 +119,7 @@ const Module3 = () => {
           )
           .map(([key, vocab]) => ({
             id: key,
-            text: vocab.script,
+            script: vocab.script,   
             meaning: vocab.meaning,
             audioBase64: vocab.audioBase64,
           }));
@@ -145,31 +145,12 @@ const Module3 = () => {
 
   const checkVerbAnswers = ({ userInputs, questions }) => {
     const results = {};
-
-    // Tạo map pairId -> đáp án đúng
-    const correctAnswers = Object.fromEntries(
-      questions.map((q) => [q.pairId, q.conjugatedVerb.replace(/[\[\]]/g, "")]),
-    );
-
-    questions.forEach((question) => {
-      const userInput = (userInputs[question.pairId] || "")
-        .trim()
-        .toLowerCase();
-      const correctVerb = correctAnswers[question.pairId].toLowerCase();
-
-      const isVerbCorrect = userInput === correctVerb;
-
-      results[question.pairId] = isVerbCorrect;
-
-      // Debug log
-      //console.log("----- Check Verb Answer -----");
-      //console.log("Question:", question.sentence);
-      //console.log("User input:", userInput);
-      //console.log("Correct answer:", correctVerb);
-      //console.log("Final result:", isVerbCorrect);
-      //console.log("-----------------------------");
+    questions.forEach((q) => {
+      const correctAnswer = (q.conjugatedVerb || "").trim().toLowerCase();
+      const userInput = (userInputs[q.pairId] || "").trim().toLowerCase();
+      const isCorrect = userInput === correctAnswer;
+      results[q.pairId] = isCorrect;
     });
-
     return results;
   };
 
