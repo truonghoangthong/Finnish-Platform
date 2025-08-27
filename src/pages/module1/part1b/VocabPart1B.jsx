@@ -163,13 +163,7 @@ const VocabPart1B = ({ data }) => {
                     >
                       {q.script}
                     </p>
-                    {q.ipa && (
-                      <p
-                        className={`ipa ${!isCorrect && !isFlipped ? "dimmed" : ""}`}
-                      >
-                        [{q.ipa}]
-                      </p>
-                    )}
+                   
                   </div>
                 )}
               </div>
