@@ -25,12 +25,13 @@ const Module3 = () => {
   const [pairs3b, setPairs3b] = useState([]);
   const [pairs3c, setPairs3c] = useState({ questions: [], verbs: [] });
 
-  const [results, setResults] = useState({
-    part3a: {},
-    part3b: {},
-    part3c: {},
-  });
-  const [showResults, setShowResults] = useState(false);
+  const [results3a, setResults3a] = useState({});
+  const [results3b, setResults3b] = useState({});
+  const [results3c, setResults3c] = useState({});
+  
+  const [showResults3a, setShowResults3a] = useState(false);
+  const [showResults3b, setShowResults3b] = useState(false);
+  const [showResults3c, setShowResults3c] = useState(false);
 
   const pairs3aRef = useRef({ left: [], right: [] });
   const pairs3bRef = useRef({ left: [], right: [] });
@@ -153,17 +154,27 @@ const Module3 = () => {
     return results;
   };
 
-  const handleCheckAllAnswers = () => {
+  const handleCheckPart3a = () => {
     const part3aResults = checkRegularAnswers(
       pairs3aRef.current.left,
       pairs3aRef.current.right,
       pairs3a,
     );
+    setResults3a(part3aResults);
+    setShowResults3a(true);
+  };
+
+  const handleCheckPart3b = () => {
     const part3bResults = checkRegularAnswers(
       pairs3bRef.current.left,
       pairs3bRef.current.right,
       pairs3b,
     );
+    setResults3b(part3bResults);
+    setShowResults3b(true);
+  };
+
+  const handleCheckPart3c = () => {
     const part3cResults = checkVerbAnswers({
       userInputs: pairs3cRef.current.userInputs,
       matches: pairs3cRef.current.matches,
@@ -171,18 +182,13 @@ const Module3 = () => {
       rightItems: pairs3c.questions,
       questions: pairs3c.questions,
     });
-
-    setResults({
-      part3a: part3aResults,
-      part3b: part3bResults,
-      part3c: part3cResults,
-    });
-
-    setShowResults(true);
+    setResults3c(part3cResults);
+    setShowResults3c(true);
   };
 
-  const getCorrectCount = (partResults) =>
-    Object.values(partResults).filter(Boolean).length;
+  const getCorrectCount3a = () => Object.values(results3a).filter(Boolean).length;
+  const getCorrectCount3b = () => Object.values(results3b).filter(Boolean).length;
+  const getCorrectCount3c = () => Object.values(results3c).filter(Boolean).length;
 
   const totalQuestions =
     pairs3a.length + pairs3b.length + pairs3c.questions.length;
@@ -195,11 +201,8 @@ const Module3 = () => {
     return <div className="module3-error">{error}</div>;
   }
 
-  const correctAnswers = showResults
-    ? getCorrectCount(results.part3a) +
-      getCorrectCount(results.part3b) +
-      getCorrectCount(results.part3c)
-    : 0;
+  const correctAnswers = 
+    getCorrectCount3a() + getCorrectCount3b() + getCorrectCount3c();
 
   return (
     <LessonLayout
@@ -217,13 +220,30 @@ const Module3 = () => {
             />
             <MatchingGame
               pairs={pairs3a}
-              showResults={showResults}
-              results={results.part3a}
+              showResults={showResults3a}
+              results={results3a}
               onStateChange={(left, right) => {
                 pairs3aRef.current = { left, right };
               }}
             />
+            <div style={{ textAlign: "center"}}>
+              <button
+                className="shared-btn"
+                onClick={handleCheckPart3a}
+                disabled={showResults3a && getCorrectCount3a() === pairs3a.length}
+              >
+                {showResults3a ? "Tarkista uudelleen" : "Tarkista vastaukset"}
+              </button>
+              {showResults3a && (
+                <div className="module3-results-summary">
+                  <p>
+                    Oikein: {getCorrectCount3a()} / {pairs3a.length}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
+
           <div className="module3-verbs-section">
             <Title
               script={moduleData.part3b.title?.script}
@@ -231,13 +251,30 @@ const Module3 = () => {
             />
             <MatchingGame
               pairs={pairs3b}
-              showResults={showResults}
-              results={results.part3b}
+              showResults={showResults3b}
+              results={results3b}
               onStateChange={(left, right) => {
                 pairs3bRef.current = { left, right };
               }}
             />
+            <div style={{ textAlign: "center" }}>
+              <button
+                className="shared-btn"
+                onClick={handleCheckPart3b}
+                disabled={showResults3b && getCorrectCount3b() === pairs3b.length}
+              >
+                {showResults3b ? "Tarkista uudelleen" : "Tarkista vastaukset"}
+              </button>
+              {showResults3b && (
+                <div className="module3-results-summary">
+                  <p>
+                    Oikein: {getCorrectCount3b()} / {pairs3b.length}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
+
           <div className="module3-verbs-section">
             <Title
               script={moduleData.part3c.title?.script}
@@ -246,30 +283,28 @@ const Module3 = () => {
             <VerbMatchingGame
               questions={pairs3c.questions}
               verbs={pairs3c.verbs}
-              showResults={showResults}
-              results={results.part3c}
+              showResults={showResults3c}
+              results={results3c}
               onStateChange={(state) => {
                 pairs3cRef.current = state;
               }}
             />
-          </div>
-
-          <div style={{ textAlign: "center", marginTop: "30px" }}>
-            <button
-              className="shared-btn"
-              onClick={handleCheckAllAnswers}
-              disabled={showResults && correctAnswers === totalQuestions}
-            >
-              {showResults ? "Tarkista uudelleen" : "Tarkista vastaukset"}
-            </button>
-
-            {showResults && (
-              <div className="module3-results-summary">
-                <p>
-                  Oikein: {correctAnswers} / {totalQuestions}
-                </p>
-              </div>
-            )}
+            <div style={{ textAlign: "center"}}>
+              <button
+                className="shared-btn"
+                onClick={handleCheckPart3c}
+                disabled={showResults3c && getCorrectCount3c() === pairs3c.questions.length}
+              >
+                {showResults3c ? "Tarkista uudelleen" : "Tarkista vastaukset"}
+              </button>
+              {showResults3c && (
+                <div className="module3-results-summary">
+                  <p>
+                    Oikein: {getCorrectCount3c()} / {pairs3c.questions.length}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </DndProvider>
       </div>

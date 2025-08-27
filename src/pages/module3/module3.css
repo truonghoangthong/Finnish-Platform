@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   gap: 0;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   padding: 15px;
 }
 
@@ -367,4 +367,47 @@
   display: flex;
   align-items: center;
   box-sizing: border-box;
+}
+
+.module3-check-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin: 15px 0;
+}
+
+.module3-check-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.module3-check-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.module3-verbs-section:first-child .module3-check-btn,
+.module3-verbs-section:nth-child(2) .module3-check-btn {
+  margin-bottom: 15px;
+}
+
+.module3-check-container {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.module3-results-summary {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2e7d32;
 }
