@@ -120,7 +120,6 @@ const Module3 = () => {
           .map(([key, vocab]) => ({
             id: key,
             script: vocab.script,   
-            meaning: vocab.meaning,
             audioBase64: vocab.audioBase64,
           }));
         return { questions, verbs };

@@ -88,13 +88,12 @@ const VerbMatchingGame = ({ questions, verbs, showResults, results, onStateChang
                     : "default",
               }}
             >
-              {v.script} – {v.meaning}
+              {v.script}
             </div>
           ))}
         </div>
       </div>
 
-      {/* MATCHING SECTION */}
       <div className="module3-matching-section part3c">
         <div className="module3-input-column">
           {questions.map((q, index) => (
