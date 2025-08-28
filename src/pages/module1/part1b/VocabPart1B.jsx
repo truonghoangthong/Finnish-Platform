@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./vocab-part1b.css";
+import "./Vocab-part1b.css";
 import PopupScore from "../../../components/score/PopupScore";
 import AudioPlayer from "../../../components/audioPlayer/audioPlayer";
 import Title from "../../../components/title/Title";
@@ -163,13 +163,7 @@ const VocabPart1B = ({ data }) => {
                     >
                       {q.script}
                     </p>
-                    {q.ipa && (
-                      <p
-                        className={`ipa ${!isCorrect && !isFlipped ? "dimmed" : ""}`}
-                      >
-                        [{q.ipa}]
-                      </p>
-                    )}
+                   
                   </div>
                 )}
               </div>

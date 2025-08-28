@@ -175,16 +175,7 @@
   text-align: center;
 }
 
-.vocab1b-feedback .ipa {
-  font-size: 0.85rem;
-  font-style: italic;
-  color: #666;
-  line-height: 1.2;
-  white-space: nowrap;
-  word-break: keep-all;
-  overflow-wrap: normal;
-  text-align: center;
-}
+
 
 .vocab1b-feedback .dimmed {
   color: #aaa;

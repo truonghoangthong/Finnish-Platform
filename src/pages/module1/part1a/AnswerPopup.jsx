@@ -26,7 +26,7 @@ const AnswerPopup = ({ isCorrect, image, script, ipa, onClose }) => {
             </p>
             <img src={image} alt="Answer" className="popup-image" />
             <p className="popup-word">{script}</p>
-            {ipa && <p className="popup-ipa">/{ipa}/</p>}
+            
           </>
         ) : (
           <p className="popup-message fail">Väärin, yritä uudelleen</p>

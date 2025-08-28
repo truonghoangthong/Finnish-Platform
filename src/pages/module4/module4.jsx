@@ -9,6 +9,8 @@ import Title from "../../components/title/Title";
 
 const API = "https://finnish-platform-thong-truongs-projects.vercel.app/api";
 
+// Comment hàm parseFeedback vì không dùng đến phần 4b
+/*
 const parseFeedback = (feedback) => {
   try {
     const clean = feedback
@@ -25,6 +27,7 @@ const parseFeedback = (feedback) => {
     };
   }
 };
+*/
 
 const extractQuestions = (data, part, count, hasAnswer = false) =>
   Array.from({ length: count }, (_, i) => {
@@ -71,12 +74,12 @@ const Module4 = () => {
   const location = useLocation();
   const [moduleData, setModuleData] = useState({
     part4a: {},
-    part4b: {},
+    // part4b: {},
     part4c: {},
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [translations, setTranslations] = useState({});
+  // const [translations, setTranslations] = useState({});
   const [answers, setAnswers] = useState({});
   const [currentAudio, setCurrentAudio] = useState(null);
   const [activeAudio, setActiveAudio] = useState(null);
@@ -84,7 +87,7 @@ const Module4 = () => {
   const [checkingAnswers, setCheckingAnswers] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState({
     show: false,
-    part4b: [],
+    // part4b: [],
     part4c: [],
   });
 
@@ -98,13 +101,15 @@ const Module4 = () => {
           ? "another_module"
           : "the_break_room";
 
-        const [a, b, c] = await Promise.all([
+        const [a, c] = await Promise.all([
           axios.get(
             `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4a`,
           ),
+          /*
           axios.get(
             `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4b`,
           ),
+          */
           axios.get(
             `${API}/studying/${level.toUpperCase()}/${moduleName}/module4/part4c`,
           ),
@@ -117,10 +122,12 @@ const Module4 = () => {
             description: a.data.result.part4a.description,
             questions: extractQuestions(a.data, "part4a", 6),
           },
+          /*
           part4b: {
             title: b.data.result.part4b.title,
             questions: extractQuestions(b.data, "part4b", 3),
           },
+          */
           part4c: {
             title: c.data.result.part4c.title,
             questions: extractQuestions(c.data, "part4c", 5, true),
@@ -143,8 +150,10 @@ const Module4 = () => {
     }
   }, [showFinnishInstruction]);
 
+  /*
   const handleTranslationChange = (id, v) =>
     setTranslations((p) => ({ ...p, [id]: v }));
+  */
   const handleAnswerSelect = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
 
   const checkAnswers = async () => {
@@ -157,6 +166,7 @@ const Module4 = () => {
         isCorrect: answers[q.id] === q.answer,
       }));
 
+      /*
       const part4bResults = await Promise.all(
         moduleData.part4b.questions.map(async (q) => {
           try {
@@ -178,10 +188,11 @@ const Module4 = () => {
           }
         }),
       );
+      */
 
       setFeedbackModal({
         show: true,
-        part4b: part4bResults,
+        // part4b: part4bResults, 
         part4c: part4cResults,
       });
     } finally {
@@ -261,6 +272,7 @@ const Module4 = () => {
             ))}
           </div>
 
+          {/*
           <Title
             script={moduleData.part4b.title?.script}
             audioBase64={moduleData.part4b.title?.audioBase64}
@@ -297,6 +309,7 @@ const Module4 = () => {
               </div>
             ))}
           </div>
+          */}
 
           <Title
             script={moduleData.part4c.title?.script}
@@ -363,6 +376,7 @@ const Module4 = () => {
           <div className="module4-feedback-content">
             <h2>Vastauksesi tulokset</h2>
 
+            {/*
             <div className="module4-feedback-section">
               <h3>Task 4b. Translations</h3>
               {feedbackModal.part4b.map((q, i) => {
@@ -400,6 +414,7 @@ const Module4 = () => {
                 );
               })}
             </div>
+            */}
 
             <div className="module4-feedback-section">
               <h3>Task 4c. True/False</h3>
@@ -429,7 +444,7 @@ const Module4 = () => {
             <button
               className="module4-close-feedback"
               onClick={() =>
-                setFeedbackModal({ show: false, part4b: [], part4c: [] })
+                setFeedbackModal({ show: false, part4c: [] })
               }
             >
               Sulje
