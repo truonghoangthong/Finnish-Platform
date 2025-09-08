@@ -5,5 +5,5 @@ Description: A new platform designed for international students at LAB and LUT u
 ## Authors 👷
 - [Thong Truong](https://github.com/truonghoangthong) (Project Manager + Backend Dev + Deployer + Tester)
 - [Thanh Nguyen](https://github.com/pingviini314159) (Designer + Frontend Dev)
-- [Phu Trieu](https://github.com/truonghoangthong) (Backend Dev + Tester)
+- [Phu Trieu]([https://github.com/truonghoangthong](https://github.com/Phu-trieu24)) (Backend Dev + Tester)
 - [Nhi Nguyen](https://github.com/nhingnguyen) (Designer + Frontend Dev)
